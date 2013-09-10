@@ -1,1 +1,2 @@
-require_relative 'mandown/page'
+require_relative 'mandown/chapter'
+
