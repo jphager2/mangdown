@@ -9,7 +9,8 @@ module Mandown
 	filename = "Bleach 537 - Page 1" 
 	page = Page.new( uri, filename )
 	page.download
-	expect(Dir.glob(dir + '/*')).to include(dir + page.filename)
+#	puts dir + page.filename
+	expect(Dir.glob(dir + '/*')).to include(dir + '/' + page.filename)
       end
     end
   end
