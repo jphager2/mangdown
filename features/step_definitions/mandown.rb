@@ -11,3 +11,7 @@ Then(/^The image will be in the current directory$/) do
   dir = Dir.pwd
   expect(Dir.glob(dir + '/' + '*')).to include(dir + '/' + @page.filename)
 end
+
+Then(/^It will be an image file$/) do
+  expect(@page.filename).to include(".jpg")
+end
