@@ -1,5 +1,3 @@
-require 'open-uri'
-
 module Mandown
   class Page
     attr_reader :filename
