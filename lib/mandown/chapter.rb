@@ -1,6 +1,6 @@
 module Mandown
   class Chapter
-    attr_reader :name, :pages
+    attr_reader :name, :pages, :uri
     
     def initialize( uri, name )
       @uri = uri

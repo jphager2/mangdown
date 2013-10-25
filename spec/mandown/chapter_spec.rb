@@ -2,15 +2,19 @@ require 'spec_helper'
 
 module Mandown
   describe Chapter do
-    before(:each) do
-      # print '!'
-      @uri = 'http://www.mangareader.net/bleach/537'
-      @chaptername = 'Bleach 537'
-      @chapter = Chapter.new( @uri, @chaptername )
-      @chapter.get_doc(@uri)
-    end
-
     context "when chapter is initialized" do
+      before(:all) do
+        print '!1'
+        @uri = 'http://www.mangareader.net/bleach/537'
+        @chaptername = 'Bleach 537'
+        @chapter = Chapter.new( @uri, @chaptername )
+        @chapter.get_doc(@uri)
+      end
+
+      it "should have the right chapter uri" do
+        expect(@chapter.uri).to eq(@uri)
+      end
+
       it "should get pages when initialized" do
         expect(@chapter.pages.size).to be > 0
       end
@@ -25,6 +29,18 @@ module Mandown
     end
     
     context "when the functions for get_pages are run" do
+      before(:all) do
+        print '!2'
+        @uri = 'http://www.mangareader.net/bleach/537'
+        @chaptername = 'Bleach 537'
+        @chapter = Chapter.new( @uri, @chaptername )
+        @chapter.get_doc(@uri)
+      end
+
+      it "should have the right chapter uri" do
+        expect(@chapter.uri).to eq(@uri)
+      end
+
       it "should get the right chapter mark from a uri" do
         expect(@chapter.get_chapter_mark).to eq('Bleach 537')
       end
@@ -51,6 +67,18 @@ module Mandown
     end
 
     context "when chapter is downloaded" do
+      before(:all) do
+        print '!3'
+        @uri = 'http://www.mangareader.net/bleach/537'
+        @chaptername = 'Bleach 537'
+        @chapter = Chapter.new( @uri, @chaptername )
+        @chapter.get_doc(@uri)
+      end
+
+      it "should have the right chapter uri" do
+        expect(@chapter.uri).to eq(@uri)
+      end
+
       before do
         # print '#'
         @chapter.download	
