@@ -36,7 +36,7 @@ module Mandown
     end
     
     def get_root(uri)
-      @root = uri.sub(/\/[\w|\d]+\/[\w|\d]+\Z/, '')
+      @root = 'www.mangareader.net' # = uri.sub(/\/[\w|\d]+\/[\w|\d]+\Z/, '')
     end
 
     def get_chapter_mark
