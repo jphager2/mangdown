@@ -2,53 +2,57 @@ require 'spec_helper'
 
 module Mandown
   describe Chapter do
-    before do
+    before(:each) do
+      # print '!'
       @uri = 'http://www.mangareader.net/bleach/537'
       @chaptername = 'Bleach 537'
       @chapter = Chapter.new( @uri, @chaptername )
       @chapter.get_doc(@uri)
-   end
-
-   context "when chapter is initialized" do
-     it "should get pages when initialized" do
-       expect(@chapter.pages.size).to be > 0
-     end
-
-     it "should have the first page at the 0 index" do
-       expect(@chapter.pages.first.filename).to eq('Bleach 537 - Page 1.jpg')  
-     end
-
-     it "should have the last page at the -1 index" do
-       expect(@chapter.pages.last.filename).to eq('Bleach 537 - Page 21.jpg')
-     end
-   end
-
-   it "should get the right chapter mark from a uri" do
-      expect(@chapter.get_chapter_mark).to eq('Bleach 537')
     end
 
-    it "should get the right image link and filename from a uri" do
-      expect(@chapter.get_page).to eq(
+    context "when chapter is initialized" do
+      it "should get pages when initialized" do
+        expect(@chapter.pages.size).to be > 0
+      end
+
+      it "should have the first page at the 0 index" do
+        expect(@chapter.pages.first.filename).to eq('Bleach 537 - Page 1.jpg')  
+      end
+
+      it "should have the last page at the -1 index" do
+        expect(@chapter.pages.last.filename).to eq('Bleach 537 - Page 21.jpg')
+      end
+    end
+    
+    context "when the functions for get_pages are run" do
+      it "should get the right chapter mark from a uri" do
+        expect(@chapter.get_chapter_mark).to eq('Bleach 537')
+      end
+
+      it "should get the right image link and filename from a uri" do
+        expect(@chapter.get_page).to eq(
               ['http://i25.mangareader.net/bleach/537/bleach-4149721.jpg',
                'Bleach 537 - Page 1'])
-    end
+      end
     
-    it "should get the right root from uri" do
-      expect(@chapter.get_root(@uri)).to eq('http://www.mangareader.net')
-    end
+      it "should get the right root from uri" do
+        expect(@chapter.get_root(@uri)).to eq('http://www.mangareader.net')
+      end
 
-    it "should get the right link to the next page from a uri" do
-      expect(@chapter.get_next_uri).to eq(
+      it "should get the right link to the next page from a uri" do
+        expect(@chapter.get_next_uri).to eq(
               'http://www.mangareader.net/bleach/537/2')
+      end
+
+      it "should evaluate the expression to stop get_pages" do
+        next_chapter_uri = 'http://www.mangareader.net/bleach/538'
+        expect(@chapter.get_doc(next_chapter_uri)).not_to eq(@chapter.name)
+      end
     end
 
-    it "should evaluate the expression to stop the loop in get_pages correctly" do
-      expect(@chapter.get_doc('http://www.mangareader.net/bleach/538')).not_to eq(
-              @chapter.name)
-    end
-    
     context "when chapter is downloaded" do
       before do
+        # print '#'
         @chapter.download	
       end
 
@@ -64,11 +68,11 @@ module Mandown
 	  expect(Dir.glob(dir + '/*' )).to include(dir + '/' + page.filename)
 	end
       end
-
-      after do
-        dir = Dir.pwd + '/' + @chapter.name
-        Dir.rmdir(dir) if Dir.exist?(dir) 
-      end
     end
+
+  #  after(:all) do
+   #   dir = Dir.pwd + '/' + @chapter.name
+    #  Dir.rmdir(dir) if Dir.exist?(dir) 
+   # end
   end
 end
