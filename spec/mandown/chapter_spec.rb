@@ -1,14 +1,10 @@
 require 'spec_helper'
 
 module Mandown
-  describe Chapter do
+  describe Chapter, :help => :chapter do 
     context "when chapter is initialized" do
       before(:all) do
-        print '!1'
-        @uri = 'http://www.mangareader.net/bleach/537'
-        @chaptername = 'Bleach 537'
-        @chapter = Chapter.new( @uri, @chaptername )
-        @chapter.get_doc(@uri)
+        new_chapter
       end
 
       it "should have the right chapter uri" do
@@ -30,11 +26,7 @@ module Mandown
     
     context "when the functions for get_pages are run" do
       before(:all) do
-        print '!2'
-        @uri = 'http://www.mangareader.net/bleach/537'
-        @chaptername = 'Bleach 537'
-        @chapter = Chapter.new( @uri, @chaptername )
-        @chapter.get_doc(@uri)
+        new_chapter
       end
 
       it "should have the right chapter uri" do
@@ -68,11 +60,7 @@ module Mandown
 
     context "when chapter is downloaded" do
       before(:all) do
-        print '!3'
-        @uri = 'http://www.mangareader.net/bleach/537'
-        @chaptername = 'Bleach 537'
-        @chapter = Chapter.new( @uri, @chaptername )
-        @chapter.get_doc(@uri)
+        new_chapter
       end
 
       it "should have the right chapter uri" do
