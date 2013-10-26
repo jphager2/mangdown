@@ -1,0 +1,2 @@
+1) Page file names should be changed to follow the format Manga_name Chapter_numberPage_number (which it already is), but Page_number should be ### (e.g. 001 010 100) so it sorts correctly by file name.
+2)
