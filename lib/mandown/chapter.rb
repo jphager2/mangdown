@@ -29,6 +29,8 @@ module Mandown
         uri = get_next_uri
         get_doc(uri)
       end
+
+      @doc = "Nokogiri::HTML::Document"
     end
 
     def get_doc(uri)
