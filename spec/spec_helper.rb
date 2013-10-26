@@ -15,7 +15,10 @@ RSpec.configure do |config|
   
   config.after(:suite) do
     dir = File.expand_path('../../Bleach 537', __FILE__)
-    Dir.rmdir(dir) if Dir.exist?(dir) 
+    if Dir.exist?(dir)
+      # exec( "rmdir #{dir} -r" )
+      # exec( "echo found my GODDAMN DIR" )
+    end 
   end
 
   # Run specs in random order to surface order dependencies. If you find an
