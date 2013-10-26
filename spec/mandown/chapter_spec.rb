@@ -1,18 +1,27 @@
 require 'spec_helper'
 
-module Mandown
-  describe Chapter do
-    context "when chapter is initialized" do
-      before(:all) do
-        print '!1'
-        @uri = 'http://www.mangareader.net/bleach/537'
-        @chaptername = 'Bleach 537'
-        @chapter = Chapter.new( @uri, @chaptername )
-        @chapter.get_doc(@uri)
-      end
 
+module Mandown
+  @@uri = 'http://www.mangareader.net/bleach/537'
+  @@chapter_name = 'Bleach 537'
+  chapter = Chapter.new( @@uri, @@chapter_name )
+  chapter.download
+  file_dir = File.dirname(__FILE__)
+  STUB_PATH = file_dir.sub(/\/[\w|\d]+\Z/, '') + '/objects/chapter.yml'
+  File.open(STUB_PATH, 'w+') do |file| 
+    file.write(chapter.to_yaml)
+  end
+
+  describe Chapter do
+    before(:each) do
+      print 'o'
+      @chapter = YAML.load(File.open(Mandown::STUB_PATH, 'r').read)
+      @chapter.get_doc(@@uri)
+    end
+
+    context "when chapter is initialized" do
       it "should have the right chapter uri" do
-        expect(@chapter.uri).to eq(@uri)
+        expect(@chapter.uri).to eq(@@uri)
       end
 
       it "should get pages when initialized" do
@@ -29,16 +38,8 @@ module Mandown
     end
     
     context "when the functions for get_pages are run" do
-      before(:all) do
-        print '!2'
-        @uri = 'http://www.mangareader.net/bleach/537'
-        @chaptername = 'Bleach 537'
-        @chapter = Chapter.new( @uri, @chaptername )
-        @chapter.get_doc(@uri)
-      end
-
       it "should have the right chapter uri" do
-        expect(@chapter.uri).to eq(@uri)
+        expect(@chapter.uri).to eq(@@uri)
       end
 
       it "should get the right chapter mark from a uri" do
@@ -52,7 +53,7 @@ module Mandown
       end
     
       it "should get the right root from uri" do
-        expect(@chapter.get_root(@uri)).to eq('http://www.mangareader.net')
+        expect(@chapter.get_root(@@uri)).to eq('http://www.mangareader.net')
       end
 
       it "should get the right link to the next page from a uri" do
@@ -67,21 +68,8 @@ module Mandown
     end
 
     context "when chapter is downloaded" do
-      before(:all) do
-        print '!3'
-        @uri = 'http://www.mangareader.net/bleach/537'
-        @chaptername = 'Bleach 537'
-        @chapter = Chapter.new( @uri, @chaptername )
-        @chapter.get_doc(@uri)
-      end
-
       it "should have the right chapter uri" do
-        expect(@chapter.uri).to eq(@uri)
-      end
-
-      before do
-        # print '#'
-        @chapter.download	
+        expect(@chapter.uri).to eq(@@uri)
       end
 
       it "should create a directory in the current directory" do
@@ -104,3 +92,6 @@ module Mandown
    # end
   end
 end
+
+
+

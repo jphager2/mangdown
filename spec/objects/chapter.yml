@@ -1,0 +1,69 @@
+--- !ruby/object:Mandown::Chapter
+uri: http://www.mangareader.net/bleach/537
+name: Bleach 537
+pages:
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 1.jpg
+  uri: http://i25.mangareader.net/bleach/537/bleach-4149721.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 2.jpg
+  uri: http://i17.mangareader.net/bleach/537/bleach-4149723.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 3.jpg
+  uri: http://i1.mangareader.net/bleach/537/bleach-4149725.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 4.jpg
+  uri: http://i1.mangareader.net/bleach/537/bleach-4149727.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 5.jpg
+  uri: http://i34.mangareader.net/bleach/537/bleach-4149729.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 6.jpg
+  uri: http://i14.mangareader.net/bleach/537/bleach-4149731.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 7.jpg
+  uri: http://i30.mangareader.net/bleach/537/bleach-4149733.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 8.jpg
+  uri: http://i30.mangareader.net/bleach/537/bleach-4149735.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 9.jpg
+  uri: http://i22.mangareader.net/bleach/537/bleach-4149737.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 10.jpg
+  uri: http://i5.mangareader.net/bleach/537/bleach-4149739.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 11.jpg
+  uri: http://i30.mangareader.net/bleach/537/bleach-4149741.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 12.jpg
+  uri: http://i14.mangareader.net/bleach/537/bleach-4149743.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 13.jpg
+  uri: http://i6.mangareader.net/bleach/537/bleach-4149745.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 14.jpg
+  uri: http://i22.mangareader.net/bleach/537/bleach-4149747.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 15.jpg
+  uri: http://i29.mangareader.net/bleach/537/bleach-4149749.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 16.jpg
+  uri: http://i9.mangareader.net/bleach/537/bleach-4149751.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 17.jpg
+  uri: http://i17.mangareader.net/bleach/537/bleach-4149753.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 18.jpg
+  uri: http://i17.mangareader.net/bleach/537/bleach-4149755.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 19.jpg
+  uri: http://i9.mangareader.net/bleach/537/bleach-4149757.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 20.jpg
+  uri: http://i34.mangareader.net/bleach/537/bleach-4149759.jpg
+- !ruby/object:Mandown::Page
+  filename: Bleach 537 - Page 21.jpg
+  uri: http://i39.mangareader.net/bleach/537/bleach-4149761.jpg
+doc: Nokogiri::HTML::Document
+root: http://www.mangareader.net
