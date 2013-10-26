@@ -37,5 +37,20 @@ module Mandown
                 'Bleach 465'])
       end
     end
+
+    context "when a chapter is retrieved" do
+      before(:all) do
+        @manga = Manga.new('http://www.mangareader.net/94/bleach.html', 'Bleach')
+        @manga.get_chapter(1)
+      end
+
+      it "should have a chapter in chapters" do
+        expect(@manga.chapters.length).to eq(1)
+      end
+
+      it "should have chapter 1 in chapters" do
+        expect(@manga.chapters[0].name).to eq('Bleach 1')
+      end
+    end
   end
 end

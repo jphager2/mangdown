@@ -20,5 +20,10 @@ module Mandown
     def get_doc(uri)
       @doc = Nokogiri::HTML(open(uri))
     end
+
+		def get_chapter(number)
+			uri, name = @chapters_list[number - 1]
+			@chapters << Chapter.new(uri, name)
+		end
   end
 end
