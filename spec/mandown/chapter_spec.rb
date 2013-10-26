@@ -4,10 +4,11 @@ require 'spec_helper'
 module Mandown
   @@uri = 'http://www.mangareader.net/bleach/537'
   @@chapter_name = 'Bleach 537'
+
   chapter = Chapter.new( @@uri, @@chapter_name )
   chapter.download
-  file_dir = File.dirname(__FILE__)
-  STUB_PATH = file_dir.sub(/\/[\w|\d]+\Z/, '') + '/objects/chapter.yml'
+  
+  STUB_PATH = File.expand_path('../../objects/chapter.yml', __FILE__)
   File.open(STUB_PATH, 'w+') do |file| 
     file.write(chapter.to_yaml)
   end
@@ -85,11 +86,6 @@ module Mandown
 	end
       end
     end
-
-  #  after(:all) do
-   #   dir = Dir.pwd + '/' + @chapter.name
-    #  Dir.rmdir(dir) if Dir.exist?(dir) 
-   # end
   end
 end
 
