@@ -1,6 +1,6 @@
 module Mandown
   class Manga
-    attr_reader :chapters, :chapters_list, :name, :url
+    attr_reader :chapters, :chapters_list, :name, :uri
     def initialize(uri, name)
       @uri = uri
       @name = name
