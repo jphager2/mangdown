@@ -1,2 +1,18 @@
 1) Page file names should be changed to follow the format Manga_name Chapter_numberPage_number (which it already is), but Page_number should be ### (e.g. 001 010 100) so it sorts correctly by file name.
-2)
+
+2) PopularManga should be a direct decendent of a MangaList class. Most of the PopularManga class (all the instance variables and most of the methods) can go up to MangaList.  the only difference with be that PopularManga will retain the #get_mangas_list method and call it from #initialize . So it will look something like
+
+      class PopularManga
+        ...
+        def initialize(uri, name)
+          super
+
+          get_mangas_list
+        end
+
+        def get_mangas_list
+          ...
+        end
+      end
+
+3)
