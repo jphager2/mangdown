@@ -2,11 +2,13 @@ module Mandown
   class PopularManga
 		include ::Mandown::Tools
 
-		attr_reader :uri, :mangas_list, :mangas
+		attr_reader :uri, :mangas_list, :mangas, :name
 
-		def initialize(uri, num_mangas)
+		def initialize(uri, num_mangas, name = "My Pop Manga")
 			@uri = uri 
 		  @num_mangas = num_mangas
+			@name = name
+
 			@mangas_list = []
 			@mangas = []
 
