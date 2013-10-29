@@ -1,5 +1,7 @@
 module Mandown
   class PopularManga
+		include ::Mandown::Tools
+
 		attr_reader :uri, :mangas_list, :mangas
 
 		def initialize(uri, num_mangas)
@@ -8,7 +10,7 @@ module Mandown
 			@mangas_list = []
 			@mangas = []
 
-			@root = 'http://www.mangareader.net'
+			@root = get_root(@uri) 
 
 			get_mangas_list
 		end
@@ -26,13 +28,10 @@ module Mandown
       (@num_mangas / 30.0).ceil.times do |time|
         get_pop_page_manga(time).each { |manga| @mangas_list << manga }
 			end
+
 			@doc = "Nokogiri::HTML::Document"
 		end
 
-		def get_doc(uri)
-      @doc = Nokogiri::HTML(open(uri))
-		end
-		
 		def get_pop_page_manga(time)
 			num = 30 * (time - 1)
 			page = @uri + '/' + num.to_s

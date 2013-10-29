@@ -1,5 +1,7 @@
 module Mandown
   class Chapter
+		include ::Mandown::Tools
+
     attr_reader :name, :pages, :uri
     
     def initialize( uri, name )
@@ -31,15 +33,6 @@ module Mandown
       end
 
       @doc = "Nokogiri::HTML::Document"
-    end
-
-    def get_doc(uri)
-      @doc = Nokogiri::HTML(open(uri))
-    end
-    
-    def get_root(uri)
-      @root = 'http://www.mangareader.net' 
-      # = uri.sub(/\/[\w|\d]+\/[\w|\d]+\Z/, '')
     end
 
     def get_chapter_mark
