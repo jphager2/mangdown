@@ -1,6 +1,7 @@
 require 'uri'
 require 'open-uri'
 require 'nokogiri'
+require 'yaml'
 
 require_relative 'mandown/tools'
 require_relative 'mandown/page'
