@@ -1,6 +1,6 @@
 module Mandown
   class Page
-    attr_reader :filename
+    attr_reader :filename, :uri
 
     def initialize( uri, filename )
       @filename = filename + '.jpg'
@@ -9,7 +9,7 @@ module Mandown
 
     def download
       File.open(@filename, 'wb') do |file|
-        file.write(open(@uri).read)
+        file.write(open(URI.encode(@uri, '[]')).read)
       end
     end
   end
