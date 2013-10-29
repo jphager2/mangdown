@@ -25,7 +25,17 @@ module Mandown
     
 		def get_chapter(number)
 			uri, name = @chapters_list[number - 1]
-			@chapters << Chapter.new(uri, name)
+      
+			# this is far from ideal
+			chapter_klass = if @root.include?('mangareader')
+									      MRChapter
+										  elsif @root.include?('fakku')
+											  FKChapter
+										  else
+											  NO_Chapter
+										  end
+											 
+			@chapters << chapter_klass.new(uri, name)
 		end
   end
 end

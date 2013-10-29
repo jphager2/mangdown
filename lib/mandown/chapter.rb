@@ -68,6 +68,29 @@ module Mandown
   end
 
   class FKChapter < Chapter
+    attr_reader :num_pages
+
+    def initialize(uri, name, num_pages)
+      @num_pages = num_pages
+
+      super(uri, name)
+    end
+
+    def get_pages
+      uri = @uri
+      get_doc(uri)
+
+      @num_pages.times do
+        page_uri, page_name = get_page 
+        @pages << Page.new( page_uri, page_name )
+        uri = get_next_uri
+        get_doc(uri)
+      end
+
+      @doc = "Nokogiri::HTML::Document"
+    end
+
+    # probably not necessary
     def get_chapter_mark # STAR
       @doc.css('title').text.slice(/Read\s(.+?)\s-\s/, 1)
     end
@@ -80,7 +103,7 @@ module Mandown
 
       s = /(http:\/\/t\.fakku\.net)(.+?)('\s\+\sx\s\+\s')(\.jpg)/
       image = @doc.css('script').text.slice(s)
-      image.sub!('\s\+\sx\s\+\s', page)
+      image.sub!(/'\s\+\sx\s\+\s'/, page)
 
       [image, "Page - #{page}"]
     end
@@ -89,4 +112,4 @@ module Mandown
       "#{::URI.join( @uri, 'read#page=')}#{@pages.length + 2}" 
     end
   end
-end  
+end
