@@ -20,3 +20,5 @@
 4) Think about extracting more methods into the tools module, including #download
 
 5) Think about how you are going to separate the website specific code so you can use this structure with different api's.  What about putting it into a MangaReader module? What about having sub-classes, e.g. Manga::MangaReader, Chapter::MangaReader, Page::MangaReader?  I think the former would be better, but I'm not sure about switching between modules. include Mandown::MangaReader, include Mandown::ETC, would that work?
+
+6) page3.css('div.left b').text.to_i => number of pages for FKChapter
