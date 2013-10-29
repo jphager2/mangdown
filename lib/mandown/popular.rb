@@ -5,7 +5,7 @@ module Mandown
 		attr_reader :uri, :mangas_list, :mangas
 
 		def initialize(uri, num_mangas)
-			@uri = uri #uri = 'http://www.mangareader.net/popular/'
+			@uri = uri 
 		  @num_mangas = num_mangas
 			@mangas_list = []
 			@mangas = []
@@ -34,7 +34,7 @@ module Mandown
 
 		def get_pop_page_manga(time)
 			num = 30 * (time - 1)
-			page = @uri + '/' + num.to_s
+			page = @root + '/popular/' + num.to_s
 			get_doc(page)
       
 			last = (@num_mangas > 30) ? 30 : @num_mangas
