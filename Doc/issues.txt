@@ -15,4 +15,4 @@
         end
       end
 
-3)
+3) Extract the #get_doc method from PopularManga, Manga, and Chapter classes into the Mandown module
