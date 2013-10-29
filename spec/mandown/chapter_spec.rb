@@ -1,11 +1,10 @@
 require 'spec_helper'
 
-
 module Mandown
   @@uri = 'http://www.mangareader.net/bleach/537'
   @@chapter_name = 'Bleach 537'
 
-  chapter = Chapter.new( @@uri, @@chapter_name )
+  chapter = MRChapter.new( @@uri, @@chapter_name )
   chapter.download
   
   STUB_PATH = File.expand_path('../../objects/chapter.yml', __FILE__)

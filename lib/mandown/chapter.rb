@@ -8,6 +8,7 @@ module Mandown
       @uri = uri
       @name = name
       @pages = []
+      
       get_pages
     end
 
@@ -26,7 +27,7 @@ module Mandown
       get_doc(uri)
 
       while get_chapter_mark == @name do
-        page_uri, page_name =  get_page 
+        page_uri, page_name = get_page 
         @pages << Page.new( page_uri, page_name )
         uri = get_next_uri
         get_doc(uri)
@@ -35,16 +36,32 @@ module Mandown
       @doc = "Nokogiri::HTML::Document"
     end
 
-    def get_chapter_mark
+    #def get_chapter_mark # STAR
+     # @doc.css('title').text.slice(/([\w|\s]+)?/).strip
+    #end
+
+    #def get_page # STAR
+    #  image = @doc.css('img')[0]
+    #  [image['src'], image['alt']]
+    #end
+
+    #def get_next_uri # STAR
+    #  get_root(@uri) 
+    #  @root + @doc.css('div#imgholder a')[0]['href']
+    #end
+  end
+
+  class MRChapter < Chapter
+    def get_chapter_mark # STAR
       @doc.css('title').text.slice(/([\w|\s]+)?/).strip
     end
-
-    def get_page
+    
+    def get_page # STAR
       image = @doc.css('img')[0]
       [image['src'], image['alt']]
     end
 
-    def get_next_uri
+    def get_next_uri # STAR
       get_root(@uri) 
       @root + @doc.css('div#imgholder a')[0]['href']
     end
