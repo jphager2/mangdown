@@ -12,7 +12,19 @@ module Mandown
     file.write(chapter.to_yaml)
   end
 
-  describe Chapter do
+	@@fc_uri = 'http://www.fakku.net/doujinshi/pipiruma-extra-edition-dokidoki-summer-vacation/read#page=1'
+	@@fc_chapter_name = 'Pipiruma! Extra Edition -DokiDoki Summer Vacation-'
+  @@fc_num_pages = 26
+
+	f_chapter = FKChapter.new( @@fc_uri, @@fc_chapter_name, @@fc_num_pages)
+	f_chapter.download
+
+	FC_STUB_PATH = File.expand_path('../../objects/f_chapter.yml', __FILE__)
+  File.open(FC_STUB_PATH, 'w+') do |file| 
+    file.write(f_chapter.to_yaml)
+  end
+
+  describe MRChapter do
     before(:each) do
       print 'o'
       @chapter = YAML.load(File.open(Mandown::STUB_PATH, 'r').read)
@@ -74,18 +86,33 @@ module Mandown
 
       it "should create a directory in the current directory" do
         dir = Dir.pwd
-	expect(Dir.glob(dir + '/*' )).to include(dir + '/' + @chapter.name)
+	      expect(Dir.glob(dir + '/*' )).to include(dir + '/' + @chapter.name)
       end
 
       it "should download all it's pages" do
-	dir = Dir.pwd + '/' + @chapter.name
+	      dir = Dir.pwd + '/' + @chapter.name
         expect(dir).to include("mandown/#{@chapter.name}")
-	@chapter.pages.each do |page|
-	  expect(Dir.glob(dir + '/*' )).to include(dir + '/' + page.filename)
-	end
+	      @chapter.pages.each do |page|
+	        expect(Dir.glob(dir + '/*' )).to include(dir + '/' + page.filename)
+	      end
       end
     end
   end
+
+	describe FKChapter do
+    before(:each) do
+      @f_chapter = YAML.load(File.open(Mandown::FC_STUB_PATH, 'r').read) 
+			@f_chapter.get_doc(@@fc_uri)
+	  end
+
+		it 'should be downloaded' do
+      dir = File.expand_path("../../../#{@f_chapter.name}", __FILE__)
+			expect(dir).to include("mandown/#{@f_chapter.name}")
+			@f_chapter.pages.each do |page|
+				expect(Dir.glob(dir + '/*')).to include(dir + '/' + page.filename)
+			end
+		end
+	end
 end
 
 
