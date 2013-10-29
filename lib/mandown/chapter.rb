@@ -66,4 +66,27 @@ module Mandown
       @root + @doc.css('div#imgholder a')[0]['href']
     end
   end
+
+  class FKChapter < Chapter
+    def get_chapter_mark # STAR
+      @doc.css('title').text.slice(/Read\s(.+?)\s-\s/, 1)
+    end
+    
+    def get_page # STAR
+      page = (@pages.length + 1).to_s
+      while page.length < 3
+        page = '0' + page
+      end
+
+      s = /(http:\/\/t\.fakku\.net)(.+?)('\s\+\sx\s\+\s')(\.jpg)/
+      image = @doc.css('script').text.slice(s)
+      image.sub!('\s\+\sx\s\+\s', page)
+
+      [image, "Page - #{page}"]
+    end
+
+    def get_next_uri # STAR
+      "#{::URI.join( @uri, 'read#page=')}#{@pages.length + 2}" 
+    end
+  end
 end  
