@@ -1,12 +1,25 @@
 require_relative '../spec_helper'
 
 module Mandown
-  describe Manga do
-    context "When a manga is initialized" do
-      before(:all) do
-        @manga = Manga.new('http://www.mangareader.net/94/bleach.html', 'Bleach')
-      end
+  @@m_uri = 'http://www.mangareader.net/94/bleach.html'
+  @@manga_name = 'Bleach'
 
+  manga = Manga.new( @@m_uri, @@manga_name )
+  
+  MANGA_STUB_PATH = File.expand_path('../../objects/manga.yml', __FILE__)
+  File.open(MANGA_STUB_PATH, 'w+') do |file| 
+    file.write(manga.to_yaml)
+  end
+
+
+  describe Manga do
+    before(:each) do
+      print '@'
+      @manga = YAML.load(File.open(Mandown::MANGA_STUB_PATH, 'r').read)
+      @manga.get_doc(@@m_uri)
+    end
+
+    context "When a manga is initialized" do
       it "should have chapters" do
         expect(@manga.chapters).to be_empty
       end
@@ -17,10 +30,6 @@ module Mandown
     end
 
     context "with Bleach manga" do
-      before(:all) do
-        @manga = Manga.new('http://www.mangareader.net/94/bleach.html', 'Bleach')
-      end
-
       it "should have more that 500 chapters" do
         expect(@manga.chapters_list.length).to be > 500
       end
@@ -40,16 +49,16 @@ module Mandown
 
     context "when a chapter is retrieved" do
       before(:all) do
-        @manga = Manga.new('http://www.mangareader.net/94/bleach.html', 'Bleach')
-        @manga.get_chapter(1)
+				@manga2 = YAML.load(File.open(Mandown::MANGA_STUB_PATH, 'r').read)
+        @manga2.get_chapter(1)
       end
 
       it "should have a chapter in chapters" do
-        expect(@manga.chapters.length).to eq(1)
+        expect(@manga2.chapters.length).to eq(1)
       end
 
       it "should have chapter 1 in chapters" do
-        expect(@manga.chapters[0].name).to eq('Bleach 1')
+        expect(@manga2.chapters[0].name).to eq('Bleach 1')
       end
     end
   end
