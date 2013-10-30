@@ -50,7 +50,8 @@ module Mandown
     context "when a chapter is retrieved" do
       before(:all) do
 				@manga2 = YAML.load(File.open(Mandown::MANGA_STUB_PATH, 'r').read)
-        @manga2.get_chapter(1)
+        @manga2.get_chapter(0)
+				@mchapter = @manga2.chapters_list[0]
       end
 
       it "should have a chapter in chapters" do
@@ -58,8 +59,19 @@ module Mandown
       end
 
       it "should have chapter 1 in chapters" do
-        expect(@manga2.chapters[0].name).to eq('Bleach 1')
+        expect(@manga2.chapters[0].name).to eq(@mchapter[1])
       end
+
+			it "should have the right chapter sub class" do
+				klass = Chapter
+				if @mchapter[0].include?('mangareader')
+					klass = MRChapter
+				elsif @mchapter[0].include?('fakku') 
+					klass = FKChapter
+				end
+				
+				expect(@manga2.chapters[0].class).to eq(klass)
+			end
     end
   end
 end
