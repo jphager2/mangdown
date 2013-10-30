@@ -23,8 +23,8 @@ module Mandown
       @doc = "Nokogiri::HTML::Document"
     end
     
-		def get_chapter(number)
-			uri, name = @chapters_list[number - 1]
+		def get_chapter(index)
+			uri, name = @chapters_list[index]
       
       unless chapters.find {|chp| (chp.name == name) or (chp.uri == uri)}
   			# this is far from ideal
