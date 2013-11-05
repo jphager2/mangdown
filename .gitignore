@@ -2,3 +2,6 @@
 *~
 *.jpg
 *.yml
+
+scripts/
+spec/objects/
