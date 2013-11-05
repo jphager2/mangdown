@@ -2,13 +2,14 @@ module Mandown
   class Chapter
 		include ::Mandown::Tools
 
-    attr_reader :name, :pages, :uri
+    attr_reader :name, :pages, :uri, :num_pages
     
     def initialize( uri, name )
       @uri = uri
       @name = name
       @pages = []
-      
+      @root = get_root(@uri)
+
       get_pages
     end
 
@@ -25,8 +26,9 @@ module Mandown
     def get_pages
       uri = @uri
       get_doc(uri)
-
-      while get_chapter_mark == @name do
+      @num_pages ||= get_num_pages
+      
+      @num_pages.times do
         page_uri, page_name = get_page 
         @pages << Page.new( page_uri, page_name )
         uri = get_next_uri
@@ -35,10 +37,6 @@ module Mandown
 
       @doc = "Nokogiri::HTML::Document"
     end
-
-    #def get_chapter_mark # STAR
-     # @doc.css('title').text.slice(/([\w|\s]+)?/).strip
-    #end
 
     #def get_page # STAR
     #  image = @doc.css('img')[0]
@@ -52,18 +50,17 @@ module Mandown
   end
 
   class MRChapter < Chapter
-    def get_chapter_mark # STAR
-      @doc.css('title').text.slice(/([\w|\s]+)?/).strip
-    end
-    
     def get_page # STAR
       image = @doc.css('img')[0]
       [image['src'], image['alt']]
     end
 
     def get_next_uri # STAR
-      get_root(@uri) 
       @root + @doc.css('div#imgholder a')[0]['href']
+    end
+
+    def get_num_pages
+      @doc.css('select')[1].children.length
     end
   end
 
@@ -76,6 +73,7 @@ module Mandown
       super(uri, name)
     end
 
+=begin
     def get_pages
       uri = @uri
       get_doc(uri)
@@ -89,12 +87,8 @@ module Mandown
 
       @doc = "Nokogiri::HTML::Document"
     end
+=end
 
-    # probably not necessary
-    def get_chapter_mark # STAR
-      @doc.css('title').text.slice(/Read\s(.+?)\s-\s/, 1)
-    end
-    
     def get_page # STAR
       page = (@pages.length + 1).to_s
       while page.length < 3
