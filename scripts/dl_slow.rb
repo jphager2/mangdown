@@ -3,35 +3,37 @@ require 'timeout'
 
 Dir.chdir('D:/downloads/manga')
 
-
 module Mandown
+  def no_time_out(tries = 3)
+    begin
+      timeout(120) do
+        yield 
+      end
+    rescue
+      if tries > 0
+        tries -= 1
+        puts "Tries left: #{tries}"
+        no_time_out(tries)
+      else
+        return
+      end
+    end
+  end
+
   def slow_get_chapters(m, bgn, nd)
-    @@file_name = "#{m.name}_temp.yml"
+    @@file_name = File.expand_path("#{m.name}_temp.yml")
 
-    if File.exist?(@@file_name) 
-      m_from_file = YAML.load(File.open(@@file_name, 'r').read)
+    exists = File.exist?(@@file_name)
+    m_from_file = YAML.load(File.open(@@file_name, 'r').read) if exists
 
+    if m_from_file and (m_from_file.chapters.length > 0)
       frst = (m.chapters_list[bgn][1] == m_from_file.chapters.first.name) 
       lst = (m.chapters_list[nd][1] == m_from_file.chapters.last.name)
 
-      m = m_from_file if (frst and lst) 
+      m = m_from_file if (frst and lst)
     else
       m.chapters_list[bgn..nd].each_index do |i|
-
-      tries = 3
-      begin
-        timeout(120) do
-          m.get_chapter(i + bgn)
-        end
-        rescue
-          if tries > 0
-          tries -= 1
-            puts "Tries left: #{tries}"
-            redo
-          else
-            break
-          end
-        end
+        no_time_out {m.get_chapter(i + bgn)}
       end
     end
 
@@ -44,20 +46,16 @@ module Mandown
     Dir.chdir(m.name)
 
     m.chapters.each do |chap|
-      timeout(120) do
-	puts "DL - #{chap.name}.."
-        chap.download
-      end
+      puts "DL - #{chap.name}.."
+      no_time_out {chap.download}
     end
+
+    File.delete(@@file_name)
   end
 
 end
 
 include Mandown
-
-
-
-
 
 if __FILE__ == $0
   unless ARGV.length >= 2
