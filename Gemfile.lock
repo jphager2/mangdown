@@ -13,6 +13,9 @@ GEM
       lumberjack (~> 1.0)
       pry (>= 0.9.12)
       thor (>= 0.18.1)
+    guard-rspec (4.0.4)
+      guard (>= 2.1.1)
+      rspec (~> 2.14)
     listen (2.2.0)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
@@ -45,6 +48,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  guard
+  guard-rspec
   nokogiri (~> 1.6.0)
   rspec (~> 2.14)
