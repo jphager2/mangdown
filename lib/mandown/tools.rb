@@ -21,6 +21,22 @@ module Mandown
       puts 'You may want to use :eql?'
 			super
 		end
+
+		def no_time_out(tries = 3)
+			begin 
+				timeout(120) do
+					yield 
+				end
+			rescue
+				if tries > 0
+					tries -= 1
+					puts "Tries left: #{tries}"
+					no_time_out(tries)
+				else
+					return
+				end
+			end
+    end
 	end
 end
 
