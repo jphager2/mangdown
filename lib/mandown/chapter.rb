@@ -95,9 +95,12 @@ module Mandown
         page = '0' + page
       end
 
-      s = /(http:\/\/t\.fakku\.net)(.+?)('\s\+\sx\s\+\s')(\.jpg)/
+      puts "Doc: #{@doc.css('script').text.length}"
+      # s = /(http:\/\/t\.fakku\.net)(.+?)('\s\+\sx\s\+\s')(\.jpg)/
+      s = /(http:\/\/t\.fakku\.net)(.+?)('\+x\+')(\.jpg)/
       image = @doc.css('script').text.slice(s)
-      image.sub!(/'\s\+\sx\s\+\s'/, page)
+      # image.sub!(/'\s\+\sx\s\+\s'/, page)
+      image.sub!(/'\+x\+'/, page)
 
       [image, "Page - #{page}"]
     end
