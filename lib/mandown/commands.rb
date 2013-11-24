@@ -2,6 +2,7 @@ module M
   extend self
 
   include ::Mandown
+  extend ::Mandown::Tools
 
   def find(manga_name)
     @@list ||= PopularManga.new('http://www.mangareader.net/popular', 3000)
@@ -18,7 +19,8 @@ module M
   end
   
   def download(manga, bgn, nd)
-    
+    m = slow_get_chapters(manga, bgn - 1, nd - 1)
+    slow_dl_chapters(m)
   end
 
   def cbz(manga)

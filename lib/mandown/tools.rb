@@ -38,37 +38,40 @@ module Mandown
 			end
     end
 
-		def slow_get_chapters(m, bgn, nd)
-			@@file_name = File.expand_path("#{m.name}_temp.yml")
+		def slow_get_chapters(manga, bgn, nd)
+			@@file_name = File.expand_path("#{manga.name}_temp.yml")
 
 			exists = File.exist?(@@file_name)
-			m_from_file = YAML.load(File.open(@@file_name, 'r').read) if exists
+			manga_from_file = YAML.load(File.open(@@file_name, 'r').read) if exists
 
-			if m_from_file and (m_from_file.chapters.length > 0)
-				frst = (m.chapters_list[bgn][1] == m_from_file.chapters.first.name) 
-				lst = (m.chapters_list[nd][1] == m_from_file.chapters.last.name)
-
-				m = m_from_file if (frst and lst)
+			if manga_from_file and (manga_from_file.chapters.length > 0)
+				frst = (manga.chapters_list[bgn][1] ==
+							 	manga_from_file.chapters.first.name) 
+				lst = (manga.chapters_list[nd][1] == manga_from_file.chapters.last.name)
+				manga = manga_from_file if (frst and lst)
 			else
-				m.chapters_list[bgn..nd].each_index do |i|
-					no_time_out {m.get_chapter(i + bgn)}
+				manga.chapters_list[bgn..nd].each_index do |i|
+					no_time_out {manga.get_chapter(i + bgn)}
 				end
 			end
 
-			File.open(@@file_name, 'w') {|f| f.write(m.to_yaml)}
-			m
+			File.open(@@file_name, 'w') {|f| f.write(manga.to_yaml)}
+
+			manga
 		end
 
-		def slow_dl_chapters(m)
-			Dir.mkdir(m.name) unless Dir.exist?(m.name)
-			Dir.chdir(m.name)
+		def slow_dl_chapters(manga)
+			start_dir = Dir.pwd
+			Dir.mkdir(manga.name) unless Dir.exist?(manga.name)
+			Dir.chdir(manga.name)
 
-			m.chapters.each do |chap|
-				puts "DL - #{chap.name}.."
+			manga.chapters.each do |chap|
+				# puts "DL - #{chap.name}.."
 				no_time_out {chap.download}
 			end
 
 			File.delete(@@file_name)
+			Dir.chdir(start_dir)
 		end
 	end
 end

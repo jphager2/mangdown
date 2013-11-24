@@ -22,6 +22,7 @@ module M
 		end
 
 		it "should download a manga with the download command" do
+			puts Dir.pwd
 		  chps = Dir.glob("#{Dir.pwd}/#{@manga.name}/*/")	
 			expect(chps.length).to eq(3)
 		end
