@@ -23,19 +23,23 @@ module Mandown
       @doc = "Nokogiri::HTML::Document"
     end
     
-		def get_chapter(number)
-			uri, name = @chapters_list[number - 1]
+		def get_chapter(index)
+			uri, name = @chapters_list[index]
       
-			# this is far from ideal
-			chapter_klass = if @root.include?('mangareader')
-									      MRChapter
-										  elsif @root.include?('fakku')
-											  FKChapter
-										  else
-											  NO_Chapter
-										  end
+      unless chapters.find {|chp| (chp.name == name) or (chp.uri == uri)}
+  			# this is far from ideal
+	  		chapter_klass = if @root.include?('mangareader')
+		  							      MRChapter
+			  							  elsif @root.include?('fakku')
+				  							  FKChapter
+					  					  else
+						  					  NO_Chapter
+							  			  end
 											 
-			@chapters << chapter_klass.new(uri, name)
+		  	@chapters << chapter_klass.new(uri, name)
+      else
+        nil
+      end
 		end
   end
 end

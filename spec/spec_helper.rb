@@ -2,10 +2,14 @@ require 'rspec'
 require 'yaml'
 require_relative '../lib/mandown'
 
-dir = File.expand_path('../../Bleach 537', __FILE__)
-if Dir.exist?(dir)
-  print '*'
-  FileUtils.rm_rf(dir)
+dirs = ['../../Bleach 537', 
+				'../../Pipiruma! Extra Edition -DokiDoki Summer Vacation-']
+dirs.each do |d|
+  dir = File.expand_path(d, __FILE__)
+  if Dir.exist?(dir)
+    print '*'
+    FileUtils.rm_rf(dir)
+  end
 end
 
 path = File.expand_path('../../Bleach 537 - Page 1.jpg', __FILE__) 
