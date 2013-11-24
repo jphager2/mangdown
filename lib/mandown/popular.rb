@@ -35,7 +35,7 @@ module Mandown
 		end
 
 		def get_pop_page_manga(time)
-			num = 30 * (time - 1)
+			num = 30 * (time)
 			page = @root + '/popular/' + num.to_s
 			get_doc(page)
       

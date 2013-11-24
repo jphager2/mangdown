@@ -8,5 +8,6 @@ require_relative 'mandown/page'
 require_relative 'mandown/chapter'
 require_relative 'mandown/manga'
 require_relative 'mandown/popular'
+require_relative 'mandown/commands'
 
 
