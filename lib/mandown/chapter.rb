@@ -95,11 +95,18 @@ module Mandown
         page = '0' + page
       end
 
-      puts "Doc: #{@doc.css('script').text.length}"
+      # puts "Doc: #{@doc.css('script').text.length}"
+      # 
+      # It seems that Nokogiri cuts out the spaces that were previously there
+      # before
+      #
+      # Watch this because I'm guessing this might revert back
+      # 
       # s = /(http:\/\/t\.fakku\.net)(.+?)('\s\+\sx\s\+\s')(\.jpg)/
+      # image.sub!(/'\s\+\sx\s\+\s'/, page)
+      
       s = /(http:\/\/t\.fakku\.net)(.+?)('\+x\+')(\.jpg)/
       image = @doc.css('script').text.slice(s)
-      # image.sub!(/'\s\+\sx\s\+\s'/, page)
       image.sub!(/'\+x\+'/, page)
 
       [image, "Page - #{page}"]

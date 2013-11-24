@@ -54,9 +54,10 @@ module Mandown
         expect(@chapter.uri).to eq(@@uri)
       end
 
-      it "should get the right chapter mark from a uri" do
-        expect(@chapter.get_chapter_mark).to eq('Bleach 537')
-      end
+			# Probably can get rid of this, not using chapter_mark for functionality
+			#	xit "should get the right chapter mark from a uri" do
+			#		expect(@chapter.get_chapter_mark).to eq('Bleach 537')
+			#	end
 
       it "should get the right image link and filename from a uri" do
         expect(@chapter.get_page).to eq(
