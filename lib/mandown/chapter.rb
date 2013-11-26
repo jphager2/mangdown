@@ -102,21 +102,25 @@ module Mandown
       #
       # Watch this because I'm guessing this might revert back
       # 
-       script = @doc.css('script').text
-
-       if script.include?(" + x + ")
-         s = /(http:\/\/t\.fakku\.net)(.+?)('\s\+\sx\s\+\s')(\.jpg)/
-       else
-         s = /(http:\/\/t\.fakku\.net)(.+?)('\+x\+')(\.jpg)/
-       end
-       
-       image = script.slice(s)
-       image.sub!(/'\s\+\sx\s\+\s'/, page)
-    
       #s = /(http:\/\/t\.fakku\.net)(.+?)('\+x\+')(\.jpg)/
       #image = @doc.css('script').text.slice(s)
       #image.sub!(/'\+x\+'/, page)
 
+       script = @doc.css('script').text
+
+       if script.include?("' + x + '.jpg")
+	 # puts "With spaces"
+         ss = "'\s\\+\sx\s\\+\s'"
+       else
+	 # puts "No spaces"
+         ss = "'\\+x\\+'"
+       end
+
+       s = Regexp.new("(http:\/\/t\.fakku\.net)(.+?)(#{ss})(\.jpg)")
+       image = script.slice(s)
+       image.sub!(Regexp.new(ss), page)
+    
+      
       [image, "Page - #{page}"]
     end
 
