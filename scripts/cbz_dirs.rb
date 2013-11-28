@@ -10,11 +10,15 @@ Dir.chdir(main_dir)
   def check_file_or_dir_name(name)
     num = name.slice(/(\d+)(\.jpg)*\Z/, 1)
     
-    while num.length < 3
-      num = '0' + num
-    end
+    if num
+      while num.length < 3
+        num = '0' + num
+      end
     
-    name.sub(/(\d+)(\.jpg)*\Z/, num + '\2')
+      name.sub(/(\d+)(\.jpg)*\Z/, num + '\2')
+    end
+
+    name
   end 
 
   def check_dir(dir)
