@@ -2,8 +2,10 @@ require 'rspec'
 require 'yaml'
 require_relative '../lib/mandown'
 
-dirs = ['../../Bleach 537', 
-				'../../Pipiruma! Extra Edition -DokiDoki Summer Vacation-']
+dirs = ['../../Bleach 537',
+	'../../Pipiruma! Extra Edition -DokiDoki Summer Vacation-',
+        '../../6 NO TRIGGER']
+
 dirs.each do |d|
   dir = File.expand_path(d, __FILE__)
   if Dir.exist?(dir)

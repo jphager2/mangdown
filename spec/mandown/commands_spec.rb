@@ -8,7 +8,7 @@ module M
 												 '6 NO TRIGGER')
 			
 		  M.download(@manga, 1, 3)
-			M.cbz(@manga)
+			M.cbz("./#{@manga.name}")
 	  end
 
 	  it "should find a manga with the find command" do
