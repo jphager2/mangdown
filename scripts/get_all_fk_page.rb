@@ -8,18 +8,26 @@ module Mandown
     "http://www.fakku.net#{uri}"
   end
 
+  def find_chapters(num)
+    page = "http://www.fakku.net/page/#{num + 1}"
+  
+    doc = Mandown::Tools.get_doc(page)
 
-  def get_chapters(t)
+    fk_list = doc.css('h2 a.content-title').map {|ch| [ch.text, ch[:href]]}
+  end
+
+  def get_chapters(num)
     fk_list = []
 
-    t.times do |num|
+   # t.times do |num|
 
-      page = "http://www.fakku.net/page/#{num + 1}"
+   #   page = "http://www.fakku.net/page/#{num + 1}"
   
-      doc = Mandown::Tools.get_doc(page)
+   #   doc = Mandown::Tools.get_doc(page)
 
-      fk_list = doc.css('h2 a.content-title').map {|ch| [ch.text, ch[:href]]}
-    end
+   #   fk_list = doc.css('h2 a.content-title').map {|ch| [ch.text, ch[:href]]}
+   # end
+    fk_list = find_chapters(num)
 
     chapters_list = []
 
@@ -34,7 +42,7 @@ module Mandown
 
       pages = doc.css('div#right div.left b')[0].text.to_i
 
-      chapters_list.push(uri, name, pages)
+      chapters_list.push([uri, name, pages])
     end
 
     chapters_list
