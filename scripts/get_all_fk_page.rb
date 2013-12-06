@@ -9,11 +9,21 @@ module Mandown
   end
 
   def find_chapters(num)
-    page = "http://www.fakku.net/page/#{num + 1}"
+    t = 0
+    fk_list = []
+    while fk_list.length < num
+      page = fk_uri("/page/#{t + 1}")
   
-    doc = Mandown::Tools.get_doc(page)
+      doc = Mandown::Tools.get_doc(page)
 
-    fk_list = doc.css('h2 a.content-title').map {|ch| [ch.text, ch[:href]]}
+      doc.css('h2 a.content-title').each do |ch|
+       fk_list.push([ch.text, ch[:href]])
+      end
+      
+      t += 1
+    end
+
+    fk_list[0..num-1]
   end
 
   def get_chapters(num)
