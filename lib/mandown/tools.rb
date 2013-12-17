@@ -83,7 +83,7 @@ module Mandown
           num = '0' + num
         end
     
-        name.sub(/(\d+)(\.jpg)*\Z/, num + '\2')
+        name = name.sub(/(\d+)(\.jpg)*\Z/, num + '\2')
       end
 
       name
