@@ -1,4 +1,5 @@
 files = Dir.glob(Dir.pwd + '/lib/*/*.rb')
+files.collect! {|file| file.sub(Dir.pwd + '/', '')}
 
 Gem::Specification.new do |s|
   s.name        = 'mandown'
