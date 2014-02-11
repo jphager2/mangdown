@@ -7,6 +7,5 @@ Gem::Specification.new do |s|
   s.authors     = ['jphager2']
   s.email       = 'jphager2@gmail.com'
   s.files       = ["lib/mandown.rb"]
-  s.homepage    = ''
   s.license     = 'MIT'
 end
