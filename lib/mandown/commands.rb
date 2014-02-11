@@ -5,6 +5,11 @@ module M
   extend ::Mandown::Tools
 
   def find(manga_name)
+    unless manga_name =~ /\w/
+      puts 'Bad search term'
+      return []
+    end
+
     @@list ||= PopularManga.new('http://www.mangareader.net/popular', 3000)
 
     fnd = @@list.mangas_list.select do |m| 
