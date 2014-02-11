@@ -1,3 +1,5 @@
+files = Dir.glob(Dir.pwd + '/lib/*/*.rb')
+
 Gem::Specification.new do |s|
   s.name        = 'mandown'
   s.version     = '0.6.0'
@@ -6,6 +8,6 @@ Gem::Specification.new do |s|
   s.description = 'A gem to download Manga'
   s.authors     = ['jphager2']
   s.email       = 'jphager2@gmail.com'
-  s.files       = ["lib/mandown.rb"]
+  s.files       = files 
   s.license     = 'MIT'
 end
