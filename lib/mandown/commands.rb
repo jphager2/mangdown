@@ -29,7 +29,7 @@ module M
   end
   
   def download(manga, bgn = 0, nd = -1)
-    m = slow_get_chapters(manga, bgn - 1, nd - 1)
+    m = slow_get_chapters(manga, bgn, nd)
     slow_dl_chapters(m)
   end
 
