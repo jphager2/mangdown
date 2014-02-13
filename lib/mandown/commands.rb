@@ -4,6 +4,7 @@ module M
   include ::Mandown
   extend ::Mandown::Tools
 
+  #returns a list of hash with :uri and :name of mangas found in @@list
   def find(manga_name)
     unless manga_name =~ /\w/
       puts 'Bad search term'
@@ -16,7 +17,7 @@ module M
       m[1].downcase.include?(manga_name.downcase)
     end
     
-    fnd.collect! {|m| Manga.new(m[0], m[1])}
+    fnd.collect! {|m| {uri: m[0], name: m[1]} }
 
     puts "Could not find manga" if fnd.empty?     
     
@@ -30,5 +31,11 @@ module M
 
   def cbz(dir)
     CBZ.all(dir)
+  end
+
+  class Array
+    def get_manga
+      puts 'works'
+    end
   end
 end

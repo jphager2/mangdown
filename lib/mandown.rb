@@ -12,5 +12,5 @@ require_relative 'mandown/manga'
 require_relative 'mandown/popular'
 require_relative 'mandown/cbz'
 require_relative 'mandown/commands'
-
+require_relative 'mandown/mandown_hash'
 
