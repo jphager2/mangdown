@@ -1,6 +1,6 @@
 require 'rspec'
 require 'yaml'
-require_relative '../lib/mandown'
+require_relative '../lib/mangdown'
 
 dirs = ['../../Bleach 537',
 	'../../Pipiruma! Extra Edition -DokiDoki Summer Vacation-',

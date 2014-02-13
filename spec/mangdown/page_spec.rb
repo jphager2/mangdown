@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module Mandown
+module Mangdown
   describe Page do
    	before(:all) do
 		  @dir = Dir.pwd

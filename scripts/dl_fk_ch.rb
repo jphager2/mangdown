@@ -1,4 +1,4 @@
-require_relative '../lib/mandown'
+require_relative '../lib/mangdown'
 
 if ARGV.length == 3
   uri, name, pages = ARGV
@@ -10,5 +10,5 @@ end
 
 Dir.chdir('D:/Downloads/Manga/FK')
 
-fk = Mandown::FKChapter.new(uri, name, pages)
+fk = Mangdown::FKChapter.new(uri, name, pages)
 fk.download

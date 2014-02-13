@@ -1,7 +1,7 @@
 require_relative 'get_all_fk_page'
 
 
-module Mandown
+module Mangdown
   fk_dir = 'd:/downloads/manga/FK'
 
   Dir.chdir(fk_dir)

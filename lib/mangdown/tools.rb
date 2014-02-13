@@ -1,4 +1,4 @@
-module Mandown
+module Mangdown
   module Tools
     extend self
   

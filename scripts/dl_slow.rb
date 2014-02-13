@@ -1,9 +1,9 @@
-require_relative '../lib/mandown'
+require_relative '../lib/mangdown'
 require 'timeout'
 
 Dir.chdir('D:/downloads/manga')
 
-module Mandown
+module Mangdown
   def no_time_out(tries = 3)
     begin
       timeout(120) do
@@ -55,7 +55,6 @@ module Mandown
 
 end
 
-include Mandown
 
 if __FILE__ == $0
   unless ARGV.length >= 2
@@ -73,6 +72,6 @@ if __FILE__ == $0
   m = slow_get_chapters(m, bgn, nd)
   slow_dl_chapters(m)
 else
-  puts "Mandown module included."
+  puts "Mangdown module included."
   puts "Ready.."
 end

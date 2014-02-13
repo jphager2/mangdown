@@ -1,6 +1,6 @@
-module Mandown
+module Mangdown
   class Manga
-    include ::Mandown::Tools
+    include ::Mangdown::Tools
 
     attr_reader :chapters, :chapters_list, :name, :uri
 

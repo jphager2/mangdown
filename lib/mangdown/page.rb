@@ -1,4 +1,4 @@
-module Mandown
+module Mangdown
   class Page
     attr_reader :filename, :uri
 

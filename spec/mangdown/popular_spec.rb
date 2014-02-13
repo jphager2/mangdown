@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-module Mandown
+module Mangdown
   describe PopularManga do
     before(:all) do
     end

@@ -1,7 +1,7 @@
-module Mandown
+module Mangdown
   module CBZ
     extend self
-    extend ::Mandown::Tools
+    extend ::Mangdown::Tools
 
     def cbz_dir(dir)
       zip_file_name = dir + '.cbz'

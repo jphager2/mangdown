@@ -4,7 +4,7 @@ module M
 
   describe "commands" do
 		before(:all) do
-	   	@manga = Mandown::Manga.new('http://www.mangareader.net/6-no-trigger',
+	   	@manga = Mangdown::Manga.new('http://www.mangareader.net/6-no-trigger',
 												 '6 NO TRIGGER')
 			
 		  M.download(@manga, 1, 3)

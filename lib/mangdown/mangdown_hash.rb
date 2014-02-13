@@ -1,4 +1,4 @@
-module Mandown
+module Mangdown
   class MDHash < ::Hash
     def get_manga
       Manga.new(self[:uri], self[:name])

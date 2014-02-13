@@ -1,8 +1,8 @@
 module M
   extend self
 
-  include ::Mandown
-  extend ::Mandown::Tools
+  include ::Mangdown
+  extend ::Mangdown::Tools
 
   #returns a list of hash with :uri and :name of mangas found in @@list
   def find(manga_name)

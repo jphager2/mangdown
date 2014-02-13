@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module Mandown
+module Mangdown
   @@uri = 'http://www.mangareader.net/bleach/537'
   @@chapter_name = 'Bleach 537'
 
@@ -27,7 +27,7 @@ module Mandown
   describe MRChapter do
     before(:each) do
       print 'o'
-      @chapter = YAML.load(File.open(Mandown::STUB_PATH, 'r').read)
+      @chapter = YAML.load(File.open(Mangdown::STUB_PATH, 'r').read)
       @chapter.get_doc(@@uri)
     end
 
@@ -92,7 +92,7 @@ module Mandown
 
       it "should download all it's pages" do
 	      dir = Dir.pwd + '/' + @chapter.name
-        expect(dir).to include("mandown/#{@chapter.name}")
+        expect(dir).to include("mangdown/#{@chapter.name}")
 	      @chapter.pages.each do |page|
 	        expect(Dir.glob(dir + '/*' )).to include(dir + '/' + page.filename)
 	      end
@@ -102,13 +102,13 @@ module Mandown
 
 	describe FKChapter do
     before(:each) do
-      @f_chapter = YAML.load(File.open(Mandown::FC_STUB_PATH, 'r').read) 
+      @f_chapter = YAML.load(File.open(Mangdown::FC_STUB_PATH, 'r').read) 
 			@f_chapter.get_doc(@@fc_uri)
 	  end
 
 		it 'should be downloaded' do
       dir = File.expand_path("../../../#{@f_chapter.name}", __FILE__)
-			expect(dir).to include("mandown/#{@f_chapter.name}")
+			expect(dir).to include("mangdown/#{@f_chapter.name}")
 			@f_chapter.pages.each do |page|
 				expect(Dir.glob(dir + '/*')).to include(dir + '/' + page.filename)
 			end

@@ -1,6 +1,6 @@
-require_relative '../lib/mandown'
+require_relative '../lib/mangdown'
 
-module Mandown
+module Mangdown
 
   extend self
 
@@ -14,7 +14,7 @@ module Mandown
     while fk_list.length < num
       page = fk_uri("/page/#{t + 1}")
   
-      doc = Mandown::Tools.get_doc(page)
+      doc = Mangdown::Tools.get_doc(page)
 
       doc.css('h2 a.content-title').each do |ch|
        fk_list.push([ch.text, ch[:href]])
@@ -33,7 +33,7 @@ module Mandown
 
    #   page = "http://www.fakku.net/page/#{num + 1}"
   
-   #   doc = Mandown::Tools.get_doc(page)
+   #   doc = Mangdown::Tools.get_doc(page)
 
    #   fk_list = doc.css('h2 a.content-title').map {|ch| [ch.text, ch[:href]]}
    # end
@@ -45,7 +45,7 @@ module Mandown
       ch_uri = fk_uri(ch[1])
       name = ch[0]
 
-      doc = Mandown::Tools.get_doc(ch_uri)
+      doc = Mangdown::Tools.get_doc(ch_uri)
 
       # uri = fk_uri(doc.css('div.images a')[0][:href]) 
       uri = ch_uri + '/read#page=1'
@@ -65,7 +65,7 @@ if __FILE__ == $0
   t = ARGV[0].to_i
   t = 1 if t <= 0
 
-  Mandown.get_chapters(t)
+  Mangdown.get_chapters(t)
 else
   puts "Script loaded"
 end

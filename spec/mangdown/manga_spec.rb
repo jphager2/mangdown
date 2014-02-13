@@ -1,6 +1,6 @@
 require_relative '../spec_helper'
 
-module Mandown
+module Mangdown
   @@m_uri = 'http://www.mangareader.net/94/bleach.html'
   @@manga_name = 'Bleach'
 
@@ -15,7 +15,7 @@ module Mandown
   describe Manga do
     before(:each) do
       print '@'
-      @manga = YAML.load(File.open(Mandown::MANGA_STUB_PATH, 'r').read)
+      @manga = YAML.load(File.open(Mangdown::MANGA_STUB_PATH, 'r').read)
       @manga.get_doc(@@m_uri)
     end
 
@@ -49,7 +49,7 @@ module Mandown
 
     context "when a chapter is retrieved" do
       before(:all) do
-				@manga2 = YAML.load(File.open(Mandown::MANGA_STUB_PATH, 'r').read)
+				@manga2 = YAML.load(File.open(Mangdown::MANGA_STUB_PATH, 'r').read)
         @manga2.get_chapter(0)
 				@mchapter = @manga2.chapters_list[0]
       end

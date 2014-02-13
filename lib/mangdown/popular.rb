@@ -1,6 +1,6 @@
-module Mandown
+module Mangdown
   class PopularManga
-    include ::Mandown::Tools
+    include ::Mangdown::Tools
 
     attr_reader :uri, :mangas_list, :mangas, :name
 

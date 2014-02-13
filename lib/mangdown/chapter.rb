@@ -1,6 +1,6 @@
-module Mandown
+module Mangdown
   class Chapter
-		include ::Mandown::Tools
+    include ::Mangdown::Tools
 
     attr_reader :name, :pages, :uri, :num_pages
     
