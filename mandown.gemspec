@@ -1,6 +1,6 @@
 files = Dir.glob(Dir.pwd + '/**/*.rb')
 files.collect! {|file| file.sub(Dir.pwd + '/', '')}
-files.push('LICENSE')
+files.push('LICENSE', 'doc/help.txt')
 
 Gem::Specification.new do |s|
   s.name        = 'mandown'
