@@ -1,4 +1,4 @@
-files = Dir.glob(Dir.pwd + '/lib/**/*.rb')
+files = Dir.glob(Dir.pwd + '/**/*.rb')
 files.collect! {|file| file.sub(Dir.pwd + '/', '')}
 
 Gem::Specification.new do |s|
