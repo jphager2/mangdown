@@ -27,7 +27,7 @@ module Mandown
       
       uri, name = @chapters_list[index]
     
-      unless chapters.find {|chp| (chp.name == name) or (chp.uri == uri)}
+      unless @chapters.find {|chp| (chp.name == name) or (chp.uri == uri)}
         # this is far from ideal
         chapter_klass = if @root.include?('mangareader')
           MRChapter
