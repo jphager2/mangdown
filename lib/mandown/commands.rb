@@ -17,7 +17,11 @@ module M
       m[1].downcase.include?(manga_name.downcase)
     end
     
-    fnd.collect! {|m| {uri: m[0], name: m[1]} }
+    fnd.collect! do |m| 
+      h = MDHash.new
+      h[:uri], h[:name] = m[0], m[1]
+      h
+    end
 
     puts "Could not find manga" if fnd.empty?     
     
@@ -33,9 +37,9 @@ module M
     CBZ.all(dir)
   end
 
-  class Array
-    def get_manga
-      puts 'works'
-    end
+  def help
+    help_file = File.expand_path('../../doc/help.txt', File.dirname(__FILE__))
+    puts help_file
+    puts File.open(help_file, 'r').read
   end
 end
