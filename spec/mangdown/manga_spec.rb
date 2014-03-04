@@ -66,8 +66,6 @@ module Mangdown
 				klass = Chapter
 				if @mchapter[0].include?('mangareader')
 					klass = MRChapter
-				elsif @mchapter[0].include?('fakku') 
-					klass = FKChapter
 				end
 				
 				expect(@manga2.chapters[0].class).to eq(klass)
