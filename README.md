@@ -2,6 +2,13 @@ Instalation
 
 gem install mangdown
 
+
+In irb:
+
+$ require 'mangdown'
+=> true
+
+
 Mangdown
 
 Commands
