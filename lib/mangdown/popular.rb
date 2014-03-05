@@ -4,7 +4,7 @@ module Mangdown
 
     attr_reader :uri, :mangas_list, :mangas, :name
 
-    def initialize(uri, num_mangas, name = "My Pop Manga")
+    def initialize(uri, num_mangas = 0, name = "My Pop Manga")
       @uri = uri 
       @num_mangas = num_mangas
       @name = name
@@ -18,6 +18,7 @@ module Mangdown
     end
 
     def get_manga(index)
+      puts "This has been depreciated, don't use PopularManga @mangas!"
       uri, name = @mangas_list[index - 1]
       unless @mangas.find {|manga| (manga.name == name) or (manga.uri == uri)}
         @mangas << Manga.new( uri, name )
