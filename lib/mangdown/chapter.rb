@@ -44,7 +44,9 @@ module Mangdown
     end
 
     def get_next_uri(doc)
-      @root + doc.css('div#imgholder a')[0]['href']
+      #root url + the href of the link to the next page
+      ::Mangdown::Tools.get_root(@uri) + 
+        doc.css('div#imgholder a')[0]['href']
     end
 
     def get_num_pages(doc)

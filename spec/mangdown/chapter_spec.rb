@@ -16,10 +16,10 @@ module Mangdown
     before(:each) do
       print 'o'
       @chapter = YAML.load(File.open(Mangdown::STUB_PATH, 'r').read)
-      @chapter.get_doc(@@uri)
     end
 
     context "when chapter is initialized" do
+      # sanity check, not necessary
       it "should have the right chapter uri" do
         expect(@chapter.uri).to eq(@@uri)
       end
@@ -28,15 +28,19 @@ module Mangdown
         expect(@chapter.pages.size).to be > 0
       end
 
-      it "should have the first page at the 0 index" do
-        expect(@chapter.pages.first.filename).to eq('Bleach 537 - Page 1.jpg')  
+      it "should have the right first page at the 0 index" do
+        expect(@chapter.pages.first.filename).to eq(
+               'Bleach 537 - Page 1.jpg')  
       end
 
-      it "should have the last page at the -1 index" do
-        expect(@chapter.pages.last.filename).to eq('Bleach 537 - Page 21.jpg')
+      it "should have the right last page at the -1 index" do
+        expect(@chapter.pages.last.filename).to eq(
+               'Bleach 537 - Page 21.jpg')
       end
     end
     
+   # Move these to Tools spec 
+=begin
     context "when the functions for get_pages are run" do
       it "should have the right chapter uri" do
         expect(@chapter.uri).to eq(@@uri)
@@ -51,34 +55,24 @@ module Mangdown
       it "should get the right root from uri" do
         expect(@chapter.get_root(@@uri)).to eq('http://www.mangareader.net')
       end
+    end
+=end
 
-      it "should get the right link to the next page from a uri" do
-        expect(@chapter.get_next_uri).to eq(
-              'http://www.mangareader.net/bleach/537/2')
-      end
-
-      it "should evaluate the expression to stop get_pages" do
-        next_chapter_uri = 'http://www.mangareader.net/bleach/538'
-        expect(@chapter.get_doc(next_chapter_uri)).not_to eq(@chapter.name)
-      end
+  context "when chapter is downloaded" do
+    it "should have a sub directory in the current directory" do
+      dir = Dir.pwd
+      expect(Dir.glob(dir + '/*' )).to include(dir + '/' + 
+                                               @chapter.name)
     end
 
-    context "when chapter is downloaded" do
-      it "should have the right chapter uri" do
-        expect(@chapter.uri).to eq(@@uri)
-      end
-
-      it "should create a directory in the current directory" do
-        dir = Dir.pwd
-	      expect(Dir.glob(dir + '/*' )).to include(dir + '/' + @chapter.name)
-      end
-
-      it "should download all it's pages" do
-	      dir = Dir.pwd + '/' + @chapter.name
-        expect(dir).to include("mangdown/#{@chapter.name}")
-	      @chapter.pages.each do |page|
-	        expect(Dir.glob(dir + '/*' )).to include(dir + '/' + page.filename)
-	      end
+    it "should download all it's pages" do
+      dir = Dir.pwd + '/' + @chapter.name
+      # expect(dir).to include("mangdown/#{@chapter.name}")
+      pages_in_dir = Dir.glob(dir + '/*.jpg').length
+      expect(pages_in_dir).to eq(@chapter.pages.length)
+      #@chapter.pages.each do |page|
+      #  expect(Dir.glob(dir + '/*' )).to include(dir + 
+      #                                           '/' + page.filename)
       end
     end
   end
