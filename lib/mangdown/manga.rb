@@ -31,13 +31,11 @@ module Mangdown
         # this is far from ideal
         chapter_klass = if @root.include?('mangareader')
           MRChapter
-	elsif @root.include?('fakku')
-   	  FKChapter
-	else
-	  NO_Chapter
-	end
+        else
+          NO_Chapter
+        end
      
-     	@chapters << chapter_klass.new(uri, name)
+        @chapters << chapter_klass.new(uri, name)
       else
         nil
       end

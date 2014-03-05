@@ -13,7 +13,7 @@ module M
 
 	  it "should find a manga with the find command" do
 			m = M.find('Naruto')
-			expect(m.first.name).to eq('Naruto')
+			expect(m.first[:name]).to eq('Naruto')
 		end
 
 		it "should find a list of manga with the find command" do
