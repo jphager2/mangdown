@@ -8,7 +8,7 @@ module Mangdown
       @uri = uri
       @name = name
       @pages = []
-      @root = get_root(@uri)
+      @root = ::Mangdown::Tools.get_root(@uri)
 
       get_pages
     end
@@ -25,32 +25,30 @@ module Mangdown
 
     def get_pages
       uri = @uri
-      get_doc(uri)
-      @num_pages ||= get_num_pages
+      doc = ::Mangdown::Tools.get_doc(uri)
       
-      @num_pages.times do
-        page_uri, page_name = get_page 
-        @pages << Page.new( page_uri, page_name )
-        uri = get_next_uri
-        get_doc(uri)
-      end
+      get_num_pages(doc).times do
+        page_uri, page_name = get_page(doc) 
+        uri = get_next_uri(doc)
 
-      @doc = "Nokogiri::HTML::Document"
+        @pages << Page.new( page_uri, page_name )
+        doc = ::Mangdown::Tools.get_doc(uri)
+      end
     end
   end
 
   class MRChapter < Chapter
-    def get_page # STAR
-      image = @doc.css('img')[0]
+    def get_page(doc)
+      image = doc.css('img')[0]
       [image['src'], image['alt']]
     end
 
-    def get_next_uri # STAR
-      @root + @doc.css('div#imgholder a')[0]['href']
+    def get_next_uri(doc)
+      @root + doc.css('div#imgholder a')[0]['href']
     end
 
-    def get_num_pages
-      @doc.css('select')[1].children.length
+    def get_num_pages(doc)
+      doc.css('select')[1].children.length
     end
   end
 end
