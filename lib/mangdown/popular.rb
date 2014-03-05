@@ -17,9 +17,10 @@ module Mangdown
     end
 
     #Depreciated
-    def get_manga(index)
+    def get_manga(number)
       puts "This has been depreciated, don't use PopularManga @mangas!"
-      uri, name = @mangas_list[index - 1]
+      uri  = @mangas_list[number - 1][:uri]
+      name = @mangas_list[number - 1][:name]
 
       unless @mangas.find {|manga| (manga.name == name) or 
                                    (manga.uri == uri)}
@@ -33,7 +34,7 @@ module Mangdown
       def get_mangas_list
         (@num_mangas / 30.0).ceil.times do |time|
           get_pop_page_manga(time).each do |manga| 
-            @mangas_list << manga }
+            @mangas_list << manga
           end
         end
       end
