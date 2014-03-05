@@ -1,6 +1,5 @@
 module Mangdown
   class PopularManga
-    include ::Mangdown::Tools
 
     attr_reader :uri, :mangas_list, :mangas, :name
 
@@ -10,44 +9,54 @@ module Mangdown
       @name = name
 
       @mangas_list = []
-      @mangas = []
 
-      @root = get_root(@uri) 
+      #Depreciated
+      @mangas = []
 
       get_mangas_list
     end
 
+    #Depreciated
     def get_manga(index)
       puts "This has been depreciated, don't use PopularManga @mangas!"
       uri, name = @mangas_list[index - 1]
-      unless @mangas.find {|manga| (manga.name == name) or (manga.uri == uri)}
+
+      unless @mangas.find {|manga| (manga.name == name) or 
+                                   (manga.uri == uri)}
         @mangas << Manga.new( uri, name )
       else
-	nil
+        puts "This manga has already been added.."
       end
     end
 
-    def get_mangas_list
-      (@num_mangas / 30.0).ceil.times do |time|
-        get_pop_page_manga(time).each { |manga| @mangas_list << manga }
+    private
+      def get_mangas_list
+        (@num_mangas / 30.0).ceil.times do |time|
+          get_pop_page_manga(time).each do |manga| 
+            @mangas_list << manga }
+          end
+        end
       end
 
-      @doc = "Nokogiri::HTML::Document"
-    end
+      def get_pop_page_manga(time)
+        root = ::Mangdown::Tools.get_root(@uri)
 
-    def get_pop_page_manga(time)
-      num = 30 * (time)
-      page = @root + '/popular/' + num.to_s
-      get_doc(page)
+        num = 30 * (time)
+        page = root + '/popular/' + num.to_s
+        doc = ::Mangdown::Tools.get_doc(page)
 
-      last = (@num_mangas > 30) ? 30 : @num_mangas
-      @num_mangas -= 30
+        last = (@num_mangas > 30) ? 30 : @num_mangas
+        @num_mangas -= 30
 
-      get_manga_on_page[0..(last - 1)]
-    end
+        get_manga_on_page(doc, root)[0..(last - 1)]
+      end
 
-    def get_manga_on_page
-      @doc.css('h3 a').map {|a| [@root + a['href'], a.text]}
-    end
+      def get_manga_on_page(doc, root)
+        doc.css('h3 a').map do |a| 
+          h = MDHash.new
+          h[:uri], h[:name] = (root + a['href']), a.text
+          h
+        end
+      end
   end
 end

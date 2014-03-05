@@ -24,14 +24,16 @@ module M
                  'http://www.mangareader.net/popular', 3000)
 
     search_result = @@list.mangas_list.select do |manga| 
-      manga[1].downcase.include?(search.downcase)
+      manga[:name].downcase.include?(search.downcase)
     end
     
+=begin
     search_result.collect! do |manga| 
       h = MDHash.new
-      h[:uri], h[:name] = manga[0], manga[1]
+      h[:uri], h[:name] = manga[:uri], manga[:name]
       h
     end
+=end
 
     puts "Could not find manga" if search_result.empty?     
     
