@@ -27,15 +27,15 @@ module Mangdown
       begin 
         timeout(120) do
           yield 
-	end
-      rescue
-	if tries > 0
-          tries -= 1
-	  puts "Tries left: #{tries}"
-	  no_time_out(tries)
-	else
-	  return
-	end
+        end
+            rescue
+        if tries > 0
+                tries -= 1
+          puts "Tries left: #{tries}"
+          no_time_out(tries)
+        else
+          return
+        end
       end
     end
 
@@ -43,17 +43,21 @@ module Mangdown
       @@file_name = File.expand_path("#{manga.name}_temp.yml")
 
       exists = File.exist?(@@file_name)
-      manga_from_file = YAML.load(File.open(@@file_name, 'r').read) if exists
+
+      if exists
+        manga_from_file = YAML.load(File.open(@@file_name, 'r').read) 
+      end
 
       if manga_from_file and (manga_from_file.chapters.length > 0)
-	frst = (manga.chapters_list[bgn][1] ==
-				manga_from_file.chapters.first.name) 
-	lst = (manga.chapters_list[nd][1] == manga_from_file.chapters.last.name)
+        frst = (manga.chapters_list[bgn][1] == 
+               manga_from_file.chapters.first.name) 
+        lst = (manga.chapters_list[nd][1] == 
+               manga_from_file.chapters.last.name)
         manga = manga_from_file if (frst and lst)
       else
-	manga.chapters_list[bgn..nd].each_index do |i|
-    	  no_time_out {manga.get_chapter(i + bgn)}
-	end
+        manga.chapters_list[bgn..nd].each_index do |i|
+          no_time_out {manga.get_chapter(i + bgn)}
+        end
       end
 
       File.open(@@file_name, 'w') {|f| f.write(manga.to_yaml)}

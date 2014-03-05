@@ -37,16 +37,6 @@ module Mangdown
 
       @doc = "Nokogiri::HTML::Document"
     end
-
-    #def get_page # STAR
-    #  image = @doc.css('img')[0]
-    #  [image['src'], image['alt']]
-    #end
-
-    #def get_next_uri # STAR
-    #  get_root(@uri) 
-    #  @root + @doc.css('div#imgholder a')[0]['href']
-    #end
   end
 
   class MRChapter < Chapter

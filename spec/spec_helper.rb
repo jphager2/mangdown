@@ -2,9 +2,7 @@ require 'rspec'
 require 'yaml'
 require_relative '../lib/mangdown'
 
-dirs = ['../../Bleach 537',
-	'../../Pipiruma! Extra Edition -DokiDoki Summer Vacation-',
-        '../../6 NO TRIGGER']
+dirs = ['../../Bleach 537', '../../6 NO TRIGGER']
 
 dirs.each do |d|
   dir = File.expand_path(d, __FILE__)
