@@ -7,29 +7,32 @@ module Mangdown
     def initialize(uri, name)
       @uri = uri
       @name = name
+
+      #Keeping these chapter objects in memory could be expensive
       @chapters = []
       @chapters_list = []
-      @doc = get_doc(@uri)
-      @root = get_root(@uri) 
 
       get_chapters_list
     end
 
     def get_chapters_list
-      @doc.css('div#chapterlist td a').each do |chapter|
-        @chapters_list << ([@root + chapter['href'], chapter.text])
-      end
+      doc = ::Mangdown::Tools.get_doc(@uri)
+      root = ::Mangdown::Tools.get_root(@uri)
 
-      @doc = "Nokogiri::HTML::Document"
+      #get the link with chapter name and uri
+      doc.css('div#chapterlist td a').each do |chapter|
+        @chapters_list << ([root + chapter['href'], chapter.text])
+      end
     end
  
     def get_chapter(index) 
       
+      root = ::Mangdown::Tools.get_root(@uri)
       uri, name = @chapters_list[index]
     
       unless @chapters.find {|chp| (chp.name == name) or (chp.uri == uri)}
         # this is far from ideal
-        chapter_klass = if @root.include?('mangareader')
+        chapter_klass = if root.include?('mangareader')
           MRChapter
         else
           NO_Chapter
@@ -37,7 +40,7 @@ module Mangdown
      
         @chapters << chapter_klass.new(uri, name)
       else
-        nil
+        puts "This chapter has already been added" 
       end
     end
   end
