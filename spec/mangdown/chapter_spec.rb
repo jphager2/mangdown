@@ -37,6 +37,16 @@ module Mangdown
         expect(@chapter.pages.last.filename).to eq(
                'Bleach 537 - Page 21.jpg')
       end
+
+      context "as a MFChapter" do
+        it "should have pages" do
+          chapter = MFChapter.new(
+          'http://mangafox.me/manga/kitsune_no_yomeiri/v01/c001/1.html',
+          'Kitsune no Yomeiri 1'
+          )
+          expect(chapter.pages).not_to be_empty
+        end
+      end
     end
     
    # Move these to Tools spec 

@@ -20,12 +20,22 @@ module Mangdown
     end
 
     context "When a manga is initialized" do
-      it "should have chapters" do
+      it "should not have chapters" do
         expect(@manga.chapters).to be_empty
       end
 
       it "should have chapters listed in chapters_list" do
         expect(@manga.chapters_list).not_to be_empty
+      end
+
+      context "as a MangaFox manga" do
+        it "should have chapters" do
+          manga = Manga.new(
+            'http://mangafox.me/manga/masca_the_beginning/', 
+            'Masca: The Beginning'
+          )
+          expect(manga.chapters_list).not_to be_empty
+        end
       end
     end
 

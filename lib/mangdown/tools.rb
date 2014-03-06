@@ -19,7 +19,12 @@ module Mangdown
     end
 
     def ==(other)
-      puts 'You may want to use :eql?'
+      klasses = [Manga, Chapter, Page]
+
+      if klasses.find(self.klass)
+        puts 'You may want to use :eql?'
+      end
+
       super
     end
 
@@ -28,9 +33,9 @@ module Mangdown
         timeout(120) do
           yield 
         end
-            rescue
+      rescue
         if tries > 0
-                tries -= 1
+          tries -= 1
           puts "Tries left: #{tries}"
           no_time_out(tries)
         else
@@ -42,17 +47,17 @@ module Mangdown
     def slow_get_chapters(manga, bgn, nd)
       @@file_name = File.expand_path("#{manga.name}_temp.yml")
 
-      exists = File.exist?(@@file_name)
-
-      if exists
+      # get Manga object from file if it exists
+      if File.exist?(@@file_name)
         manga_from_file = YAML.load(File.open(@@file_name, 'r').read) 
       end
 
       if manga_from_file and (manga_from_file.chapters.length > 0)
-        frst = (manga.chapters_list[bgn][1] == 
+        frst = (manga.chapters_list[bgn][:name] == 
                manga_from_file.chapters.first.name) 
-        lst = (manga.chapters_list[nd][1] == 
+        lst = (manga.chapters_list[nd][:name] == 
                manga_from_file.chapters.last.name)
+        # check if this is the right temp file
         manga = manga_from_file if (frst and lst)
       else
         manga.chapters_list[bgn..nd].each_index do |i|

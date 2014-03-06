@@ -57,4 +57,21 @@ module Mangdown
         doc.css('select')[1].children.length
       end
   end
+
+  class MFChapter < Chapter
+    private
+      def get_page(doc)
+        image = doc.css('img')[0]
+        [image['src'], image['alt']]
+      end
+
+      def get_next_uri(doc)
+        root = @uri.slice(/.+\//)
+        root + doc.css('div#viewer a')[0][:href]
+      end
+
+      def get_num_pages(doc)
+        doc.css('select')[1].children.length - 1
+      end
+  end
 end

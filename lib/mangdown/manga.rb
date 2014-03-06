@@ -20,21 +20,40 @@ module Mangdown
       doc = ::Mangdown::Tools.get_doc(@uri)
       root = ::Mangdown::Tools.get_root(@uri)
 
+
       #get the link with chapter name and uri
-      doc.css('div#chapterlist td a').each do |chapter|
-        @chapters_list << ([root + chapter['href'], chapter.text])
+      doc.css(css_klass(root)).each do |chapter|
+        hash = MDHash.new
+        hash[:uri], hash[:name] = (root + chapter[:href]), chapter.text
+        @chapters_list << hash 
       end
     end
  
+    def css_klass(site)
+      case site
+      when /mangareader/
+        'div#chapterlist td a'
+      when /mangafox/
+        'a.tips'
+      else
+        nil
+      end
+    end
+
     def get_chapter(index) 
       
       root = ::Mangdown::Tools.get_root(@uri)
-      uri, name = @chapters_list[index]
+      uri  = @chapters_list[index][:uri] 
+      name = @chapters_list[index][:name]
     
       unless @chapters.find {|chp| (chp.name == name) or (chp.uri == uri)}
-        # this is far from ideal
-        chapter_klass = if root.include?('mangareader')
+        # this should be put in a module the case is used in 
+        # almost every class
+        chapter_klass = case root 
+        when /mangareader/
           MRChapter
+        when /mangafox/
+          MKChapter
         else
           NO_Chapter
         end
