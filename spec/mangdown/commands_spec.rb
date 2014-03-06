@@ -4,10 +4,10 @@ module M
 
   describe "commands" do
 		before(:all) do
-      @manga = Manga.new(
-        'http://www.mangareader.net/6-no-trigger',
-        '6 no Trigger'
-      )
+      hash = MDHash.new
+      hash[:uri]  = 'http://www.mangareader.net/6-no-trigger'
+      hash[:name] = '6 no Trigger'
+      @manga = Manga.new(hash)
 
 	   	M.download(@manga, 1, 3)
 			M.cbz("./#{@manga.name}")

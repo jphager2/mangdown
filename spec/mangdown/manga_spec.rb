@@ -1,12 +1,15 @@
 require_relative '../spec_helper'
 
 module Mangdown
-  @@m_uri = 'http://www.mangareader.net/94/bleach.html'
-  @@manga_name = 'Bleach'
+  @@manga_hash        = MDHash.new
+  @@manga_hash[:uri]  = 'http://www.mangareader.net/94/bleach.html'
+  @@manga_hash[:name] = 'Bleach'
 
-  manga = Manga.new( @@m_uri, @@manga_name )
+  manga = Manga.new(@@manga_hash)
   
-  MANGA_STUB_PATH = File.expand_path('../../objects/manga.yml', __FILE__)
+  MANGA_STUB_PATH = File.expand_path('../../objects/manga.yml', 
+                                     __FILE__)
+
   File.open(MANGA_STUB_PATH, 'w+') do |file| 
     file.write(manga.to_yaml)
   end
@@ -16,7 +19,7 @@ module Mangdown
     before(:each) do
       print '@'
       @manga = YAML.load(File.open(Mangdown::MANGA_STUB_PATH, 'r').read)
-      @manga.get_doc(@@m_uri)
+      #@manga.get_doc(@@manga_hash[:uri])
     end
 
     context "When a manga is initialized" do
@@ -30,10 +33,10 @@ module Mangdown
 
       context "as a MangaFox manga" do
         it "should have chapters" do
-          manga = Manga.new(
-            'http://mangafox.me/manga/masca_the_beginning/', 
-            'Masca: The Beginning'
-          )
+          hash = MDHash.new
+          hash[:uri] = 'http://mangafox.me/manga/masca_the_beginning/' 
+          hash[:name] = 'Masca: The Beginning'
+          manga = Manga.new(hash)
           expect(manga.chapters_list).not_to be_empty
         end
       end
@@ -59,7 +62,8 @@ module Mangdown
 
     context "when a chapter is retrieved" do
       before(:all) do
-				@manga2 = YAML.load(File.open(Mangdown::MANGA_STUB_PATH, 'r').read)
+				@manga2 = YAML.load(File.open(
+                            Mangdown::MANGA_STUB_PATH, 'r').read)
         @manga2.get_chapter(0)
 				@mchapter = @manga2.chapters_list[0]
       end

@@ -13,14 +13,13 @@ module Mangdown
 
     # reader method for uri
     def uri
-      info[:uri]
+      @info[:uri]
     end
 
     # reader method for name
     def name
-      info[:name]
+      @info[:name]
     end
-
 
     # download should be in its own module
     # and the start_dir is sandwich code and should be moved and
@@ -45,7 +44,7 @@ module Mangdown
           page = get_page(doc) 
           uri = get_next_uri(doc)
 
-          @pages << Page.new( page[:uri], page[:name] )
+          @pages << Page.new(page)
           doc = ::Mangdown::Tools.get_doc(uri)
         end
       end

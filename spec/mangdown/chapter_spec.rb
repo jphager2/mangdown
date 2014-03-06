@@ -2,8 +2,8 @@ require 'spec_helper'
 
 module Mangdown
   @@chapter_hash = MDHash.new
-  @@hash[:uri] = 'http://www.mangareader.net/bleach/537'
-  @@hash[:name] = 'Bleach 537'
+  @@chapter_hash[:uri] = 'http://www.mangareader.net/bleach/537'
+  @@chapter_hash[:name] = 'Bleach 537'
 
   chapter = MRChapter.new(@@chapter_hash)
   chapter.download
@@ -41,7 +41,7 @@ module Mangdown
 
       context "as a MFChapter" do
         it "should have pages" do
-          hash = MDChapter.new
+          hash = MDHash.new
           hash[:uri]  = 
           'http://mangafox.me/manga/kitsune_no_yomeiri/v01/c001/1.html'
           hash[:name] = 'Kitsune no Yomeiri 1'

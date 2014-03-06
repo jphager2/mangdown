@@ -17,12 +17,12 @@ module Mangdown
 
     # reader method for uri
     def uri
-      info[:uri]
+      @info[:uri]
     end
 
     # reader method for name
     def name
-      info[:name]
+      @info[:name]
     end
 
     def get_chapters_list
@@ -61,7 +61,7 @@ module Mangdown
       root = ::Mangdown::Tools.get_root(@info[:uri])
       chapter  = @chapters_list[index] 
 
-      unless chapter_found 
+      unless chapter_found(chapter) 
         # this should be put in a module the case is used in 
         # almost every class
         chapter_klass = case root 

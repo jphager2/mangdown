@@ -4,11 +4,16 @@ module Mangdown
   describe Page do
    	before(:all) do
 		  @dir = Dir.pwd
-	    @uri = 'http://i25.mangareader.net/bleach/537/bleach-4149721.jpg'
-	    @filename = "Bleach 537 - Page 1" 
-	    @page = Page.new( @uri, @filename )
+      @page_hash = MDHash.new
+	    @page_hash[:uri] = 
+        'http://i25.mangareader.net/bleach/537/bleach-4149721.jpg'
+	    @page_hash[:name] = "Bleach 537 - Page 1" 
+
+	    @page = Page.new(@page_hash)
 	    @page.download
-      PAGE_STUB_PATH = File.expand_path('../../objects/page.yml', __FILE__)
+      PAGE_STUB_PATH = File.expand_path('../../objects/page.yml', 
+                                        __FILE__)
+
       File.open(PAGE_STUB_PATH, 'w+') do |file| 
         file.write(@page.to_yaml)
       end
