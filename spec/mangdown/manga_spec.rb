@@ -45,15 +45,15 @@ module Mangdown
       end
 
       it "should have the right first chapter" do
-        expect(@manga.chapters_list.first).to eq([
-                'http://www.mangareader.net/94-8-1/bleach/chapter-1.html',
-                'Bleach 1'])
+        expect(@manga.chapters_list.first).to eq({
+          uri:'http://www.mangareader.net/94-8-1/bleach/chapter-1.html',
+          name: 'Bleach 1'})
       end
 
       it "should have the right 465th chapter" do
-        expect(@manga.chapters_list[464]).to eq([
-                'http://www.mangareader.net/bleach/465',
-                'Bleach 465'])
+        expect(@manga.chapters_list[464]).to eq({
+          uri: 'http://www.mangareader.net/bleach/465',
+          name: 'Bleach 465'})
       end
     end
 
@@ -69,12 +69,12 @@ module Mangdown
       end
 
       it "should have chapter 1 in chapters" do
-        expect(@manga2.chapters[0].name).to eq(@mchapter[1])
+        expect(@manga2.chapters[0].name).to eq(@mchapter[:name])
       end
 
 			it "should have the right chapter sub class" do
 				klass = Chapter
-				if @mchapter[0].include?('mangareader')
+				if @mchapter[:uri].include?('mangareader')
 					klass = MRChapter
 				end
 				

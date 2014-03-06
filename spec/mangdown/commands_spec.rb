@@ -4,10 +4,12 @@ module M
 
   describe "commands" do
 		before(:all) do
-	   	@manga = Mangdown::Manga.new('http://www.mangareader.net/6-no-trigger',
-												 '6 NO TRIGGER')
-			
-		  M.download(@manga, 1, 3)
+      @manga = Manga.new(
+        'http://www.mangareader.net/6-no-trigger',
+        '6 no Trigger'
+      )
+
+	   	M.download(@manga, 1, 3)
 			M.cbz("./#{@manga.name}")
 	  end
 

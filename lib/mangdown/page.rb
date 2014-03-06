@@ -15,8 +15,10 @@ module Mangdown
     # this method should probably be moved somewhere else because
     # pages, chapters and mangas can all be "downloaded"
     def download
-      File.open(@filename, 'wb') do |file|
-        file.write(open(URI.encode(@uri, '[]')).read)
+      unless File.exist?(@filename)
+        File.open(@filename, 'wb') do |file|
+          file.write(open(URI.encode(@uri, '[]')).read)
+        end
       end
     end
   end

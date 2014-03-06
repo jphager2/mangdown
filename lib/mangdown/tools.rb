@@ -2,6 +2,16 @@ module Mangdown
   module Tools
     extend self
   
+    def special?(klass)
+      klasses = [Manga, Chapter, Page]
+
+      if klasses.find(self.klass)
+        true
+      else
+        false
+      end
+    end
+
     def get_doc(uri)
       @doc = ::Nokogiri::HTML(open(uri))
     end
@@ -11,35 +21,41 @@ module Mangdown
     end
 
     def to_s
-      "<#{self.class}::#{self.object_id} : #{@name} : #{@uri}>"
+      if special?(self.class)
+        "<#{self.class}::#{self.object_id} : #{@name} : #{@uri}>"
+      else
+        super
+      end
     end
 
     def eql?(other)
-      (@name == other.name) and (@uri == other.uri)
+      if special?(self.class)
+        (@name == other.name) and (@uri == other.uri)
+      else
+        super
+      end
     end
 
     def ==(other)
-      klasses = [Manga, Chapter, Page]
-
-      if klasses.find(self.klass)
-        puts 'You may want to use :eql?'
+      if special?(self.class)
+        puts 'You may want to use eql?'
       end
 
       super
     end
 
-    def no_time_out(tries = 3)
+    def no_time_out(tries = 3, &block)
+      tries -= 1
       begin 
         timeout(120) do
           yield 
         end
       rescue
-        if tries > 0
-          tries -= 1
+        if tries >= 0
           puts "Tries left: #{tries}"
-          no_time_out(tries)
+          no_time_out(tries, &block)
         else
-          return
+          return :timed_out
         end
       end
     end
@@ -75,9 +91,12 @@ module Mangdown
       Dir.mkdir(manga.name) unless Dir.exist?(manga.name)
       Dir.chdir(manga.name)
 
+      manga_start_dir = Dir.pwd
       manga.chapters.each do |chap|
-        # puts "DL - #{chap.name}.."
-        no_time_out {chap.download}
+        no_time_out do 
+          Dir.chdir(manga_start_dir)
+          chap.download
+        end
       end
 
       File.delete(@@file_name)
