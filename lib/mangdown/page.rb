@@ -2,6 +2,8 @@ module Mangdown
   class Page
     attr_reader :filename, :uri
 
+    # like chapter and manga, should initialize with MDHash, and use
+    # @info[:key]
     def initialize( uri, filename )
 
       # this will probably become a problem when adding different

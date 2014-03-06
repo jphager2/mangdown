@@ -4,6 +4,7 @@ module Mangdown
 
     attr_reader :chapters, :chapters_list, :name, :uri
 
+    #initialize with MDHash instead and only use @info[:key]
     def initialize(uri, name)
       @uri = uri
       @name = name

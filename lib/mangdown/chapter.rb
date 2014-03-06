@@ -2,7 +2,8 @@ module Mangdown
   class Chapter
 
     attr_reader :name, :pages, :uri
-    
+
+    # initialize with MDHash and only have @info[:key]
     def initialize( uri, name )
       @uri = uri
       @name = name
