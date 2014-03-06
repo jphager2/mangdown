@@ -51,7 +51,7 @@ module M
   
   def download(manga, first_chapter = 0, last_chapter = -1)
     if manga.class == MDHash
-      manga = Manga.new(manga[:uri], manga[:name])
+      manga = Manga.new(manga)
     end
 
     chapters = ::Mangdown::Tools.slow_get_chapters(

@@ -2,12 +2,11 @@ module Mangdown
   class Manga
     include ::Mangdown::Tools
 
-    attr_reader :chapters, :chapters_list, :name, :uri
+    attr_reader :chapters, :chapters_list 
 
-    #initialize with MDHash instead and only use @info[:key]
-    def initialize(uri, name)
-      @uri = uri
-      @name = name
+    #initialize only use @info[:key]
+    def initialize(info)
+      @info = info
 
       #Keeping these chapter objects in memory could be expensive
       @chapters = []
@@ -16,9 +15,19 @@ module Mangdown
       get_chapters_list
     end
 
+    # reader method for uri
+    def uri
+      info[:uri]
+    end
+
+    # reader method for name
+    def name
+      info[:name]
+    end
+
     def get_chapters_list
-      doc = ::Mangdown::Tools.get_doc(@uri)
-      root = ::Mangdown::Tools.get_root(@uri)
+      doc = ::Mangdown::Tools.get_doc(@info[:uri])
+      root = ::Mangdown::Tools.get_root(@info[:uri])
 
 
       #get the link with chapter name and uri
@@ -40,13 +49,19 @@ module Mangdown
       end
     end
 
+    # chapter is an MDHash
+    def chapter_found(chapter)
+      @chapters.find do |chp| 
+        (chp.name == chapter[:name]) or (chp.uri == chapter[:uri])
+      end
+    end
+
     def get_chapter(index) 
       
-      root = ::Mangdown::Tools.get_root(@uri)
-      uri  = @chapters_list[index][:uri] 
-      name = @chapters_list[index][:name]
-    
-      unless @chapters.find {|chp| (chp.name == name) or (chp.uri == uri)}
+      root = ::Mangdown::Tools.get_root(@info[:uri])
+      chapter  = @chapters_list[index] 
+
+      unless chapter_found 
         # this should be put in a module the case is used in 
         # almost every class
         chapter_klass = case root 
@@ -58,7 +73,7 @@ module Mangdown
           NO_Chapter
         end
      
-        @chapters << chapter_klass.new(uri, name)
+        @chapters << chapter_klass.new(chapter)
       else
         puts "This chapter has already been added" 
       end

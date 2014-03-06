@@ -1,23 +1,35 @@
 module Mangdown
   class Chapter
 
-    attr_reader :name, :pages, :uri
+    attr_reader :pages
 
     # initialize with MDHash and only have @info[:key]
-    def initialize( uri, name )
-      @uri = uri
-      @name = name
+    def initialize(info)
+      @info = info
       @pages = []
 
       get_pages
     end
 
+    # reader method for uri
+    def uri
+      info[:uri]
+    end
+
+    # reader method for name
+    def name
+      info[:name]
+    end
+
+
     # download should be in its own module
+    # and the start_dir is sandwich code and should be moved and
+    # passed a block 
     def download
       start_dir = Dir.pwd 
 
-      Dir.mkdir(@name) unless Dir.exists?(@name)
-      Dir.chdir(@name)
+      Dir.mkdir(@info[:name]) unless Dir.exists?(@info[:name])
+      Dir.chdir(@info[:name])
       
       @pages.each {|page| page.download}
 
@@ -26,14 +38,14 @@ module Mangdown
 
     private
       def get_pages
-        uri = @uri
+        uri = @info[:uri]
         doc = ::Mangdown::Tools.get_doc(uri)
         
         get_num_pages(doc).times do
-          page_uri, page_name = get_page(doc) 
+          page = get_page(doc) 
           uri = get_next_uri(doc)
 
-          @pages << Page.new( page_uri, page_name )
+          @pages << Page.new( page[:uri], page[:name] )
           doc = ::Mangdown::Tools.get_doc(uri)
         end
       end
@@ -43,12 +55,15 @@ module Mangdown
     private
       def get_page(doc)
         image = doc.css('img')[0]
-        [image['src'], image['alt']]
+
+        hash = MDHash.new
+        hash[:uri], hash[:name] = image['src'], (image['alt'] + ".jpg")
+        hash
       end
 
       def get_next_uri(doc)
         #root url + the href of the link to the next page
-        ::Mangdown::Tools.get_root(@uri) + 
+        ::Mangdown::Tools.get_root(@info[:uri]) + 
           doc.css('div#imgholder a')[0]['href']
       end
 
@@ -62,11 +77,16 @@ module Mangdown
     private
       def get_page(doc)
         image = doc.css('img')[0]
-        [image['src'], image['alt']]
+
+        hash        = MDHash.new
+        hash[:uri]  = image[:src]
+        hash[:name] = image[:src].sub(/.+\//, '')
+        hash
       end
 
+
       def get_next_uri(doc)
-        root = @uri.slice(/.+\//)
+        root = @info[:uri].slice(/.+\//)
         root + doc.css('div#viewer a')[0][:href]
       end
 

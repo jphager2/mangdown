@@ -16,15 +16,14 @@ module Mangdown
       get_mangas_list
     end
 
-    #Depreciated
+    #Depreciated use MDHash.get_manga
     def get_manga(number)
       puts "This has been depreciated, don't use PopularManga @mangas!"
-      uri  = @mangas_list[number - 1][:uri]
-      name = @mangas_list[number - 1][:name]
+      manga  = @mangas_list[number - 1]
 
-      unless @mangas.find {|manga| (manga.name == name) or 
-                                   (manga.uri == uri)}
-        @mangas << Manga.new( uri, name )
+      unless @mangas.find {|mnga| (mnga.name == manga[:name]) or 
+                                   (mnga.uri == manga[:uri])}
+        @mangas << Manga.new(manga)
       else
         puts "This manga has already been added.."
       end

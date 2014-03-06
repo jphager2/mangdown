@@ -1,10 +1,11 @@
 require 'spec_helper'
 
 module Mangdown
-  @@uri = 'http://www.mangareader.net/bleach/537'
-  @@chapter_name = 'Bleach 537'
+  @@chapter_hash = MDHash.new
+  @@hash[:uri] = 'http://www.mangareader.net/bleach/537'
+  @@hash[:name] = 'Bleach 537'
 
-  chapter = MRChapter.new( @@uri, @@chapter_name )
+  chapter = MRChapter.new(@@chapter_hash)
   chapter.download
   
   STUB_PATH = File.expand_path('../../objects/chapter.yml', __FILE__)
@@ -21,7 +22,7 @@ module Mangdown
     context "when chapter is initialized" do
       # sanity check, not necessary
       it "should have the right chapter uri" do
-        expect(@chapter.uri).to eq(@@uri)
+        expect(@chapter.uri).to eq(@@chapter_hash[:uri])
       end
 
       it "should get pages when initialized" do
@@ -40,10 +41,13 @@ module Mangdown
 
       context "as a MFChapter" do
         it "should have pages" do
-          chapter = MFChapter.new(
-          'http://mangafox.me/manga/kitsune_no_yomeiri/v01/c001/1.html',
-          'Kitsune no Yomeiri 1'
-          )
+          hash = MDChapter.new
+          hash[:uri]  = 
+          'http://mangafox.me/manga/kitsune_no_yomeiri/v01/c001/1.html'
+          hash[:name] = 'Kitsune no Yomeiri 1'
+
+          chapter = MFChapter.new(hash)
+          
           expect(chapter.pages).not_to be_empty
         end
       end
@@ -71,13 +75,15 @@ module Mangdown
   context "when chapter is downloaded" do
     it "should have a sub directory in the current directory" do
       dir = Dir.pwd
-      expect(Dir.glob(dir + '/*' )).to include(dir + '/' + 
-                                               @chapter.name)
+      chapter_path = dir + '/' +  @chapter.name
+
+      expect(Dir.glob(dir + '/*' )).to include(chapter_path)
     end
 
     it "should download all it's pages" do
       dir = Dir.pwd + '/' + @chapter.name
       # expect(dir).to include("mangdown/#{@chapter.name}")
+
       pages_in_dir = Dir.glob(dir + '/*.jpg').length
       expect(pages_in_dir).to eq(@chapter.pages.length)
       #@chapter.pages.each do |page|

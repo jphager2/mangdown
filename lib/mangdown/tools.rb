@@ -104,6 +104,9 @@ module Mangdown
     end
 
     def check_file_or_dir_name(name)
+
+      # slice the last number in the file or directory name,
+      # which will be either the page number or the chapter number
       num = name.slice(/(\d+)(\.jpg)*\Z/, 1)
     
       if num
@@ -118,18 +121,19 @@ module Mangdown
     end 
 
     def check_dir(dir)
-      Dir.glob(dir + '/*').each do |d| 
-        next if d.include?('.cbz')
-        yield(d)
+      Dir.glob(dir + '/*').each do |file_name| 
+        #do block on each file name, but skip .cbz files
+        next if file_name.include?('.cbz')
+        yield(file_name)
       end
     end 
 
     def validate_file_or_dir_names(dir)
-      check_dir(dir) do |e|
-        f = check_file_or_dir_name(e)
+      check_dir(dir) do |file_name|
+        checked_name = check_file_or_dir_name(file_name)
 
-        unless f == e
-          File.rename(e, f)
+        unless file_name == checked_name
+          File.rename(file_name, checked_name)
         end
       end
     end
