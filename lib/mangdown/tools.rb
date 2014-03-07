@@ -3,9 +3,9 @@ module Mangdown
     extend self
   
     def special?(klass)
-      klasses = [Manga, Chapter, Page]
+      klasses = [Manga, Chapter, Page, MRChapter, MFChapter]
 
-      if klasses.find(self.klass)
+      if klasses.find(self.class)
         true
       else
         false
@@ -30,7 +30,7 @@ module Mangdown
 
     def eql?(other)
       if special?(self.class)
-        (@name == other.name) and (@uri == other.uri)
+        (self.name == other.name) and (self.uri == other.uri)
       else
         super
       end

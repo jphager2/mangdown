@@ -10,7 +10,7 @@ module M
       @manga = Manga.new(hash)
       
       hash = MDHash.new
-      hash[:uri]  = 'http://mangafox.net/6-no-trigger'
+      hash[:uri]  = 'http://mangafox.me/manga/naruto/'
       hash[:name] = 'Naruto'
       @mf_manga = Manga.new(hash)
 
@@ -32,6 +32,16 @@ module M
       m = M.find('naruto')
       mangafox_hash_found = m.find {|hash| hash[:uri] =~ /mangafox/}
       expect(mangafox_hash_found).not_to be_nil
+    end
+
+    #for sanity
+    it "should create a list of MDHash" do 
+      expect(@mf_manga.chapters_list[10]).to be_kind_of(MDHash)
+    end
+
+    it "should create MFChapter for mf manga" do
+      @mf_manga.get_chapter(10)
+      expect(@mf_manga.chapters.first).to be_kind_of(MFChapter)
     end
 
     it "should download a manga from MF" do 
