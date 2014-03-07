@@ -1,12 +1,14 @@
+_Note:_ Please use 0.8.1 instead of 0.8.0 (argument error for MDHash#get\_manga)
+
 Instalation
 
-gem install mangdown
+  gem install mangdown
 
 
 In irb:
 
-$ require 'mangdown'
-=> true
+  $ require 'mangdown'
+  => true
 
 
 Mangdown
