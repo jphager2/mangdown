@@ -1,4 +1,4 @@
-_Note:_ Please use 0.8.1 instead of 0.8.0 (argument error for MDHash#get\_manga)
+_Note:_ Please use 0.8.3 instead of 0.8.0-2 (which have bugs with MF manga) 
 
 Instalation
 
