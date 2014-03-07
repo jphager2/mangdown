@@ -4,7 +4,7 @@ files.push('LICENSE', 'doc/help.txt')
 
 Gem::Specification.new do |s|
   s.name        = 'mangdown'
-  s.version     = '0.8.1'
+  s.version     = '0.8.2'
   s.date        = '2013-02-14'
   s.summary     = 'Downloads Manga'
   s.description = 'A gem to download Manga'
