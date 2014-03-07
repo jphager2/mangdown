@@ -5,3 +5,4 @@ gem 'rspec', '~>2.14'
 gem 'rubyzip', '~> 1.1.0'
 
 gem 'guard-rspec'
+gem 'reek'

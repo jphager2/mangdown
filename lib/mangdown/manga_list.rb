@@ -18,7 +18,17 @@ module Mangdown
       # This should be put in a tool
       doc.css(css_klass(root)).each do |a|
         hash = MDHash.new
-        hash[:uri], hash[:name] = (root + a[:href]), a.text
+        #hot fix
+        url = case root 
+        when /mangareader/
+          root + a[:href]
+        when /mangafox/
+          a[:href]
+        else
+          nil
+        end
+
+        hash[:uri], hash[:name] = url, a.text
         @mangas << hash
       end
     end
