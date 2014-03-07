@@ -55,7 +55,7 @@ module M
     end
 
     chapters = ::Mangdown::Tools.slow_get_chapters(
-       manga, first_chapter, last_chapter)
+                manga, first_chapter, last_chapter)
     ::Mangdown::Tools.slow_dl_chapters(chapters)
   end
 

@@ -2,7 +2,9 @@ require 'rspec'
 require 'yaml'
 require_relative '../lib/mangdown'
 
-dirs = ['../../Bleach 537', '../../6 no Trigger']
+M.clean_up
+
+dirs = ['../../Bleach 537', '../../6 no Trigger', '../../Naruto']
 
 dirs.each do |d|
   dir = File.expand_path(d, __FILE__)

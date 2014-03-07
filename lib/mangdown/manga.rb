@@ -29,11 +29,16 @@ module Mangdown
       doc = ::Mangdown::Tools.get_doc(@info[:uri])
       root = ::Mangdown::Tools.get_root(@info[:uri])
 
+      chapters = doc.css(css_klass(root))
 
+      if root =~ /mangafox/
+        chapters.reverse!
+      end
+        
       #get the link with chapter name and uri
-      doc.css(css_klass(root)).each do |chapter|
+      chapters.each do |chapter|
         hash = MDHash.new
-        hash[:uri], hash[:name] = (root + chapter[:href]), chapter.text
+        hash[:uri], hash[:name] = (root + chapter[:href].sub(root, '')), chapter.text
         @chapters_list << hash 
       end
     end
@@ -66,11 +71,11 @@ module Mangdown
         # almost every class
         chapter_klass = case root 
         when /mangareader/
-          MRChapter
+          ::Mangdown::MRChapter
         when /mangafox/
-          MKChapter
+          ::Mangdown::MFChapter
         else
-          NO_Chapter
+          return :no_chapter 
         end
      
         @chapters << chapter_klass.new(chapter)
