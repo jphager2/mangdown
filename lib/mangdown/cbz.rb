@@ -31,7 +31,7 @@ module Mangdown
         # new line
         puts
       else
-	puts "Cannot find directory"
+        puts "Cannot find directory"
       end
     end
   end
