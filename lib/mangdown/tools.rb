@@ -2,6 +2,12 @@ module Mangdown
   module Tools
     extend self
   
+		def return_to_start_dir 
+			start = Dir.pwd
+			yield
+			Dir.chdir(start)
+		end
+
     def special?(klass)
       klasses = [Manga, Chapter, Page, MRChapter, MFChapter]
 
@@ -87,20 +93,20 @@ module Mangdown
     end
 
     def slow_dl_chapters(manga)
-      start_dir = Dir.pwd
-      Dir.mkdir(manga.name) unless Dir.exist?(manga.name)
-      Dir.chdir(manga.name)
+			return_to_start_dir do 
+				Dir.mkdir(manga.name) unless Dir.exist?(manga.name)
+				Dir.chdir(manga.name)
 
-      manga_start_dir = Dir.pwd
-      manga.chapters.each do |chap|
-        no_time_out do 
-          Dir.chdir(manga_start_dir)
-          chap.download
-        end
-      end
+				manga_start_dir = Dir.pwd
+				manga.chapters.each do |chap|
+					no_time_out do 
+						Dir.chdir(manga_start_dir)
+						chap.download
+					end
+				end
 
-      File.delete(@@file_name)
-      Dir.chdir(start_dir)
+				File.delete(@@file_name)
+			end
     end
 
     def check_file_or_dir_name(name)

@@ -25,14 +25,12 @@ module Mangdown
     # and the start_dir is sandwich code and should be moved and
     # passed a block 
     def download
-      start_dir = Dir.pwd 
-
-      Dir.mkdir(@info[:name]) unless Dir.exists?(@info[:name])
-      Dir.chdir(@info[:name])
-      
-      @pages.each {|page| page.download}
-
-      Dir.chdir(start_dir)
+			return_to_start_dir do 
+				Dir.mkdir(@info[:name]) unless Dir.exists?(@info[:name])
+				Dir.chdir(@info[:name])
+				
+				@pages.each {|page| page.download}
+			end
     end
 
     private

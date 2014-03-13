@@ -27,29 +27,18 @@ module Mangdown
 
     def get_chapters_list
       doc = ::Mangdown::Tools.get_doc(@info[:uri])
-      root = ::Mangdown::Tools.get_root(@info[:uri])
+			root = Properties.new(@info[:uri]).root
+			css_klass = Properties.new(root).manga_css_klass 
 
       #get the link with chapter name and uri
-      doc.css(css_klass(root)).each do |chapter|
-        hash = MDHash.new
-        hash[:uri]  = (root + chapter[:href].sub(root, '')) 
-        hash[:name] = chapter.text
-        @chapters_list << hash 
+      doc.css(css_klass).each do |chapter|
+				@chapters_list << MDHash.new(
+					uri: (root + chapter[:href].sub(root, '')) 
+					name: chapter.text) 
       end
 
       if root =~ /mangafox/
         @chapters_list.reverse!
-      end
-    end
- 
-    def css_klass(site)
-      case site
-      when /mangareader/
-        'div#chapterlist td a'
-      when /mangafox/
-        'a.tips'
-      else
-        nil
       end
     end
 
@@ -61,23 +50,11 @@ module Mangdown
     end
 
     def get_chapter(index) 
-      
-      root = ::Mangdown::Tools.get_root(@info[:uri])
       chapter  = @chapters_list[index] 
 
       unless chapter_found(chapter) 
-        # this should be put in a module the case is used in 
-        # almost every class
-        chapter_klass = case root 
-        when /mangareader/
-          ::Mangdown::MRChapter
-        when /mangafox/
-          ::Mangdown::MFChapter
-        else
-          return :no_chapter 
-        end
-     
-        @chapters << chapter_klass.new(chapter)
+				@chapters << Properties.new(
+					           @info[:uri]).chapter_klass.new(chapter)
       else
         puts "This chapter has already been added" 
       end
