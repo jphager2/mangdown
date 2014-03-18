@@ -14,16 +14,6 @@ module Mangdown
       get_chapters_list
     end
 
-    # reader method for uri
-    def uri
-      @info[:uri]
-    end
-
-    # reader method for name
-    def name
-      @info[:name]
-    end
-
     def get_chapters_list
       doc = Tools.get_doc(@info[:uri])
 			root = Properties.new(@info[:uri]).root
@@ -58,5 +48,12 @@ module Mangdown
         puts "This chapter has already been added" 
       end
     end
+
+		private
+			# dot access to hash values
+			def method_missing(method, *args, &block) 
+				return @info[method] if @info[method]
+				super
+			end
   end
 end

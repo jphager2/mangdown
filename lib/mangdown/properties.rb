@@ -16,13 +16,13 @@ module Mangdown
 
 		def mangareader
 			@info[:manga_css_klass] = 'div#chapterlist td a'
-			@info[:chapter_klass] = ::Mangdown::MRChapter
+			@info[:chapter_klass] = MRChapter
 			@info[:root] = 'http://www.mangareader.net'
 		end
 
 		def mangafox
 			@info[:manga_css_klass] = 'a.tips'
-			@info[:chapter_klass] = ::Mangdown::MFChapter
+			@info[:chapter_klass] = MFChapter
 			@info[:root] = 'http://mangafox.me'
 		end
 
