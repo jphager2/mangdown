@@ -26,9 +26,10 @@ module Mangdown
 			@info[:root] = 'http://mangafox.me'
 		end
 
-		def method_missing(method, *args, &block)
-			return @info[method] if @info[method]
-			super
-		end
+		private
+			def method_missing(method, *args, &block)
+				return @info[method] if @info[method]
+				super
+			end
 	end
 end
