@@ -11,16 +11,6 @@ module Mangdown
       get_pages
     end
 
-    # reader method for uri
-    def uri
-      @info[:uri]
-    end
-
-    # reader method for name
-    def name
-      @info[:name]
-    end
-
     # download should be in its own module
     # and the start_dir is sandwich code and should be moved and
     # passed a block 
@@ -46,6 +36,12 @@ module Mangdown
           doc = ::Mangdown::Tools.get_doc(uri)
         end
       end
+			
+			# dot access to hash values
+			def method_missing(method, *args, &block) 
+				return @info[method] if @info[method]
+				super
+			end
   end
 
   class MRChapter < Chapter
