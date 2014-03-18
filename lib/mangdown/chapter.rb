@@ -25,7 +25,7 @@ module Mangdown
     # and the start_dir is sandwich code and should be moved and
     # passed a block 
     def download
-			return_to_start_dir do 
+			Tools.return_to_start_dir do 
 				Dir.mkdir(@info[:name]) unless Dir.exists?(@info[:name])
 				Dir.chdir(@info[:name])
 				

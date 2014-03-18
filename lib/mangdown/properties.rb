@@ -15,20 +15,20 @@ module Mangdown
 		end
 
 		def mangareader
-			@info.manga_css_klass = 'div#chapterlist td a'
-			@info.chapter_klass = ::Mangdown::MRChapter
-			@info.root = 'http://www.mangareader.net'
+			@info[:manga_css_klass] = 'div#chapterlist td a'
+			@info[:chapter_klass] = ::Mangdown::MRChapter
+			@info[:root] = 'http://www.mangareader.net'
 		end
 
 		def mangafox
-			@info.manga_css_klass = 'a.tips'
-			@info.chapter_klass = ::Mangdown::MFChapter
-			@info.root = 'http://mangafox.me'
+			@info[:manga_css_klass] = 'a.tips'
+			@info[:chapter_klass] = ::Mangdown::MFChapter
+			@info[:root] = 'http://mangafox.me'
 		end
 
-	#	def method_missing(method)
-		#	return @info[method] if @info[method]
-		#	super
-	#	end
+		def method_missing(method, *args, &block)
+			return @info[method] if @info[method]
+			super
+		end
 	end
 end

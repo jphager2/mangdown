@@ -1,6 +1,5 @@
 module Mangdown
   class Manga
-    include ::Mangdown::Tools
 
     attr_reader :chapters, :chapters_list 
 
@@ -26,14 +25,14 @@ module Mangdown
     end
 
     def get_chapters_list
-      doc = ::Mangdown::Tools.get_doc(@info[:uri])
+      doc = Tools.get_doc(@info[:uri])
 			root = Properties.new(@info[:uri]).root
 			css_klass = Properties.new(root).manga_css_klass 
 
       #get the link with chapter name and uri
       doc.css(css_klass).each do |chapter|
 				@chapters_list << MDHash.new(
-					uri: (root + chapter[:href].sub(root, '')) 
+					uri: (root + chapter[:href].sub(root, '')), 
 					name: chapter.text) 
       end
 
