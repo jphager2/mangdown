@@ -9,12 +9,10 @@ module Mangdown
       @info = info
     end
 
+		# depreciated
     def filename
+			puts 'This is depreciated use Page.new.name'
       @info[:name]
-    end
-
-    def uri 
-      @info[:uri]
     end
 
     # this method should probably be moved somewhere else because
@@ -26,5 +24,13 @@ module Mangdown
         end
       end
     end
+
+		private
+      # dot access to hash values
+			def method_missing(method, *args, &block) 
+				return @info[method] if @info[method]
+				super
+			end
+
   end
 end
