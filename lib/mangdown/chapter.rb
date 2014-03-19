@@ -26,14 +26,14 @@ module Mangdown
     private
       def get_pages
         uri = @info[:uri]
-        doc = ::Mangdown::Tools.get_doc(uri)
+        doc = Tools.get_doc(uri)
         
         get_num_pages(doc).times do
           page = get_page(doc) 
           uri = get_next_uri(doc)
 
           @pages << Page.new(page)
-          doc = ::Mangdown::Tools.get_doc(uri)
+          doc = Tools.get_doc(uri)
         end
       end
 			
@@ -56,7 +56,7 @@ module Mangdown
 
       def get_next_uri(doc)
         #root url + the href of the link to the next page
-        ::Mangdown::Tools.get_root(@info[:uri]) + 
+        Tools.get_root(@info[:uri]) + 
           doc.css('div#imgholder a')[0]['href']
       end
 

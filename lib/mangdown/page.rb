@@ -15,8 +15,6 @@ module Mangdown
       @info[:name]
     end
 
-    # this method should probably be moved somewhere else because
-    # pages, chapters and mangas can all be "downloaded"
     def download
       unless File.exist?(@info[:name])
         File.open(@info[:name], 'wb') do |file|
