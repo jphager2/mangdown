@@ -48,6 +48,10 @@ module Mangdown
         puts "This chapter has already been added" 
       end
     end
+		
+		def remove_chapters
+      @chapters = []
+		end
 
 		private
 			# dot access to hash values

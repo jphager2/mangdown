@@ -1,0 +1,9 @@
+require 'rake'
+
+
+task :test do
+  puts `rspec ./spec/`
+end
+
+task default: [:test]
+

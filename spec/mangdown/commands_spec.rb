@@ -46,6 +46,7 @@ module M
 
     it "should download a manga from MF" do 
       dir = Dir.pwd
+			@mf_manga.remove_chapters
       M.download(@mf_manga, 500, 501)
       expect(Dir.glob(dir + "/#{@mf_manga.name}/*").length).to eq(2)
     end
