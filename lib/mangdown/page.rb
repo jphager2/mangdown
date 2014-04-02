@@ -24,9 +24,10 @@ module Mangdown
     end
 
 		private
+		  # put this in Mangdown and just add if @info
       # dot access to hash values
 			def method_missing(method, *args, &block) 
-				return @info[method] if @info[method]
+				return @info[method] unless @info[method].nil?
 				super
 			end
 

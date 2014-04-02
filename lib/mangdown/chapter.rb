@@ -1,4 +1,6 @@
 module Mangdown
+
+	# mangdown chapter object
   class Chapter
 
     attr_reader :pages
@@ -39,11 +41,12 @@ module Mangdown
 			
 			# dot access to hash values
 			def method_missing(method, *args, &block) 
-				return @info[method] if @info[method]
+				return @info[method] unless @info[method].nil?
 				super
 			end
   end
 
+	# mangareader chapter object
   class MRChapter < Chapter
     private
       def get_page(doc)
@@ -66,6 +69,7 @@ module Mangdown
       end
   end
 
+	# mangafox chapter object
   class MFChapter < Chapter
     private
       def get_page(doc)

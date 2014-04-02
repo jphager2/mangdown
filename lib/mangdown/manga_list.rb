@@ -1,46 +1,28 @@
 module Mangdown
+
+	# a list of manga
   class MangaList
 
     attr_reader :mangas
 
     def initialize(*uri)
-      @uri = uri
       @mangas = []
 
-      @uri.each {|uri| get_mangas(uri)}
+      uri.each {|uri| get_mangas(uri)}
     end
 
+		# get a list of mangas from the uri
     def get_mangas(uri)
-      doc = ::Mangdown::Tools.get_doc(uri)
-      root = ::Mangdown::Tools.get_root(uri)
-
+			properties = Properties.new(uri)
+      doc        = Tools.get_doc(uri)
       
       # This should be put in a tool
-      doc.css(css_klass(root)).each do |a|
+			doc.css(properties.manga_list_css_klass).each do |a|
         hash = MDHash.new
-        #hot fix
-        url = case root 
-        when /mangareader/
-          root + a[:href]
-        when /mangafox/
-          a[:href]
-        else
-          nil
-        end
+				url  = "#{properties.manga_link_prefix}#{a[:href]}" 
 
         hash[:uri], hash[:name] = url, a.text
         @mangas << hash
-      end
-    end
-
-    def css_klass(site)
-      case site
-      when /mangareader/
-        'ul.series_alpha li a'
-      when /mangafox/
-        'div.manga_list li a'
-      else
-        nil
       end
     end
   end
