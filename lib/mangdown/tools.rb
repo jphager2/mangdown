@@ -8,16 +8,6 @@ module Mangdown
 			Dir.chdir(start)
 		end
 
-    def special?(klass)
-      klasses = [Manga, Chapter, Page, MRChapter, MFChapter]
-
-      if klasses.find(self.class)
-        true
-      else
-        false
-      end
-    end
-
     def get_doc(uri)
       @doc = ::Nokogiri::HTML(open(uri))
     end
@@ -25,31 +15,7 @@ module Mangdown
     def get_root(uri)
       @root = ::URI::join(uri, "/").to_s[0..-2] 
     end
-
-    def to_s
-      if special?(self.class)
-        "<#{self.class}::#{self.object_id} : #{@name} : #{@uri}>"
-      else
-        super
-      end
-    end
-
-    def eql?(other)
-      if special?(self.class)
-        (self.name == other.name) and (self.uri == other.uri)
-      else
-        super
-      end
-    end
-
-    def ==(other)
-      if special?(self.class)
-        puts 'You may want to use eql?'
-      end
-
-      super
-    end
-
+    
     def no_time_out(tries = 3, &block)
       tries -= 1
       begin 

@@ -5,8 +5,11 @@ require 'yaml'
 require 'timeout'
 require 'zip'
 
+require_relative 'mangdown/mangdown'
+
 require_relative 'mangdown/tools'
 require_relative 'mangdown/properties'
+require_relative 'mangdown/uri'
 require_relative 'mangdown/page'
 require_relative 'mangdown/chapter'
 require_relative 'mangdown/manga'

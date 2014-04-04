@@ -1,35 +1,18 @@
-module Mangdown
-  class Page
+class Mangdown::Page
 
-    attr_reader :info
+	include Mangdown 
 
-    # like chapter and manga, should initialize with MDHash, and use
-    # @info[:key]
-    def initialize(info)
-      @info = info
-    end
+	attr_reader :name, :uri
 
-		# depreciated
-    def filename
-			puts 'This is depreciated use Page.new.name'
-      @info[:name]
-    end
+	def initialize(name, uri)
+		@name = name
+		@uri  = Mangdown::Uri.new(uri) 
+	end
 
-    def download
-      unless File.exist?(@info[:name])
-        File.open(@info[:name], 'wb') do |file|
-          file.write(open(URI.encode(@info[:uri], '[]')).read)
-        end
-      end
-    end
-
-		private
-		  # put this in Mangdown and just add if @info
-      # dot access to hash values
-			def method_missing(method, *args, &block) 
-				return @info[method] unless @info[method].nil?
-				super
-			end
-
-  end
+	def download
+		return nil if File.exist?(@name)             # don't download again
+		File.open(@name, 'wb') do |file|
+			file.write(open(uri).read)
+		end
+	end
 end
