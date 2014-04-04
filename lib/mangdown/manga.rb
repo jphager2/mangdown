@@ -3,11 +3,11 @@ module Mangdown
 	# mangdown manga object, which holds chapters
   class Manga
 
-    attr_reader :chapters, :chapters_list 
+    attr_reader :name, :uri, :chapters, :chapters_list 
 
-    #initialize only use @info[:key]
-    def initialize(info)
-      @info = info
+    def initialize(name, uri)
+			@name = name
+			@uri  = uri
 
       #Keeping these chapter objects in memory could be expensive
       @chapters = []
@@ -18,8 +18,8 @@ module Mangdown
 
 		# get push MDHashes of manga chapters to @chapters 
     def get_chapters_list
-			properties = Properties.new(@info[:uri])
-      doc        = Tools.get_doc(@info[:uri])
+			properties = Properties.new(@uri)
+      doc        = Tools.get_doc(@uri)
 			root       = properties.root
 
       #get the link with chapter name and uri
@@ -45,22 +45,10 @@ module Mangdown
 
       unless chapter_found(chapter) 
 				@chapters << 
-				Properties.new(@info[:uri]).chapter_klass.new(chapter)
+				Properties.new(@uri).chapter_klass.new(chapter)
       else
         puts "This chapter has already been added" 
       end
     end
-		
-		# empties @chapters
-		def remove_chapters
-      @chapters = []
-		end
-
-		private
-			# dot access to hash values
-			def method_missing(method, *args, &block) 
-				return @info[method] unless @info[method].nil?
-				super
-			end
   end
 end
