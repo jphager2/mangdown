@@ -9,6 +9,11 @@ class Mangdown::Page
 		@uri  = Mangdown::Uri.new(uri) 
 	end
 
+	# explicit conversion to page 
+	def to_page
+		self
+	end	
+
 	def download
 		return nil if File.exist?(@name)             # don't download again
 		File.open(@name, 'wb') do |file|

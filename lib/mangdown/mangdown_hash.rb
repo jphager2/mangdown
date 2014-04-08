@@ -6,18 +6,19 @@ module Mangdown
 			self[:name] = options[:name]
 		end
 
-		# get a manga object
-    def get_manga
+		# explicit conversion to manga 
+    def to_manga
       Manga.new(self[:name], self[:uri])
     end
 
-		# get a chapter object
-		def get_chapter(type)
-		  type.new(self[:name], self[:uri])
+		# explicit conversion to chapter 
+		def to_chapter
+			klass = Properties.new(self[:uri]).chapter_klass
+		  klass.new(self[:name], self[:uri])
 		end
 
-		# get a page object
-	  def get_page 
+		# explicit conversion to page 
+ 	  def to_page 
 		  Page.new(self[:name], self[:uri])
 		end	
   end

@@ -18,11 +18,10 @@ module Mangdown
       
       # This should be put in a tool
 			doc.css(properties.manga_list_css_klass).each do |a|
-        hash = MDHash.new
-				url  = "#{properties.manga_link_prefix}#{a[:href]}" 
-
-        hash[:uri], hash[:name] = url, a.text
-        @mangas << hash
+				@mangas << MDHash.new( 
+					uri: "#{properties.manga_link_prefix}#{a[:href]}", 
+					name: a.text
+			  )
       end
     end
   end

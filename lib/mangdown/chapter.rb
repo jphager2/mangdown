@@ -11,6 +11,11 @@ module Mangdown
 			get_pages
 		end
 
+		# explicit conversion to chapter
+		def to_chapter
+			self
+		end
+
 		# download should be in its own module
 		# download all pages in a chapter
 		def download

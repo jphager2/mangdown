@@ -1,11 +1,12 @@
 require 'spec_helper'
 
 module Mangdown
-  @@chapter_hash = MDHash.new
-  @@chapter_hash[:uri] = 'http://www.mangareader.net/bleach/537'
-  @@chapter_hash[:name] = 'Bleach 537'
+  @@chapter_hash = MDHash.new(
+    uri: 'http://www.mangareader.net/bleach/537',
+    name: 'Bleach 537'
+	)
 
-  chapter = MRChapter.new(@@chapter_hash)
+	chapter = @@chapter_hash.get_chapter
   chapter.download
   
   STUB_PATH = File.expand_path('../../objects/chapter.yml', __FILE__)
@@ -41,12 +42,12 @@ module Mangdown
 
       context "as a MFChapter" do
         it "should have pages" do
-          hash = MDHash.new
-          hash[:uri]  = 
-          'http://mangafox.me/manga/kitsune_no_yomeiri/v01/c001/1.html'
-          hash[:name] = 'Kitsune no Yomeiri 1'
+          hash = MDHash.new(
+            uri:  'http://mangafox.me/manga/kitsune_no_yomeiri/v01/c001/1.html',
+            name: 'Kitsune no Yomeiri 1'
+					)
 
-          chapter = MFChapter.new(hash)
+					chapter = hash.get_chapter
           
           expect(chapter.pages).not_to be_empty
         end

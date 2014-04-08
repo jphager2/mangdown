@@ -4,15 +4,17 @@ module M
 
   describe "commands" do
 		before(:all) do
-      hash = MDHash.new
-      hash[:uri]  = 'http://www.mangareader.net/6-no-trigger'
-      hash[:name] = '6 no Trigger'
-      @manga = Manga.new(hash)
+      hash = MDHash.new(
+				uri:  'http://www.mangareader.net/6-no-trigger',
+				name: '6 no Trigger'
+			)
+      @manga = hash.to_manga
       
-      hash = MDHash.new
-      hash[:uri]  = 'http://mangafox.me/manga/naruto/'
-      hash[:name] = 'Naruto'
-      @mf_manga = Manga.new(hash)
+      hash = MDHash.new(
+				uri:  'http://mangafox.me/manga/naruto/',
+				name: 'Naruto'
+			)
+      @mf_manga = hash.to_manga
 
 	   	M.download(@manga, 1, 3)
 			M.cbz("./#{@manga.name}")
@@ -46,7 +48,7 @@ module M
 
     it "should download a manga from MF" do 
       dir = Dir.pwd
-			@mf_manga.remove_chapters
+			#@mf_manga.remove_chapters
       M.download(@mf_manga, 500, 501)
       expect(Dir.glob(dir + "/#{@mf_manga.name}/*").length).to eq(2)
     end

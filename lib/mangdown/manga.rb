@@ -16,6 +16,11 @@ module Mangdown
       get_chapters_list
     end
 
+		# explicit conversion to manga
+		def to_manga 
+			self
+		end
+
 		# get push MDHashes of manga chapters to @chapters 
     def get_chapters_list
 			properties = Properties.new(@uri)
@@ -26,7 +31,8 @@ module Mangdown
       doc.css(properties.manga_css_klass).each do |chapter|
 				@chapters_list << MDHash.new(
 					uri: (root + chapter[:href].sub(root, '')), 
-					name: chapter.text) 
+					name: chapter.text
+				) 
       end
 
 			@chapters_list.reverse! if properties.reverse 
@@ -44,8 +50,7 @@ module Mangdown
       chapter  = @chapters_list[index] 
 
       unless chapter_found(chapter) 
-				@chapters << 
-				Properties.new(@uri).chapter_klass.new(chapter)
+				@chapters << chapter.to_chapter 
       else
         puts "This chapter has already been added" 
       end
