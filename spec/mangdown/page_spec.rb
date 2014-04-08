@@ -4,12 +4,12 @@ module Mangdown
   describe Page do
    	before(:all) do
 		  @dir = Dir.pwd
-      @page_hash = MDHash.new
-	    @page_hash[:uri] = 
-        'http://i25.mangareader.net/bleach/537/bleach-4149721.jpg'
-	    @page_hash[:name] = "Bleach 537 - Page 1" 
+      @page_hash = MDHash.new(
+	      uri: 'http://i25.mangareader.net/bleach/537/bleach-4149721.jpg',
+	      name: "Bleach 537 - Page 1" 
+			)
 
-	    @page = Page.new(@page_hash)
+			@page = @page_hash.to_page
 	    @page.download
       PAGE_STUB_PATH = File.expand_path('../../objects/page.yml', 
                                         __FILE__)
@@ -22,7 +22,7 @@ module Mangdown
 
     context "when page is downloaded" do
       it "should download itself to the current directory" do
-        expect(Dir.glob(@dir + '/*')).to include(@dir + '/' + @page.filename)
+        expect(Dir.glob(@dir + '/*')).to include(@dir + '/' + @page.name)
       end
     end
 

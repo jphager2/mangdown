@@ -37,7 +37,7 @@ module Mangdown
 					hash = get_page(doc) 
 					uri = get_next_uri(doc)
 
-					@pages << hash.get_page 
+					@pages << hash.to_page 
 					doc = Tools.get_doc(uri)
 				end
 			end

@@ -6,7 +6,7 @@ module Mangdown
     name: 'Bleach 537'
 	)
 
-	chapter = @@chapter_hash.get_chapter
+	chapter = @@chapter_hash.to_chapter
   chapter.download
   
   STUB_PATH = File.expand_path('../../objects/chapter.yml', __FILE__)
@@ -47,14 +47,14 @@ module Mangdown
             name: 'Kitsune no Yomeiri 1'
 					)
 
-					chapter = hash.get_chapter
+					chapter = hash.to_chapter
           
           expect(chapter.pages).not_to be_empty
         end
       end
     end
     
-   # Move these to Tools spec 
+   # Move these to a Tools spec 
 =begin
     context "when the functions for get_pages are run" do
       it "should have the right chapter uri" do

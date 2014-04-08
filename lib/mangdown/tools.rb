@@ -9,7 +9,7 @@ module Mangdown
 		end
 
     def get_doc(uri)
-      @doc = ::Nokogiri::HTML(open(uri))
+			@doc = ::Nokogiri::HTML(open(uri))
     end
 
     def get_root(uri)
