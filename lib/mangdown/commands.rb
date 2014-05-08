@@ -49,8 +49,7 @@ module M
 			manga = manga.get_manga
     end
 
-    chapters = Tools.slow_get_chapters(manga, first, last)
-    Tools.slow_dl_chapters(chapters)
+    Tools::Downloader.new(manga, first, last)
   end
 
 	# cbz all subdirectories in a directory
