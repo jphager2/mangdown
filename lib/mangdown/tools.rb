@@ -74,41 +74,6 @@ module Mangdown
 				File.delete(@@file_name)
 			end
     end
-
-    def check_file_or_dir_name(name)
-
-      # slice the last number in the file or directory name,
-      # which will be either the page number or the chapter number
-      num = name.slice(/(\d+)(\.jpg)*\Z/, 1)
-    
-      if num
-        while num.length < 3
-          num = '0' + num
-        end
-    
-        name = name.sub(/(\d+)(\.jpg)*\Z/, num + '\2')
-      end
-
-      name
-    end 
-
-    def check_dir(dir)
-      Dir.glob(dir + '/*').each do |file_name| 
-        #do block on each file name, but skip .cbz files
-        next if file_name.include?('.cbz')
-        yield(file_name)
-      end
-    end 
-
-    def validate_file_or_dir_names(dir)
-      check_dir(dir) do |file_name|
-        checked_name = check_file_or_dir_name(file_name)
-
-        unless file_name == checked_name
-          File.rename(file_name, checked_name)
-        end
-      end
-    end
   end
 end
 
