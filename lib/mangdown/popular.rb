@@ -23,7 +23,7 @@ module Mangdown
 
       unless @mangas.find {|mnga| (mnga.name == manga[:name]) or 
                                    (mnga.uri == manga[:uri])}
-        @mangas << Manga.new(manga)
+        @mangas << manga.to_manga
       else
         puts "This manga has already been added.."
       end

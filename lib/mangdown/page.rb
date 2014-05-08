@@ -14,9 +14,11 @@ class Mangdown::Page
 		self
 	end	
 
+  # download the page
 	def download
-		return nil if File.exist?(@name)             # don't download again
-		File.open(@name, 'wb') do |file|
+    # don't download again
+		return nil if File.exist?(@name)
+    File.open(@name, 'wb') do |file|
 			file.write(open(uri).read)
 		end
 	end
