@@ -1,3 +1,5 @@
+require 'timeout'
+
 module Mangdown
   module Tools
     extend self
@@ -19,16 +21,9 @@ module Mangdown
     def no_time_out(tries = 3, &block)
       tries -= 1
       begin 
-        timeout(120) do
-          yield 
-        end
+        timeout(120) { yield } 
       rescue
-        if tries >= 0
-          puts "Tries left: #{tries}"
-          no_time_out(tries, &block)
-        else
-          return :timed_out
-        end
+        tries >= 0 ? no_time_out(tries, &block) : :timed_out
       end
     end
 
