@@ -41,7 +41,6 @@ module Mangdown
       end
 
       def slow_get_chapters(manga, bgn, nd)
-
         # get Manga object from file if it exists
         if File.exist?(@tempfile)
           manga_from_file = YAML.load(File.open(@tempfile, 'r').read) 
@@ -71,11 +70,9 @@ module Mangdown
           Dir.mkdir(manga.name) unless Dir.exist?(manga.name)
           Dir.chdir(manga.name)
 
-          manga_start_dir = Dir.pwd
           manga.chapters.each do |chap|
             no_time_out do 
-              Dir.chdir(manga_start_dir)
-              chap.download
+              return_to_start_dir {chap.download}
             end
           end
 
