@@ -4,8 +4,8 @@ module Mangdown
 		attr_reader :name, :uri, :pages
 
 		def initialize(manga, chapter, name, uri)
-      @manga = manga
-      @chapter = chapter
+      @manga = name.slice(/(^.+)\s/, 1) 
+      @chapter = name.slice(/\d+\z/) 
 			@name  = name
 			@uri   = Mangdown::Uri.new(uri)
 			@pages = []
