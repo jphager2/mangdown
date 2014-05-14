@@ -44,18 +44,13 @@ module Mangdown
 	# mangareader chapter object
 	class MRChapter < Chapter
 		private
-
-      def log(object)
-        puts object
-        object
-      end
 	
       # get the doc for a given page number
       def get_page_doc(num)
         doc = Tools.get_doc(
-          ( 
+          Mangdown::Uri.new( 
             @properties.root                                + 
-            "/#{@manga.sub(' ', '-')}/#{@chapter}/#{num}"
+            "/#{@manga.gsub(' ', '-')}/#{@chapter}/#{num}"
           ).downcase
         )
       end
@@ -84,9 +79,9 @@ module Mangdown
       # get the doc for a given page number
       def get_page_doc(num)
         doc = Tools.get_doc(
-          (
+          Mangdown::Uri.new(
             @properties.root                               + 
-            "/manga/#{@manga.sub(' ', '_')}/c#{@chapter}/" + 
+            "/manga/#{@manga.gsub(' ', '_')}/c#{@chapter}/" + 
             "#{num}.html"
           ).downcase
         )

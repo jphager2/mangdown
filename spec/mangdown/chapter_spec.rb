@@ -3,7 +3,9 @@ require 'spec_helper'
 module Mangdown
   @@chapter_hash = MDHash.new(
     uri: 'http://www.mangareader.net/bleach/537',
-    name: 'Bleach 537'
+    name: 'Bleach 537',
+    manga: 'Bleach',
+    chapter: '537',
 	)
 
 	chapter = @@chapter_hash.to_chapter
@@ -44,7 +46,9 @@ module Mangdown
         it "should have pages" do
           hash = MDHash.new(
             uri:  'http://mangafox.me/manga/kitsune_no_yomeiri/v01/c001/1.html',
-            name: 'Kitsune no Yomeiri 1'
+            name: 'Kitsune no Yomeiri 1',
+            manga: 'Kitsune no Yomeiri',
+            chapter: 1,
 					)
 
 					chapter = hash.to_chapter
