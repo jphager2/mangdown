@@ -32,8 +32,6 @@ module Mangdown
 				@chapters_list << MDHash.new(
 					uri: (root + chapter[:href].sub(root, '')), 
 					name: chapter.text,
-          manga: @name,
-          chapter: @chapters_list.length + 1
 				) 
       end
 
