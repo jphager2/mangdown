@@ -3,7 +3,7 @@ module Mangdown
 
 		attr_reader :name, :uri, :pages
 
-		def initialize(manga, chapter, name, uri)
+		def initialize(name, uri)
       @manga = name.slice(/(^.+)\s/, 1) 
       @chapter = name.slice(/\d+\z/) 
 			@name  = name
