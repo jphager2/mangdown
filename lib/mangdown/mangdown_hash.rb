@@ -2,8 +2,10 @@ module Mangdown
   class MDHash < ::Hash
 
 		def initialize(options = {})
-			self[:uri]  = options[:uri]
-			self[:name] = options[:name]
+			self[:uri]     = options[:uri]
+			self[:name]    = options[:name]
+      self[:manga]   = options[:manga]
+      self[:chapter] = options[:chapter]
 		end
 
 		# explicit conversion to manga 
@@ -14,7 +16,7 @@ module Mangdown
 		# explicit conversion to chapter 
 		def to_chapter
 			klass = Properties.new(self[:uri]).chapter_klass
-		  klass.new(self[:name], self[:uri])
+		  klass.new(self[:manga], self[:chapter], self[:name], self[:uri])
 		end
 
 		# explicit conversion to page 

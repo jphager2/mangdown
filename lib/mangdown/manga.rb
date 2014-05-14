@@ -31,7 +31,9 @@ module Mangdown
       doc.css(properties.manga_css_klass).each do |chapter|
 				@chapters_list << MDHash.new(
 					uri: (root + chapter[:href].sub(root, '')), 
-					name: chapter.text
+					name: chapter.text,
+          manga: @name,
+          chapter: @chapters_list.length + 1
 				) 
       end
 

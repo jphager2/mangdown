@@ -3,10 +3,13 @@ module Mangdown
 
 		attr_reader :name, :uri, :pages
 
-		def initialize(name, uri)
+		def initialize(manga, chapter, name, uri)
+      @manga = manga
+      @chapter = chapter
 			@name  = name
 			@uri   = Mangdown::Uri.new(uri)
 			@pages = []
+      @properties = Properties.new(@uri)
 
 			get_pages
 		end
@@ -31,14 +34,9 @@ module Mangdown
 			
 			# get page objects for all pages in a chapter
 			def get_pages
-				doc = Tools.get_doc(@uri)
-				
-				get_num_pages(doc).times do
-					hash = get_page(doc) 
-					uri = get_next_uri(doc)
-
+        get_num_pages(get_page_doc(1)).times do |page|
+					hash = get_page(get_page_doc(page + 1)) 
 					@pages << hash.to_page 
-					doc = Tools.get_doc(uri)
 				end
 			end
 	end
@@ -46,7 +44,14 @@ module Mangdown
 	# mangareader chapter object
 	class MRChapter < Chapter
 		private
-			
+	
+      # get the doc for a given page number
+      def get_page_doc(num)
+        doc = Tools.get_doc(
+          @properties.root + "/#{@manga}/#{@chapter}/#{num}".downcase
+        )
+      end
+		
 			# get the page uri and name
 			def get_page(doc)
 				image = doc.css('img')[0]
@@ -57,17 +62,10 @@ module Mangdown
 				)
 			end
 
-			# get the next document uri
-			def get_next_uri(doc)
-				#root url + the href of the link to the next page
-				Tools.get_root(@uri) << 
-					doc.css('div#imgholder a')[0]['href']
-			end
-
 			# get the number of pages
 			def get_num_pages(doc)
 				# the select is a dropdown menu of chapter pages
-				doc.css('select')[1].children.length
+        doc.css('select')[1].children.length
 			end
 	end
 
