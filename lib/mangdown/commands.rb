@@ -46,7 +46,7 @@ module M
 	# by default the entire manga will be downloaded
   def download(manga, first = 0, last = -1)
     if manga.class == MDHash
-			manga = manga.get_manga
+			manga = manga.to_manga
     end
 
     Tools::Downloader.new(manga, first, last)
