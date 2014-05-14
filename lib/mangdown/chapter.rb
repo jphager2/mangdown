@@ -44,11 +44,19 @@ module Mangdown
 	# mangareader chapter object
 	class MRChapter < Chapter
 		private
+
+      def log(object)
+        puts object
+        object
+      end
 	
       # get the doc for a given page number
       def get_page_doc(num)
         doc = Tools.get_doc(
-          @properties.root + "/#{@manga}/#{@chapter}/#{num}".downcase
+          ( 
+            @properties.root                                + 
+            "/#{@manga.sub(' ', '-')}/#{@chapter}/#{num}"
+          ).downcase
         )
       end
 		
@@ -73,6 +81,17 @@ module Mangdown
 	class MFChapter < Chapter
 		private
 
+      # get the doc for a given page number
+      def get_page_doc(num)
+        doc = Tools.get_doc(
+          (
+            @properties.root                               + 
+            "/manga/#{@manga.sub(' ', '_')}/c#{@chapter}/" + 
+            "#{num}.html"
+          ).downcase
+        )
+      end
+
 			# get the page name and uri
 			def get_page(doc)
 				image = doc.css('img')[0]
@@ -81,12 +100,6 @@ module Mangdown
 					uri: image[:src], 
 					name: image[:src].sub(/.+\//, '')
 				)
-			end
-
-			# get the next document uri
-			def get_next_uri(doc)
-				@uri.slice(/.+\//) <<                   # different from root
-					doc.css('div#viewer a')[0][:href]
 			end
 
 			# get the number of pages
