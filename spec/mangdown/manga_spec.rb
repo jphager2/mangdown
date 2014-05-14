@@ -51,13 +51,19 @@ module Mangdown
       it "should have the right first chapter" do
         expect(@manga.chapters_list.first).to eq({
           uri:'http://www.mangareader.net/94-8-1/bleach/chapter-1.html',
-          name: 'Bleach 1'})
+          name: 'Bleach 1',
+          manga: 'Bleach',
+          chapter: 1,
+        })
       end
 
       it "should have the right 465th chapter" do
         expect(@manga.chapters_list[464]).to eq({
           uri: 'http://www.mangareader.net/bleach/465',
-          name: 'Bleach 465'})
+          name: 'Bleach 465',
+          manga: 'Bleach',
+          chapter: 465,
+        })
       end
     end
 
