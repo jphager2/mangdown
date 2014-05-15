@@ -1,0 +1,3 @@
+If you have issues connecting with postgresql, then you might want to
+look at https://help.ubuntu.com/10.04/serverguide/postgresql.html which
+has some suggestions for configuring psql the right way.
