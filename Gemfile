@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'activerecord'
 gem 'pg', '~> 0.15.1'
 
 gem 'nokogiri', '~>1.6.0' 
