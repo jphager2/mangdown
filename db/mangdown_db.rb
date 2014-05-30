@@ -1,6 +1,7 @@
 module Mangdown
   class DB 
-    @@config = YAML.load(ERB.new(File.read('db/config.yml')).result)
+    config_path = File.expand_path(File.dirname(__FILE__) + '/config.yml')
+    @@config = YAML.load(ERB.new(File.read(config_path)).result)
 
     def self.establish_connection
       ActiveRecord::Base.establish_connection(@@config)
@@ -35,7 +36,9 @@ module Mangdown
     end
 
     def self.migrate
-      ActiveRecord::Migrator.migrate('db/migrate', nil)
+      ActiveRecord::Migrator.migrate(
+        File.expand_path(File.dirname(__FILE__) + '/migrate'), nil
+      )
     end
   end
 end

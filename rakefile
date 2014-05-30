@@ -20,7 +20,7 @@ namespace :db do
   end
 
   task :migrate do
-    Mangdown::DB.establish_base_connection 
+    Mangdown::DB.establish_connection 
     Mangdown::DB.migrate
   end
 end
