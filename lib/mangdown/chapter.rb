@@ -33,13 +33,14 @@ module Mangdown
       end
 
       threads.each {|thread| thread.join}
+      return @pages.length
 		end
 
 		private
 			
 			# get page objects for all pages in a chapter
 			def get_pages
-        thread = []
+        threads = []
         get_num_pages(get_page_doc(1)).times do |page|
           threads << Thread.new(page) do |this_page|
             hash = get_page(get_page_doc(this_page + 1)) 
@@ -48,6 +49,7 @@ module Mangdown
 				end
 
         threads.each {|thread| thread.join}
+        return @pages.length
 			end
 	end
 
