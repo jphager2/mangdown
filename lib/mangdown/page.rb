@@ -16,7 +16,7 @@ class Mangdown::Page
 
   # download the page
 	def download
-    # don't download again
+    warn "#download is depreciated use #download_to"
 		return nil if File.exist?(@name)
     File.open(@name, 'wb') do |file|
 			file.write(open(uri).read)
@@ -26,6 +26,7 @@ class Mangdown::Page
   # downloads to specified directory
   def download_to(dir)
     path = dir + '/' + @name
+    # don't download again
     return nil if File.exist?(path)
     File.open(path, 'wb') do |file| 
       file.write(open(uri).read)

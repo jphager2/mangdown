@@ -19,10 +19,26 @@ module Mangdown
 			self
 		end
 
-		# download should be in its own module
-		# download all pages in a chapter
-		def download
+    def download
+      warn "#download is depreciated use #download_to"
+
       dir = File.expand_path(@name)
+      Dir.mkdir(dir) unless Dir.exists?(dir)
+      
+      threads = []
+      @pages.each do |page| 
+        threads << Thread.new(page) do |this_page| 
+          this_page.download_to(dir)
+        end
+      end
+
+      threads.each {|thread| thread.join}
+      return @pages.length
+		end
+
+		# download all pages in a chapter
+		def download_to(dir)
+      dir = File.expand_path(dir + '/' + @name)
       Dir.mkdir(dir) unless Dir.exists?(dir)
       
       threads = []

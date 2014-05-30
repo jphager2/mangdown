@@ -71,18 +71,19 @@ module Mangdown
       end
 
       def slow_dl_chapters(manga)
-        return_to_start_dir do 
-          Dir.mkdir(manga.name) unless Dir.exist?(manga.name)
-          Dir.chdir(manga.name)
+        dir = File.expand_path(manga.name)
+        Dir.mkdir(dir) unless Dir.exist?(dir)
 
-          manga.chapters.each do |chap|
-            no_time_out do 
-              return_to_start_dir {chap.download}
-            end
+        threads = []
+        manga.chapters.each do |chap|
+          threads << Thread.new(chap) do |this_chap|
+            no_time_out {this_chap.download_to(dir)}
           end
-
-          File.delete(@tempfile)
         end
+
+        threads.each {|thread| thread.join}
+
+        File.delete(@tempfile)
       end
     end
   end
