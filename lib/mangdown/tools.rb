@@ -43,10 +43,11 @@ module Mangdown
       def slow_get_chapters(manga, bgn, nd)
         # get Manga object from file if it exists
         if File.exist?(@tempfile)
-          manga_from_file = YAML.load(File.open(@tempfile, 'r').read) 
+          manga_from_file = YAML
+            .load(File.open(@tempfile, 'r').read) 
         end
 
-        # if the manga is from the temp file and the manga has chapters
+        # if the manga is from tempfile and the manga has chapters
         # then check if it has the right chapters 
         if manga_from_file and (manga_from_file.chapters.length > 0)
           frst = (manga.chapters_list[bgn][:name] == 
@@ -55,9 +56,13 @@ module Mangdown
                  manga_from_file.chapters.last.name)
           manga = manga_from_file if (frst and lst)
         else
-          manga.chapters_list[bgn..nd].each_index do |i|
-            no_time_out {manga.get_chapter(i + bgn)}
+          threads = []
+          manga.chapters_list[bgn..nd].each_index do |index|
+            threads << Thread.new(index) do |i|
+              no_time_out {manga.get_chapter(i + bgn)}
+            end
           end
+          threads.each {|thread| thread.join}
         end
 
         File.open(@tempfile, 'w') {|f| f.write(manga.to_yaml)}
