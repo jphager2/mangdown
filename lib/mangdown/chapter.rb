@@ -23,10 +23,16 @@ module Mangdown
 		# download all pages in a chapter
 		def download
 			Tools.return_to_start_dir do 
-				Dir.mkdir(@name) unless Dir.exists?(@name)
-				Dir.chdir(@name)
+        dir = File.expand_path(@name)
+				Dir.mkdir(dir) unless Dir.exists?(dir)
 				
-				@pages.each {|page| page.download}
+        threads = []
+				@pages.each do |page| 
+          threads << Thread.new(page) do |this_page| 
+				    Dir.chdir(dir)
+            this_page.download
+          end
+        end
 			end
 		end
 
