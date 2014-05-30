@@ -22,28 +22,32 @@ module Mangdown
 		# download should be in its own module
 		# download all pages in a chapter
 		def download
-			Tools.return_to_start_dir do 
-        dir = File.expand_path(@name)
-				Dir.mkdir(dir) unless Dir.exists?(dir)
-				
-        threads = []
-				@pages.each do |page| 
-          threads << Thread.new(page) do |this_page| 
-				    Dir.chdir(dir)
-            this_page.download
-          end
+      dir = File.expand_path(@name)
+      Dir.mkdir(dir) unless Dir.exists?(dir)
+      
+      threads = []
+      @pages.each do |page| 
+        threads << Thread.new(page) do |this_page| 
+          this_page.download_to(dir)
         end
-			end
+      end
+
+      threads.each {|thread| thread.join}
 		end
 
 		private
 			
 			# get page objects for all pages in a chapter
 			def get_pages
+        thread = []
         get_num_pages(get_page_doc(1)).times do |page|
-					hash = get_page(get_page_doc(page + 1)) 
-					@pages << hash.to_page 
+          threads << Thread.new(page) do |this_page|
+            hash = get_page(get_page_doc(this_page + 1)) 
+            @pages << hash.to_page 
+          end
 				end
+
+        threads.each {|thread| thread.join}
 			end
 	end
 

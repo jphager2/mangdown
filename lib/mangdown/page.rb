@@ -22,4 +22,13 @@ class Mangdown::Page
 			file.write(open(uri).read)
 		end
 	end
+
+  # downloads to specified directory
+  def download_to(dir)
+    path = dir + '/' + @name
+    return nil if File.exist?(path)
+    File.open(path, 'wb') do |file| 
+      file.write(open(uri).read)
+    end
+  end
 end
