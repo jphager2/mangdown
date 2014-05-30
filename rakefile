@@ -1,55 +1,27 @@
 require 'rake'
 require 'active_record'
 
+require_relative 'db/environment'
+
 task :test do
   puts `rspec ./spec/`
 end
 
 namespace :db do
-  config = {
-    "username"  => ENV["PG_USER"],
-    "password"  => ENV["PG_PASS"],
-    "database"  => 'mangdown',
-    "pool"      => "5",
-    "reconnect" => "false",
-    "encoding"  => "utf-8",
-    "adapter"   => "postgresql",
-  }
-
-  def establish_base_connection(config)
-    ActiveRecord::Base.establish_connection(
-      config.merge(
-        {
-          "database" => "postgres",
-          "schema_search_path" => "public",
-        }
-      )
-    )
-  end
-
-  def establish_connection(config)
-    ActiveRecord::Base.establish_connection(config)
-  end 
-    
+   
   task :create do
-    establish_base_connection(config) 
-    ActiveRecord::Base.connection.create_database(
-      config["database"],
-      config,
-    )
+    Mangdown::DB.establish_base_connection 
+    Mangdown::DB.create_database
   end
 
   task :drop do
-    establish_base_connection(config) 
-
-    ActiveRecord::Base.connection.drop_database(
-      config["database"],
-    )
+    Mangdown::DB.establish_base_connection 
+    Mangdown::DB.drop_database 
   end
 
   task :migrate do
-    establish_connection(config)
-    ActiveRecord::Migrator.migrate('db/migrate', nil)
+    Mangdown::DB.establish_base_connection 
+    Mangdown::DB.migrate
   end
 end
 
