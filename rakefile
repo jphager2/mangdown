@@ -16,7 +16,7 @@ namespace :db do
     "adapter"   => "postgresql",
   }
 
-  task :create do
+  def establish_base_connection(config)
     ActiveRecord::Base.establish_connection(
       config.merge(
         {
@@ -25,28 +25,31 @@ namespace :db do
         }
       )
     )
+  end
 
+  def establish_connection(config)
+    ActiveRecord::Base.establish_connection(config)
+  end 
+    
+  task :create do
+    establish_base_connection(config) 
     ActiveRecord::Base.connection.create_database(
       config["database"],
       config,
     )
-
-    ActiveRecord::Base.establish_connection(config)
   end
 
   task :drop do
-    ActiveRecord::Base.establish_connection(
-      config.merge(
-        {
-          "database" => "postgres",
-          "schema_search_path" => "public",
-        }
-      )
-    )
+    establish_base_connection(config) 
 
     ActiveRecord::Base.connection.drop_database(
       config["database"],
     )
+  end
+
+  task :migrate do
+    establish_connection(config)
+    ActiveRecord::Migrator.migrate('db/migrate', nil)
   end
 end
 
