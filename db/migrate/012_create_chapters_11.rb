@@ -1,9 +1,9 @@
 require_relative '../../lib/mangdown'
 require_relative '../chapter_script'
 
-class CreateChapters4 < ActiveRecord::Migration
+class CreateChapters11 < ActiveRecord::Migration
   def up
-    DB.create_chapters!('m', 'q', 1)
+    DB.create_chapters!('u', 'z', 2)
   end
 
   def down

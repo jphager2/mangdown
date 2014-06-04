@@ -2,6 +2,7 @@
 *~
 *.jpg
 *.yml
+*.log
 
 spec/objects/
 tmp/
