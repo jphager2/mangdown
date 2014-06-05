@@ -8,9 +8,9 @@ module DB
     logger = Logger.new('migrate_log.log')
 
     a_mangas = Manga.select do |m|
-      m.name.downcase >= start_char and 
-        m.name.downcase <= end_char and 
-        m.site_id == 2
+      m.name.downcase[0] >= start_char and 
+        m.name.downcase[0] <= end_char and 
+        m.site_id == site_id 
     end 
 
     a_mangas.each do |manga|
