@@ -1,7 +1,7 @@
 module Mangdown
 	class Chapter
 
-		attr_reader :name, :uri, :pages
+		attr_reader :name, :uri, :pages, :manga, :chapter
 
 		def initialize(name, uri)
       @manga = name.slice(/(^.+)\s/, 1) 
