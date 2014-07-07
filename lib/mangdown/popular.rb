@@ -39,11 +39,11 @@ module Mangdown
       end
 
       def get_pop_page_manga(time)
-        root = ::Mangdown::Tools.get_root(@uri)
+        root = Tools.get_root(@uri)
 
         num = 30 * (time)
         page = root + '/popular/' + num.to_s
-        doc = ::Mangdown::Tools.get_doc(page)
+        doc = Tools.get_doc(page)
 
         last = (@num_mangas > 30) ? 30 : @num_mangas
         @num_mangas -= 30
@@ -53,9 +53,10 @@ module Mangdown
 
       def get_manga_on_page(doc, root)
         doc.css('h3 a').map do |a| 
-          h = MDHash.new
-          h[:uri], h[:name] = (root + a['href']), a.text
-          h
+          MDHash.new({
+            uri: (root + a['href']),
+            name: a.text
+          })
         end
       end
   end
