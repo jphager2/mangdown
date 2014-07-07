@@ -39,16 +39,13 @@ module M
       manga[:name].downcase.include?(search.downcase)
     end
     
-		search_result.empty? ? (puts "Could not find manga") : search_result
+    search_result
   end
   
 	# download a manga (accepts MDHash) between the chapters given
 	# by default the entire manga will be downloaded
   def download(manga, first = 0, last = -1)
-    if manga.class == MDHash
-			manga = manga.to_manga
-    end
-
+		manga = manga.to_manga
     Tools::Downloader.new(manga, first, last)
   end
 
