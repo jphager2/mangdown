@@ -9,6 +9,8 @@ module Mangdown
       case site 
       when /mangareader/
 				mangareader
+      when /mangapanda/
+        mangareader
       when /mangafox/
 				mangafox
       else
