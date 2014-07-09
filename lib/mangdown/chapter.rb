@@ -67,7 +67,13 @@ module Mangdown
         threads.each {|thread| thread.join}
         return @pages.length
 			end
-	end
+
+     # get the number of pages
+			def get_num_pages(doc)
+				# the select is a dropdown menu of chapter pages
+        doc.css('select')[1].css('option').length
+			end	
+  end
 
 	# mangareader chapter object
 	class MRChapter < Chapter
@@ -95,12 +101,6 @@ module Mangdown
 					uri: image['src'], 
 					name: (image['alt'] + ".jpg")
 				)
-			end
-
-			# get the number of pages
-			def get_num_pages(doc)
-				# the select is a dropdown menu of chapter pages
-        doc.css('select')[1].css('option').length
 			end
 	end
 
@@ -131,7 +131,7 @@ module Mangdown
 
 			# get the number of pages
 			def get_num_pages(doc)
-        doc.css('select')[1].css('option').length - 1
+        super - 1
 			end
 	end
 end
