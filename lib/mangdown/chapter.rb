@@ -75,12 +75,16 @@ module Mangdown
 	
       # get the doc for a given page number
       def get_page_doc(num)
-        doc = Tools.get_doc(
-          Mangdown::Uri.new( 
-            @properties.root                                + 
-            "/#{@manga.gsub(' ', '-')}/#{@chapter}/#{num}"
-          ).downcase
-        )
+        root     = @properties.root
+        manga    = @manga.gsub(' ', '-')
+        uri_str  = "#{root}/#{manga}/#{@chapter}/#{num}"
+        page_uri = Mangdown::Uri.new(uri_str).downcase
+
+        Tools.get_doc(page_uri)
+      #rescue OpenURI::HTTPError => error 
+      #  print "Chapter: #{@chapter}, page: #{num}, "
+      #  print " uri: #{page_uri} >> "
+      #  puts  error.message 
       end
 		
 			# get the page uri and name
@@ -96,7 +100,7 @@ module Mangdown
 			# get the number of pages
 			def get_num_pages(doc)
 				# the select is a dropdown menu of chapter pages
-        doc.css('select')[1].children.length
+        doc.css('select')[1].css('option').length
 			end
 	end
 
@@ -127,7 +131,7 @@ module Mangdown
 
 			# get the number of pages
 			def get_num_pages(doc)
-				doc.css('select')[1].children.length - 1
+        doc.css('select')[1].css('option').length - 1
 			end
 	end
 end
