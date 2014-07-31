@@ -26,63 +26,6 @@ module Mangdown
     rescue Timeout::Error
       retry if (tries -= 1) >= 0  
     end
-
-    class Downloader
-      include Tools
-
-      def initialize(manga, first, last)
-        @tempfile = File.expand_path("#{manga.name}_temp.yml")
-
-        chapters = slow_get_chapters(manga, first, last)
-        slow_dl_chapters(chapters)
-      end
-
-      def slow_get_chapters(manga, bgn, nd)
-        # get Manga object from file if it exists
-        if File.exist?(@tempfile)
-          manga_from_file = YAML
-            .load(File.open(@tempfile, 'r').read) 
-        end
-
-        # if the manga is from tempfile and the manga has chapters
-        # then check if it has the right chapters 
-        if manga_from_file and (manga_from_file.chapters.length > 0)
-          frst = (manga.chapters_list[bgn][:name] == 
-                 manga_from_file.chapters.first.name) 
-          lst = (manga.chapters_list[nd][:name] == 
-                 manga_from_file.chapters.last.name)
-          manga = manga_from_file if (frst and lst)
-        else
-          threads = []
-          manga.chapters_list[bgn..nd].each_index do |index|
-            threads << Thread.new(index) do |i|
-              manga.get_chapter(i + bgn)
-            end
-          end
-          threads.each {|thread| thread.join}
-        end
-
-        File.open(@tempfile, 'w') {|f| f.write(manga.to_yaml)}
-
-        manga
-      end
-
-      def slow_dl_chapters(manga)
-        dir = File.expand_path(manga.name)
-        Dir.mkdir(dir) unless Dir.exist?(dir)
-
-        threads = []
-        manga.chapters.each do |chap|
-          threads << Thread.new(chap) do |this_chap|
-            this_chap.download_to(dir)
-          end
-        end
-
-        threads.each {|thread| thread.join}
-
-        File.delete(@tempfile)
-      end
-    end
   end
 end
 

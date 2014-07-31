@@ -41,13 +41,6 @@ module M
     
     search_result
   end
-  
-	# download a manga (accepts MDHash) between the chapters given
-	# by default the entire manga will be downloaded
-  def download(manga, first = 0, last = -1)
-		manga = manga.to_manga
-    Tools::Downloader.new(manga, first, last)
-  end
 
 	# cbz all subdirectories in a directory
   def cbz(dir)

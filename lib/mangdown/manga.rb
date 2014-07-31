@@ -1,59 +1,70 @@
+DOWNLOAD_DIR ||= Dir.home + '/manga'
 module Mangdown
 
 	# mangdown manga object, which holds chapters
   class Manga
 
-    attr_reader :name, :uri, :chapters, :chapters_list 
+    include Enumerable
+    attr_reader :name, :uri, :chapters, :enum 
 
     def initialize(name, uri)
 			@name = name
 			@uri  = uri
-
-      #Keeping these chapter objects in memory could be expensive
       @chapters = []
-      @chapters_list = []
 
-      get_chapters_list
+      get_chapters
     end
 
-		# explicit conversion to manga
-		def to_manga 
-			self
-		end
-
-		# get push MDHashes of manga chapters to @chapters 
-    def get_chapters_list
-			properties = Properties.new(@uri)
-      doc        = Tools.get_doc(@uri)
-			root       = properties.root
-
-      #get the link with chapter name and uri
-      doc.css(properties.manga_css_klass).each do |chapter|
-				@chapters_list << MDHash.new(
-					uri: (root + chapter[:href].sub(root, '')), 
-					name: chapter.text,
-				) 
+    public 
+      # download to current directory convenience method
+      def download(*args)
+        download_to(DOWNLOAD_DIR,*args)
+      end
+      
+      # download using enumerable
+      def download_to(dir, start = 0, stop = -1)
+        reset(start, stop)
+        loop do
+          self.next.to_chapter.download_to(dir + "/#{name}")
+        end
       end
 
-			@chapters_list.reverse! if properties.reverse 
-    end
-
-    # returns a MDHash if the chapter is found in @chapters 
-    def chapter_found(chapter)
-      @chapters.find do |chp| 
-        (chp.name == chapter[:name]) or (chp.uri == chapter[:uri])
+      # explicit conversion to manga
+      def to_manga 
+        self
       end
-    end
 
-		# pushes a Chapter object into @chapters unless it is already there
-    def get_chapter(index) 
-      chapter  = @chapters_list[index] 
+      # each for enumerating through chapters
+      def each
+        @chapters.each {|chapter| yield(chapter) if block_given?}
+      end 
 
-      unless chapter_found(chapter) 
-				@chapters << chapter.to_chapter 
-      else
-        puts "This chapter has already been added" 
+      # go through the chapters one at a time
+      def next
+        @enum || reset
+        @enum.next
       end
-    end
+
+      # reset enum for next
+      def reset(start = 0, stop = -1)
+        @enum = each[start..stop].lazy
+      end
+  
+      # get push MDHashes of manga chapters to @chapters 
+      def get_chapters
+        properties = Properties.new(@uri)
+        doc        = Tools.get_doc(@uri)
+        root       = properties.root
+
+        #get the link with chapter name and uri
+        doc.css(properties.manga_css_klass).each do |chapter|
+          @chapters << MDHash.new(
+            uri: (root + chapter[:href].sub(root, '')), 
+            name: chapter.text,
+          ) 
+        end
+
+        @chapters.reverse! if properties.reverse 
+      end
   end
 end

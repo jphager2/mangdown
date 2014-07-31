@@ -31,14 +31,13 @@ module Mangdown
       Dir.mkdir(dir) unless Dir.exists?(dir)
       
       threads = []
-      @pages.each do |page| 
+      each do |page| 
         threads << Thread.new(page) do |this_page| 
           Tools.no_time_out {this_page.download_to(dir)}
         end
       end
 
       threads.each {|thread| thread.join}
-      @pages.length
 		end
 
 		private
@@ -62,7 +61,6 @@ module Mangdown
         end
 
         threads.each {|thread| thread.join}
-        @pages.sort!.length
 			end
 
       # get the number of pages in a chapter
