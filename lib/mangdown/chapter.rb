@@ -50,10 +50,10 @@ module Mangdown
 				end
 
         threads.each {|thread| thread.join}
-        return @pages.length
+        @pages.length
 			end
 
-     # get the number of pages
+      # get the number of pages in a chapter
 			def get_num_pages(doc)
 				# the select is a dropdown menu of chapter pages
         doc.css('select')[1].css('option').length
@@ -72,10 +72,8 @@ module Mangdown
         page_uri = Mangdown::Uri.new(uri_str).downcase
 
         Tools.get_doc(page_uri)
-      #rescue OpenURI::HTTPError => error 
-      #  print "Chapter: #{@chapter}, page: #{num}, "
-      #  print " uri: #{page_uri} >> "
-      #  puts  error.message 
+      rescue SocketError => error 
+        STDERR.puts( "#{error.message} | #{name} | #{num}" )
       end
 		
 			# get the page uri and name
@@ -95,13 +93,15 @@ module Mangdown
 
       # get the doc for a given page number
       def get_page_doc(num)
-        doc = Tools.get_doc(
+        Tools.get_doc(
           Mangdown::Uri.new(
-            @properties.root                               + 
+            @properties.root                                + 
             "/manga/#{@manga.gsub(' ', '_')}/c#{@chapter}/" + 
             "#{num}.html"
           ).downcase
         )
+      rescue SocketError => error 
+        STDERR.puts( "#{error.message} | #{name} | #{num}" )
       end
 
 			# get the page name and uri

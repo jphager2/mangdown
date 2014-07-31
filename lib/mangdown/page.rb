@@ -16,9 +16,12 @@ class Mangdown::Page
 
   # downloads to specified directory
   def download_to(dir = Dir.pwd)
-    path = dir + '/' + @name
+    path = dir + '/' + name
     # don't download again
     return if File.exist?(path)
-    File.open(path, 'wb') {|file| file.write(open(uri).read)}
+    image = open(uri).read
+    File.open(path, 'wb') {|file| file.write(image)}
+  rescue SocketError => error
+    STDERR.puts( "#{error.message} | #{name} | #{uri}" )
   end
 end
