@@ -40,14 +40,20 @@ module Mangdown
 			# get page objects for all pages in a chapter
 			def get_pages
         threads = []
-        get_num_pages(get_page_doc(1)).times do |page|
-          threads << Thread.new(page) do |this_page|
-            Tools.no_time_out do 
-              hash = get_page(get_page_doc(this_page + 1)) 
-              @pages << hash.to_page 
+
+        num_pages = get_num_pages(Tools.get_doc(uri))
+        1.upto(num_pages) do |num|
+          threads << Thread.new(num) do |this_num|
+            Tools.no_time_out do
+              tries = 0
+              until doc = get_page_doc(this_num) || tries > 2
+                tries += 1
+              end
+              return unless doc
+              @pages << get_page(doc)
             end
           end
-				end
+        end
 
         threads.each {|thread| thread.join}
         @pages.length
@@ -58,6 +64,7 @@ module Mangdown
 				# the select is a dropdown menu of chapter pages
         doc.css('select')[1].css('option').length
 			end	
+
   end
 
 	# mangareader chapter object
@@ -83,7 +90,9 @@ module Mangdown
 				MDHash.new(
 					uri: image['src'], 
 					name: (image['alt'] + ".jpg")
-				)
+        ).to_page
+      rescue NoMethodError => error
+        puts 'doc was ' + doc.class
 			end
 	end
 
@@ -111,7 +120,7 @@ module Mangdown
 				MDHash.new(
 					uri: image[:src], 
 					name: image[:src].sub(/.+\//, '')
-				)
+        ).to_page
 			end
 
 			# get the number of pages
