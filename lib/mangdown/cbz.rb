@@ -50,7 +50,7 @@ module Mangdown
       # slice the last number in the file or directory name,
       # which will be either the page number or the chapter number
       num = name.slice(/(\d+)(\.jpg)*\Z/, 1)
-      return unless num
+      return name unless num
 
       zeros_to_add = (3-num.length) > 0 ? (3-num.length) : 0
       num = "0" * zeros_to_add + num
