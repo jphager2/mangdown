@@ -1,6 +1,7 @@
 class Mangdown::Page
 
 	include Mangdown 
+  include Comparable
 
 	attr_reader :name, :uri
 
@@ -8,6 +9,11 @@ class Mangdown::Page
 		@name = name
 		@uri  = Mangdown::Uri.new(uri) 
 	end
+
+  # space ship operator for sorting
+  def <=>(other)
+    self.name <=> other.name
+  end
 
 	# explicit conversion to page 
 	def to_page

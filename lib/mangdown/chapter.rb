@@ -1,6 +1,7 @@
 module Mangdown
 	class Chapter
 
+    include Enumerable
 		attr_reader :name, :uri, :pages, :manga, :chapter
 
 		def initialize(name, uri)
@@ -13,6 +14,11 @@ module Mangdown
 
 			get_pages
 		end
+
+    # enumerates through pages
+    def each
+      @pages.each {|page| yield(page) if block_given?}
+    end
 
 		# explicit conversion to chapter
 		def to_chapter
@@ -32,7 +38,7 @@ module Mangdown
       end
 
       threads.each {|thread| thread.join}
-      return @pages.length
+      @pages.length
 		end
 
 		private
@@ -56,7 +62,7 @@ module Mangdown
         end
 
         threads.each {|thread| thread.join}
-        @pages.length
+        @pages.sort!.length
 			end
 
       # get the number of pages in a chapter
