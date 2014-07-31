@@ -19,23 +19,6 @@ module Mangdown
 			self
 		end
 
-    def download
-      warn "#download is depreciated use #download_to"
-
-      dir = File.expand_path(@name)
-      Dir.mkdir(dir) unless Dir.exists?(dir)
-      
-      threads = []
-      @pages.each do |page| 
-        threads << Thread.new(page) do |this_page| 
-          this_page.download_to(dir)
-        end
-      end
-
-      threads.each {|thread| thread.join}
-      return @pages.length
-		end
-
 		# download all pages in a chapter
 		def download_to(dir)
       dir = File.expand_path(dir + '/' + @name)
@@ -44,7 +27,7 @@ module Mangdown
       threads = []
       @pages.each do |page| 
         threads << Thread.new(page) do |this_page| 
-          this_page.download_to(dir)
+          Tools.no_time_out {this_page.download_to(dir)}
         end
       end
 
@@ -59,8 +42,10 @@ module Mangdown
         threads = []
         get_num_pages(get_page_doc(1)).times do |page|
           threads << Thread.new(page) do |this_page|
-            hash = get_page(get_page_doc(this_page + 1)) 
-            @pages << hash.to_page 
+            Tools.no_time_out do 
+              hash = get_page(get_page_doc(this_page + 1)) 
+              @pages << hash.to_page 
+            end
           end
 				end
 

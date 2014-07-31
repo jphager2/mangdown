@@ -22,12 +22,9 @@ module Mangdown
     end
     
     def no_time_out(tries = 3, &block)
-      tries -= 1
-      begin 
-        timeout(120) { yield } 
-      rescue Timeout::Error
-        tries >= 0 ? no_time_out(tries, &block) : :timed_out
-      end
+      timeout(30) { yield } 
+    rescue Timeout::Error
+      retry if (tries -= 1) >= 0  
     end
 
     class Downloader
@@ -59,7 +56,7 @@ module Mangdown
           threads = []
           manga.chapters_list[bgn..nd].each_index do |index|
             threads << Thread.new(index) do |i|
-              no_time_out {manga.get_chapter(i + bgn)}
+              manga.get_chapter(i + bgn)
             end
           end
           threads.each {|thread| thread.join}
@@ -77,7 +74,7 @@ module Mangdown
         threads = []
         manga.chapters.each do |chap|
           threads << Thread.new(chap) do |this_chap|
-            no_time_out {this_chap.download_to(dir)}
+            this_chap.download_to(dir)
           end
         end
 
