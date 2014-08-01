@@ -1,45 +1,32 @@
 module Mangdown
   class PopularManga
 
-    attr_reader :uri, :mangas_list, :mangas, :name
+    include Enumerable
+    attr_reader :uri, :mangas, :name
 
-    def initialize(uri, num_mangas = 0, name = "My Pop Manga")
-      @uri = uri 
+    def initialize(uri, num_mangas = 30, name = "My Pop Manga")
+      @uri        = uri 
       @num_mangas = num_mangas
-      @name = name
-
-      @mangas_list = []
-
-      #Depreciated
-      @mangas = []
+      @name       = name
+      @mangas     = []
 
       get_mangas_list
     end
 
-    #Depreciated use MDHash.get_manga
-    def get_manga(number)
-      puts "This has been depreciated, don't use PopularManga @mangas!"
-      manga  = @mangas_list[number - 1]
-
-      unless @mangas.find {|mnga| (mnga.name == manga[:name]) or 
-                                   (mnga.uri == manga[:uri])}
-        @mangas << manga.to_manga
-      else
-        puts "This manga has already been added.."
-      end
+    # iterate over mangas (for enumerable)
+    def each
+      @mangas.each {|manga| yield(manga) if block_given?}
     end
 
     private
       def get_mangas_list
         (@num_mangas / 30.0).ceil.times do |time|
-          get_pop_page_manga(time).each do |manga| 
-            @mangas_list << manga
-          end
+          @mangas += get_pop_page_manga(time) 
         end
       end
 
       def get_pop_page_manga(time)
-        root = Tools.get_root(@uri)
+        root = Tools.get_root(uri)
 
         num = 30 * (time)
         page = root + '/popular/' + num.to_s

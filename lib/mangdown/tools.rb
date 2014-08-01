@@ -4,16 +4,7 @@ module Mangdown
   module Tools
     extend self
   
-		def return_to_start_dir 
-			start = Dir.pwd
-			yield
-			Dir.chdir(start)
-    rescue Exception => error
-      Dir.chdir(start)
-      raise error
-		end
-
-    def get_doc(uri)
+		def get_doc(uri)
 			@doc = ::Nokogiri::HTML(open(uri))
     end
 

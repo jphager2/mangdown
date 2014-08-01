@@ -1,5 +1,6 @@
-DOWNLOAD_DIR ||= Dir.home + '/manga'
 module Mangdown
+
+  DOWNLOAD_DIR ||= Dir.home + '/manga'
 
 	# mangdown manga object, which holds chapters
   class Manga
@@ -23,9 +24,11 @@ module Mangdown
       
       # download using enumerable
       def download_to(dir, start = 0, stop = -1)
+        dir += "/#{name}"
         reset(start, stop)
+        Dir.mkdir(dir) unless Dir.exist?(dir)
         loop do
-          self.next.to_chapter.download_to(dir + "/#{name}")
+          self.next.to_chapter.download_to(dir)
         end
       end
 
