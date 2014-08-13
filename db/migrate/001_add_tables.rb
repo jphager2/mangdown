@@ -22,17 +22,6 @@ class AddTables < ActiveRecord::Migration
       t.integer :site_id
     end
 
-    mangareader = Mangdown::MangaList.new( Site.find(1).uri )
-    mangafox    = Mangdown::MangaList.new( Site.find(2).uri )
-
-    mangareader.mangas.each do |md_hash|
-      Manga.create(md_hash.merge( {site_id: 1}))
-    end
-
-    mangafox.mangas.each do |md_hash|
-      Manga.create(md_hash.merge( {site_id: 2}))
-    end
-
     create_table :chapters do |t|
       t.string  :name
       t.string  :uri
