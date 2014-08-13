@@ -50,7 +50,7 @@ module M
 	# display help file
   def help
     help_file = File.expand_path(
-      '../../doc/help.txt', File.dirname(__FILE__)
+      '../../README.md', File.dirname(__FILE__)
     )
     puts File.open(help_file, 'r').read
   end
