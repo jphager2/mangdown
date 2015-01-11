@@ -6,3 +6,5 @@
 
 spec/objects/
 tmp/
+
+*.gem
