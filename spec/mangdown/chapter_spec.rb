@@ -6,9 +6,9 @@ module Mangdown
     name: 'Bleach 537',
     manga: 'Bleach',
     chapter: '537',
-	)
+  )
 
-	chapter = @@chapter_hash.to_chapter
+  chapter = @@chapter_hash.to_chapter
   chapter.download
   
   STUB_PATH = File.expand_path('../../objects/chapter.yml', __FILE__)
@@ -49,9 +49,9 @@ module Mangdown
             name: 'Kitsune no Yomeiri 1',
             manga: 'Kitsune no Yomeiri',
             chapter: 1,
-					)
+          )
 
-					chapter = hash.to_chapter
+          chapter = hash.to_chapter
           
           expect(chapter.pages).not_to be_empty
         end
