@@ -4,9 +4,9 @@ module Mangdown
   @@manga_hash = MDHash.new(
     uri:  'http://www.mangareader.net/94/bleach.html',
     name: 'Bleach'
-	)
+  )
 
-	manga = @@manga_hash.to_manga
+  manga = @@manga_hash.to_manga
   
   MANGA_STUB_PATH = File.expand_path('../../objects/manga.yml', 
                                      __FILE__)
@@ -34,9 +34,9 @@ module Mangdown
       context "as a MangaFox manga" do
         it "should have chapters" do
           hash = MDHash.new(
-						uri:  'http://mangafox.me/manga/masca_the_beginning/', 
-						name: 'Masca: The Beginning'
-					)
+            uri:  'http://mangafox.me/manga/masca_the_beginning/', 
+            name: 'Masca: The Beginning'
+          )
           manga = hash.to_manga
           expect(manga.chapters_list).not_to be_empty
         end
@@ -65,10 +65,10 @@ module Mangdown
 
     context "when a chapter is retrieved" do
       before(:all) do
-				@manga2 = YAML.load(File.open(
+        @manga2 = YAML.load(File.open(
                             Mangdown::MANGA_STUB_PATH, 'r').read)
         @manga2.get_chapter(0)
-				@mchapter = @manga2.chapters_list[0]
+        @mchapter = @manga2.chapters_list[0]
       end
 
       it "should have a chapter in chapters" do
@@ -79,14 +79,14 @@ module Mangdown
         expect(@manga2.chapters[0].name).to eq(@mchapter[:name])
       end
 
-			it "should have the right chapter sub class" do
-				klass = Chapter
-				if @mchapter[:uri].include?('mangareader')
-					klass = MRChapter
-				end
-				
-				expect(@manga2.chapters[0].class).to eq(klass)
-			end
+      it "should have the right chapter sub class" do
+        klass = Chapter
+        if @mchapter[:uri].include?('mangareader')
+          klass = MRChapter
+        end
+        
+        expect(@manga2.chapters[0].class).to eq(klass)
+      end
     end
   end
 end

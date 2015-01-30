@@ -5,9 +5,9 @@ module Mangdown
   describe MDHash do
     before(:all) do
       @hash = MDHash.new(
-				uri:  'http://www.mangareader.net/103/one-piece.html',
-				name: 'One Piece'
-			)
+        uri:  'http://www.mangareader.net/103/one-piece.html',
+        name: 'One Piece'
+      )
     end
 
     it "should get a manga object from get_manga" do
