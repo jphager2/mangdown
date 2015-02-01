@@ -25,4 +25,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '~> 2.14'
   s.add_development_dependency 'guard-rspec'
   s.add_development_dependency 'reek'
+  s.add_development_dependency 'webmock'
+  s.add_development_dependency 'vcr'
+  s.add_development_dependency 'rake'
 end

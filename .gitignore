@@ -5,6 +5,8 @@
 *.log
 
 spec/objects/
+spec/fixtures/
 tmp/
 
 *.gem
+
