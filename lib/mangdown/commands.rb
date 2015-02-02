@@ -4,42 +4,16 @@ module M
   include ::Mangdown
 
   DATA_FILE_PATH = Dir.home + '/.manga_list.yml'
-
-	# check if the search key contains letters or numbers
-  def valid_search?(search)
-    search =~ /\w/
-  end
-
-	# check if the data file is current
-	def file_current?(file)
-		File.exists?(file) ? File.mtime(file) > (Time.now - 604800) : false
-	end
+  HELP_FILE_PATH = File.expand_path(
+    '../../doc/help.txt', File.dirname(__FILE__)
+  )
 
   # return a list of hash with :uri and :name of mangas found in list
   def find(search)
-    unless valid_search?(search)
-      puts "Searches must contain letters and numbers.."
-      return []
-    end
-    
-		if file_current?(DATA_FILE_PATH)
-      list = YAML.load(File.open(DATA_FILE_PATH, 'r').read)
-    else
-      list = MangaList.new(
-        'http://www.mangareader.net/alphabetical',
-        'http://mangafox.me/manga/'                       
-      ) 
-
-      File.open(DATA_FILE_PATH, 'w+') do |file|
-        file.write( list.to_yaml )
-      end
-    end
-
-    search_result = list.mangas.select do |manga| 
-      manga[:name].downcase.include?(search.downcase)
-    end
-    
-    search_result
+    validate_search(search)
+    current_manga_list.mangas.select { |manga| 
+      manga[:name].downcase.include?(search.downcase) 
+    }
   end
 
 	# cbz all subdirectories in a directory
@@ -49,14 +23,36 @@ module M
 
 	# display help file
   def help
-    help_file = File.expand_path(
-      '../../doc/help.txt', File.dirname(__FILE__)
-    )
-    puts File.open(help_file, 'r').read
+    puts File.open(HELP_FILE_PATH, 'r').read
   end
 
 	# delete data file
   def clean_up
     File.delete(DATA_FILE_PATH) if File.exist?(DATA_FILE_PATH)
   end
+
+  private
+    # check if the data file is current
+    def file_current?(f)
+      File.exists?(f) && File.mtime(f) > (Time.now - 604800)
+    end
+
+    # get saved current manga list, if data is less than a week old
+    # otherwise fetch new data and write it to the data file
+    def current_manga_list
+      path = DATA_FILE_PATH
+      return YAML.load(File.open(path, 'r').read) if file_current?(path)
+
+      MangaList.new(
+        'http://www.mangareader.net/alphabetical',
+        'http://mangafox.me/manga/'
+      ).tap { |list| File.open(path,'w+') {|f| f.write(list.to_yaml)} }
+    end
+
+    # check if the search key contains letters or numbers
+    def validate_search(search)
+      unless search =~ /\w/
+        raise ArgumentError "Searches must contain letters and numbers.."
+      end
+    end
 end
