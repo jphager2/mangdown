@@ -5,19 +5,19 @@ module Mangdown
 		attr_reader :name, :uri, :pages, :manga, :chapter
 
 		def initialize(name, uri)
-      @manga = name.slice(/(^.+)\s/, 1) 
-      @chapter = name.slice(/\d+\z/) 
-			@name  = name
-			@uri   = Mangdown::Uri.new(uri)
-			@pages = []
+			@name       = name
+      @manga      = name.slice(/(^.+)\s/, 1) 
+      @chapter    = name.slice(/\d+\z/) 
+			@uri        = Mangdown::Uri.new(uri)
       @properties = Properties.new(@uri)
+			@pages      = []
 
 			get_pages
 		end
 
     # enumerates through pages
     def each
-      @pages.each {|page| yield(page) if block_given?}
+      block_given? ? @pages.each { |page| yield(page) } : @pages.each
     end
 
 		# explicit conversion to chapter
@@ -41,7 +41,6 @@ module Mangdown
 		end
 
 		private
-			
 			# get page objects for all pages in a chapter
 			def get_pages
         threads = []
@@ -74,7 +73,6 @@ module Mangdown
 	# mangareader chapter object
 	class MRChapter < Chapter
 		private
-	
       # get the doc for a given page number
       def get_page_doc(num)
         root     = @properties.root
@@ -103,7 +101,6 @@ module Mangdown
 	# mangafox chapter object
 	class MFChapter < Chapter
 		private
-
       # get the doc for a given page number
       def get_page_doc(num)
         Tools.get_doc(

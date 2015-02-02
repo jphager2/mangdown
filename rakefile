@@ -1,11 +1,19 @@
 require 'rake'
-require 'active_record'
+require 'rake/testtask'
 
-require_relative 'db/environment'
+#require 'active_record'
+#require_relative 'db/environment'
 
-task :test do
-  puts `rspec ./spec/`
+Rake::TestTask.new do |t|
+  t.test_files = FileList['spec/lib/mangdown/*_spec.rb'].shuffle
+  t.verbose = true
 end
+
+task :run_all_tests do
+  Dir.glob('test/**/**/*.rb').each {|file| load file}
+end
+
+task default: [:test]
 
 namespace :db do
    
@@ -24,6 +32,3 @@ namespace :db do
     Mangdown::DB.migrate
   end
 end
-
-task default: [:test]
-
