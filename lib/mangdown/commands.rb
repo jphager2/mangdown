@@ -18,7 +18,7 @@ module M
 
 	# cbz all subdirectories in a directory
   def cbz(dir)
-		Dir.exist?(dir) ? CBZ.all(dir) : (puts "Cannot find directory")
+		Dir.exist?(dir) ? (CBZ.all(dir)) : (raise Errno::ENOENT, dir) 
   end
 
 	# display help file
@@ -32,16 +32,29 @@ module M
   end
 
   private
+    # convenience method to access the data file path
+    def path
+      DATA_FILE_PATH
+    end
+
     # check if the data file is current
     def file_current?(f)
       File.exists?(f) && File.mtime(f) > (Time.now - 604800)
     end
 
+    # attempt to get the list from the data file
+    def data_from_file
+      YAML.load(File.open(path, 'r').read) if file_current?(path)
+    rescue Psych::SyntaxError => error
+      error
+    end
+
+
     # get saved current manga list, if data is less than a week old
     # otherwise fetch new data and write it to the data file
     def current_manga_list
-      path = DATA_FILE_PATH
-      return YAML.load(File.open(path, 'r').read) if file_current?(path)
+      data = data_from_file
+      return data if data.is_a? Mangdown::MangaList
 
       MangaList.new(
         'http://www.mangareader.net/alphabetical',
@@ -52,7 +65,7 @@ module M
     # check if the search key contains letters or numbers
     def validate_search(search)
       unless search =~ /\w/
-        raise ArgumentError "Searches must contain letters and numbers.."
+        raise ArgumentError, "Searches must contain letters and numbers"
       end
     end
 end

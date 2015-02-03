@@ -3,7 +3,7 @@ Mangdown
 
 Commands
 
-    M#find(string) - Will return an array of Mangdown::MDHash given 
+    M.find(string) - Will return an array of Mangdown::MDHash given 
                      a string which is matched to manga names of the 
                      3000 most popular mangas on Mangareader.
 
@@ -37,12 +37,16 @@ Commands
     # naruto is the Mangdown::Manga object from the example above
     naruto.download_to(Dir.home + '/manga', 500, 549)
     
-    M#clean_up     - Will delete .manga_list.yml file from the home
+    M.cbz(path)    - Will validate names of subdirectories in the path
+                     and thier files and then Zip those subdirectories
+                     with a .cbz extention
+
+    M.clean_up     - Will delete .manga_list.yml file from the home
                      directory
 
     M.clean_up
 
 
-    M#help         - Will display help for commands
+    M.help         - Will display help for commands
 
 =======================================================================
