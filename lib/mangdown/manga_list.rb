@@ -14,8 +14,12 @@ module Mangdown
 		# get a list of mangas from the uri
     def get_mangas(uri)
 			properties = Properties.new(uri)
-      doc        = Tools.get_doc(uri)
-      
+      if properties.empty?
+        raise ArgumentError, 
+          "Bad URI: No Properties Specified for URI <#{uri}>"
+      end
+
+      doc = Tools.get_doc(uri)
       # This should be put in a tool
 			doc.css(properties.manga_list_css_klass).each do |a|
 				@mangas << MDHash.new( 

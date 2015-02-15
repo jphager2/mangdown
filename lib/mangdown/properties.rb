@@ -9,7 +9,10 @@ module Mangdown
       case site 
       when /mangareader/
 				mangareader
-      when /mangapanda/
+      when /mangapanda/ 
+        #mangapanda is a mirror of mangareader
+        #that being said, I really don't think this works
+        #especially with @info[:root]
         mangareader
       when /mangafox/
 				mangafox
@@ -36,8 +39,14 @@ module Mangdown
 			@info[:reverse]              = true
 		end
 
+    def empty?
+      @info.empty?
+    end
+
 		private
 			def method_missing(method, *args, &block)
+        # this should probably be if @info.has_key?(method)
+        # or more consisely @info.fetch(method) { super }
 				return @info[method] unless @info[method].nil?
 				super
 			end
