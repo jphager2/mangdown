@@ -5,7 +5,10 @@ module Mangdown
 		attr_reader :name, :uri, :pages, :manga, :chapter
 
 		def initialize(name, uri)
-			@name       = name
+      # use a valid name
+			@name       = name.sub(/\s(\d+)$/) { |num| 
+        ' ' + num.to_i.to_s.rjust(3, '0')
+      }
       @manga      = name.slice(/(^.+)\s/, 1) 
       @chapter    = name.slice(/\d+\z/) 
 			@uri        = Mangdown::Uri.new(uri)
@@ -13,6 +16,7 @@ module Mangdown
 			@pages      = []
 
 			get_pages
+      @pages.sort_by! {|page| page.name}
 		end
 
     # enumerates through pages
