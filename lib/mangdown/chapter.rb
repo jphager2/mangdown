@@ -10,7 +10,7 @@ module Mangdown
         ' ' + num.to_i.to_s.rjust(3, '0')
       }
       @manga      = name.slice(/(^.+)\s/, 1) 
-      @chapter    = name.slice(/\d+\z/) 
+      @chapter    = name.slice(/\d+\z/).to_i 
 			@uri        = Mangdown::Uri.new(uri)
       @properties = Properties.new(@uri)
 			@pages      = []

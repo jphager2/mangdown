@@ -3,6 +3,7 @@ require_relative '../../spec_helper'
 describe Mangdown::Chapter do
   let(:download_path) { File.expand_path('../../../../tmp', __FILE__) }
   let(:chapter_name) { "Dragon Ball 1" }
+  let(:download_chapter_name) { "Dragon Ball 001" }
   let(:uri)  { 
     "http://www.mangareader.net/105-2100-1/dragon-ball/chapter-1.html" 
   }
@@ -62,7 +63,7 @@ describe Mangdown::Chapter do
     end
 
     it 'must create a subdirectory with the chapter name' do
-      Dir.exist?("#{download_path}/#{chapter_name}").must_equal true
+      Dir.exist?("#{download_path}/#{download_chapter_name}").must_equal true
     end
 
     it 'must have page files in the sub directory' do
