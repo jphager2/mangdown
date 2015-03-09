@@ -19,6 +19,8 @@ module Mangdown
     end
 
     private
+      # I guess this is only for manga reader. need to use properties
+      # and or sub classes for other sites
       def get_mangas_list
         (@num_mangas / 30.0).ceil.times do |time|
           @mangas += get_pop_page_manga(time) 
