@@ -5,10 +5,21 @@ module Mangdown
 
     attr_reader :mangas
 
-    def initialize(*uri)
-      @mangas = []
+    def self.from_data(mangas)
+      new(nil, mangas: mangas) 
+    end
 
-      uri.each {|uri| get_mangas(uri)}
+    def initialize(*uri, mangas: [])
+      @mangas = mangas
+      if mangas.empty?
+        uri.each {|uri| get_mangas(uri)} 
+      else
+        @mangas.map! { |hash| MDHash.new(hash) }
+      end
+    end
+
+    def to_yaml
+      @mangas.map(&:to_hash).to_yaml
     end
 
 		# get a list of mangas from the uri

@@ -37,6 +37,8 @@ describe Mangdown::Manga do
 
     it 'must download to the given dir' do
       dir = Mangdown::DOWNLOAD_DIR + '/random'
+      FileUtils.rm_r(dir, force: true) if Dir.exist?(dir)
+
       Dir.mkdir(dir)
       @manga.download_to(dir)
 

@@ -41,7 +41,7 @@ describe Mangdown::Manga do
 
     it 'must raise an exception if not a manga' do
       [@md_chapter, @md_page].each do |type|
-        Proc.new { type.to_manga }.must_raise Exception
+        Proc.new { type.to_manga }.must_raise NoMethodError
       end
     end
   end
@@ -58,7 +58,7 @@ describe Mangdown::Manga do
 
     it 'must raise an exception if not a chapter' do
       [@md_page, @md_manga].each do |type|
-        Proc.new { type.to_chapter }.must_raise Exception
+        Proc.new { type.to_chapter }.must_raise NoMethodError
       end
     end
   end
@@ -70,9 +70,8 @@ describe Mangdown::Manga do
 
     it 'must raise an exception if not a page' do
       [@md_chapter, @md_manga].each do |type|
-        Proc.new { type.to_page }.must_raise Exception
+        Proc.new { type.to_page }.must_raise NoMethodError
       end
     end
-
   end
 end

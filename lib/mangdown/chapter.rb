@@ -97,7 +97,7 @@ module Mangdown
 					uri: image['src'], 
 					name: (image['alt'] + ".jpg"),
           site: @properties.type,
-        ).to_page
+        )
       rescue NoMethodError => error
         puts 'doc was ' + doc.class
 			end
@@ -127,7 +127,7 @@ module Mangdown
 					uri: image[:src], 
 					name: image[:src].sub(/.+\//, ''),
           site: @properties.type,
-        ).to_page
+        )
 			end
 
 			# get the number of pages

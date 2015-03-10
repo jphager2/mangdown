@@ -32,40 +32,39 @@ module M
   end
 
   private
-    # convenience method to access the data file path
-    def path
-      DATA_FILE_PATH
+  # convenience method to access the data file path
+  def path
+    DATA_FILE_PATH
+  end
+
+  # check if the data file is current
+  def file_current?(f)
+    File.exists?(f) && File.mtime(f) > (Time.now - 604800)
+  end
+
+  # attempt to get the list from the data file
+  def data_from_file
+    YAML.load(File.read(path)) if file_current?(path)
+  end
+
+  # get saved current manga list, if data is less than a week old
+  # otherwise fetch new data and write it to the data file
+  def current_manga_list
+    data = data_from_file
+    return MangaList.from_data(data) if data.is_a? Array 
+
+    MangaList.new(
+      'http://www.mangareader.net/alphabetical',
+      'http://mangafox.me/manga/'
+    ).tap { |list| File.open(path,'w+') {|f| f.write(list.to_yaml)} }
+  rescue Object => error
+    puts "#{path} is corrupt: #{error.message}"
+  end
+
+  # check if the search key contains letters or numbers
+  def validate_search(search)
+    unless search =~ /\w/
+      raise ArgumentError, "Searches must contain letters and numbers"
     end
-
-    # check if the data file is current
-    def file_current?(f)
-      File.exists?(f) && File.mtime(f) > (Time.now - 604800)
-    end
-
-    # attempt to get the list from the data file
-    def data_from_file
-      YAML.load(File.open(path, 'r').read) if file_current?(path)
-    rescue Psych::SyntaxError => error
-      error
-    end
-
-
-    # get saved current manga list, if data is less than a week old
-    # otherwise fetch new data and write it to the data file
-    def current_manga_list
-      data = data_from_file
-      return data if data.is_a? Mangdown::MangaList
-
-      MangaList.new(
-        'http://www.mangareader.net/alphabetical',
-        'http://mangafox.me/manga/'
-      ).tap { |list| File.open(path,'w+') {|f| f.write(list.to_yaml)} }
-    end
-
-    # check if the search key contains letters or numbers
-    def validate_search(search)
-      unless search =~ /\w/
-        raise ArgumentError, "Searches must contain letters and numbers"
-      end
-    end
+  end
 end
