@@ -12,6 +12,7 @@ module Mangdown
 			@name = name
 			@uri  = uri
       @chapters = []
+      @properties = Properties.new(@uri)
 
       get_chapters
     end
@@ -55,19 +56,19 @@ module Mangdown
 
     # get push MDHashes of manga chapters to @chapters 
     def get_chapters
-      properties = Properties.new(@uri)
       doc        = Tools.get_doc(@uri)
-      root       = properties.root
+      root       = @properties.root
 
       #get the link with chapter name and uri
-      doc.css(properties.manga_css_klass).each do |chapter|
+      doc.css(@properties.manga_css_klass).each do |chapter|
         @chapters << MDHash.new(
           uri: (root + chapter[:href].sub(root, '')), 
           name: chapter.text,
+          site: @properties.type,
         ) 
       end
 
-      @chapters.reverse! if properties.reverse 
+      @chapters.reverse! if @properties.reverse 
     end
   end
 end

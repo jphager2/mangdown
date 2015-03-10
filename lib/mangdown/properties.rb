@@ -6,7 +6,7 @@ module Mangdown
 		def initialize(site)
 			@info = Hash.new
 
-      case site 
+      case site.to_s 
       when /mangareader/
         @type = :mangareader
 				mangareader
@@ -58,7 +58,7 @@ module Mangdown
     end
 
     def is_page?(obj)
-      obj.uri.slice(@info[:page_url_regex]) == obj.uri
+      #obj.uri.slice(@info[:page_url_regex]) == obj.uri
     end
 
     def empty?

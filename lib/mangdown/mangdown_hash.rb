@@ -1,11 +1,12 @@
 module Mangdown
   # This isn't good, should just have the data in an instance variable
   class MDHash
+    attr_reader :properties
 
 		def initialize(options = {})
       @hash = {}
       [:uri, :name].each { |key| @hash[key]  = options.fetch(key) }
-      @properties = Properties.new(@hash[:uri])
+      @properties = Properties.new(options[:site] || @hash[:uri])
 		end
 
 		# explicit conversion to manga 

@@ -95,7 +95,8 @@ module Mangdown
 
 				MDHash.new(
 					uri: image['src'], 
-					name: (image['alt'] + ".jpg")
+					name: (image['alt'] + ".jpg"),
+          site: @properties.type,
         ).to_page
       rescue NoMethodError => error
         puts 'doc was ' + doc.class
@@ -124,7 +125,8 @@ module Mangdown
 
 				MDHash.new(
 					uri: image[:src], 
-					name: image[:src].sub(/.+\//, '')
+					name: image[:src].sub(/.+\//, ''),
+          site: @properties.type,
         ).to_page
 			end
 
