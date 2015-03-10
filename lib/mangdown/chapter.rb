@@ -37,7 +37,7 @@ module Mangdown
       threads = []
       each do |page| 
         threads << Thread.new(page) do |this_page| 
-          Tools.no_time_out {this_page.download_to(dir)}
+          Tools.no_time_out {this_page.to_page.download_to(dir)}
         end
       end
 

@@ -38,7 +38,7 @@ describe Mangdown::Chapter do
     it 'must iterate through each page' do
       count = 0
       @chapter.each do |page|
-        page.must_be_instance_of Mangdown::Page
+        page.to_page.must_be_instance_of Mangdown::Page
         count += 1 
       end
       count.must_equal @chapter.pages.length
