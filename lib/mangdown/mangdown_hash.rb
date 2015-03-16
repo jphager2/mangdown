@@ -1,6 +1,7 @@
 module Mangdown
-  # This isn't good, should just have the data in an instance variable
   class MDHash
+    include Equality
+
     attr_reader :properties
 
 		def initialize(options = {})

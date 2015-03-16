@@ -1,6 +1,7 @@
 module Mangdown
 	class Chapter
 
+    include Equality
     include Enumerable
 		attr_reader :name, :uri, :pages, :manga, :chapter
 

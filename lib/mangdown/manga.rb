@@ -5,6 +5,7 @@ module Mangdown
 	# mangdown manga object, which holds chapters
   class Manga
 
+    include Equality
     include Enumerable
     attr_reader :name, :uri, :chapters, :enum 
 

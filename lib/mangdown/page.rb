@@ -1,9 +1,7 @@
 module Mangdown
   class Page
 
-    include Mangdown 
-    include Comparable
-
+    include Equality
     attr_reader :name, :uri
 
     def initialize(name, uri)
