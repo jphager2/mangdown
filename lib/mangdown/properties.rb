@@ -31,11 +31,11 @@ module Mangdown
 			@info[:root]                 ||= 'http://www.mangareader.net'
 			@info[:manga_link_prefix]    ||= @info[:root] 
 			@info[:reverse]              = false
-      @info[:manga_url_regex]      = 
+      @info[:manga_uri_regex]      = 
         /#{@info[:root]}(\/\d+)?(\/[^\/]+)(\.html)?/i
-      @info[:chapter_url_regex]    = 
+      @info[:chapter_uri_regex]    = 
         /#{@info[:root]}(\/[^\/]+){1,2}\/(\d+|chapter-\d+\.html)/i
-      @info[:page_url_regex]       = /.+\.(png|jpg|jpeg)$/i
+      @info[:page_uri_regex]       = /.+\.(png|jpg|jpeg)$/i
 		end
 
     def mangapanda
@@ -51,25 +51,25 @@ module Mangdown
 			@info[:root]                 = 'http://mangafox.me'
 			@info[:manga_link_prefix]    = ''
 			@info[:reverse]              = true
-      @info[:manga_url_regex]      = 
+      @info[:manga_uri_regex]      = 
         /#{@info[:root]}\/manga\/[^\/]+?\//i
-      @info[:chapter_url_regex]    = /
-        #{@info[:manga_url_regex]}
+      @info[:chapter_uri_regex]    = /
+        #{@info[:manga_uri_regex]}
         (v\d+\/)?(c\d+\/)(1\.html)
       /xi
-      @info[:page_url_regex]       = /.+\.(png|jpg|jpeg)$/i
+      @info[:page_uri_regex]       = /.+\.(png|jpg|jpeg)$/i
 		end
 
     def is_manga?(obj)
-      obj.uri.slice(@info[:manga_url_regex]) == obj.uri
+      obj.uri.slice(@info[:manga_uri_regex]) == obj.uri
     end
 
     def is_chapter?(obj)
-      obj.uri.slice(@info[:chapter_url_regex]) == obj.uri
+      obj.uri.slice(@info[:chapter_uri_regex]) == obj.uri
     end
 
     def is_page?(obj)
-      obj.uri.slice(@info[:page_url_regex]) == obj.uri
+      obj.uri.slice(@info[:page_uri_regex]) == obj.uri
     end
 
     def empty?
