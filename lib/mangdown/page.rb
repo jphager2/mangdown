@@ -7,7 +7,7 @@ module Mangdown
     attr_reader :name, :uri
 
     def initialize(name, uri)
-      @name = name.sub(/(\s)(\d+)(\.\w+)$/) { 
+      @name = name.sub(/([^\d])(\d+)(\.\w+)$/) { 
         "#{Regexp.last_match[1]}" +
         "#{Regexp.last_match[2].to_s.rjust(3, '0')}" +
         "#{Regexp.last_match[3]}" 
