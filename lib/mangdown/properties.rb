@@ -15,7 +15,7 @@ module Mangdown
         #that being said, I really don't think this works
         #especially with @info[:root]
         @type = :mangapanda
-        mangareader
+        mangapanda
       when /mangafox/
         @type = :mangafox
 				mangafox
@@ -28,8 +28,8 @@ module Mangdown
 			@info[:manga_list_css_klass] = 'ul.series_alpha li a'
 			@info[:manga_css_klass]      = 'div#chapterlist td a'
 			@info[:chapter_klass]        = MRChapter
-			@info[:root]                 = 'http://www.mangareader.net'
-			@info[:manga_link_prefix]    = @info[:root] 
+			@info[:root]                 ||= 'http://www.mangareader.net'
+			@info[:manga_link_prefix]    ||= @info[:root] 
 			@info[:reverse]              = false
       @info[:manga_url_regex]      = 
         /#{@info[:root]}(\/\d+)?(\/[^\/]+)(\.html)?/i
@@ -37,6 +37,12 @@ module Mangdown
         /#{@info[:root]}(\/[^\/]+){1,2}\/(\d+|chapter-\d+\.html)/i
       @info[:page_url_regex]       = /.+\.(png|jpg|jpeg)$/i
 		end
+
+    def mangapanda
+      @info[:root]                 = 'http://www.mangapanda.com'
+			@info[:manga_link_prefix]    = @info[:root] 
+      mangareader
+    end
 
 		def mangafox
 			@info[:manga_list_css_klass] = 'div.manga_list li a'

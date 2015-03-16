@@ -61,7 +61,6 @@ module Mangdown
     def type
       @properties.type
     end
-
   end
 end
 
