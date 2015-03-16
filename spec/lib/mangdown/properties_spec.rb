@@ -1,7 +1,5 @@
 require_relative '../../spec_helper'
 
-require_relative '../../spec_helper'
-
 describe Mangdown::Properties do
   let(:mangareader) {
     Mangdown::Properties.new('http://www.mangareader.net/101/akira.html')
