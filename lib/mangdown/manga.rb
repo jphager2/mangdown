@@ -11,7 +11,7 @@ module Mangdown
 
     def initialize(name, uri)
 			@name = name
-			@uri  = uri
+			@uri  = Mangdown::Uri.new(uri)
       @chapters = []
       @properties = Properties.new(@uri)
 

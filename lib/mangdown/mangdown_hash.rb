@@ -5,10 +5,11 @@ module Mangdown
     attr_reader :properties
 
 		def initialize(options = {})
-      @hash = {}
       @properties = Properties.new(options[:site] || options[:uri])
 
+      @hash = {}
       [:uri, :name].each {|key| @hash[key] = options.fetch(key)}
+      @hash[:uri]  = Mangdown::Uri.new(@hash[:uri])
       @hash[:site] = @properties.type
 		end
 
