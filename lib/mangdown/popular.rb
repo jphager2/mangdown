@@ -1,6 +1,7 @@
 module Mangdown
   class PopularManga
 
+    include Equality
     include Enumerable
     attr_reader :uri, :mangas, :name
 
