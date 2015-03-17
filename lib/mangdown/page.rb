@@ -29,7 +29,7 @@ module Mangdown
       # don't download again
       return if File.exist?(path)
       image = open(uri).read
-      File.open(path, 'wb') {|file| file.write(image)}
+      Tools.no_time_out { File.open(path, 'wb') { |file| file.write(image) } }
     rescue SocketError => error
       STDERR.puts( "#{error.message} | #{name} | #{uri}" )
     end

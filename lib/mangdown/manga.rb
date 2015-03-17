@@ -16,7 +16,7 @@ module Mangdown
       @properties = Properties.new(@uri)
 
       get_chapters
-      #@chapters.select! { |chapter| @properties.is_chapter?(chapter) }
+      @chapters.select! { |chapter| @properties.is_chapter?(chapter) }
     end
 
     # download to current directory convenience method
