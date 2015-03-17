@@ -16,15 +16,13 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
 
   s.add_runtime_dependency 'activerecord'
-  s.add_runtime_dependency 'pg',       '~> 0.15.1'
+  s.add_runtime_dependency 'pg',           '~> 0.15.1'
 
-  s.add_runtime_dependency 'faraday',  '~> 0.9.0'
-  s.add_runtime_dependency 'nokogiri', '~> 1.6.0' 
-  s.add_runtime_dependency 'rubyzip',  '~> 1.1.0'
+  s.add_runtime_dependency 'faraday',      '~> 0.9.0'
+  s.add_runtime_dependency 'nokogiri',     '~> 1.6.0' 
+  s.add_runtime_dependency 'rubyzip',      '~> 1.1.0'
+  s.add_runtime_dependency 'progress_bar', '~> 1.0.3'
 
-  s.add_development_dependency 'rspec', '~> 2.14'
-  s.add_development_dependency 'guard-rspec'
-  s.add_development_dependency 'reek'
   s.add_development_dependency 'webmock'
   s.add_development_dependency 'vcr'
   s.add_development_dependency 'rake'

@@ -1,3 +1,5 @@
+require 'progress_bar'
+
 module Mangdown
 
   DOWNLOAD_DIR ||= Dir.home + '/manga'
@@ -26,11 +28,14 @@ module Mangdown
     
     # download using enumerable
     def download_to(dir, start = 0, stop = -1)
-      dir += "/#{name}"
+      start, stop = validate_indeces!(start, stop)
+      dir         = setup_download_dir!(dir)
+
+      bar = progress_bar(start, stop)
       reset(start, stop)
-      Dir.mkdir(dir) unless Dir.exist?(dir)
       loop do
         self.next.to_chapter.download_to(dir)
+        bar.increment!
       end
     end
 
@@ -71,6 +76,30 @@ module Mangdown
       end
 
       @chapters.reverse! if @properties.reverse 
+    end
+
+    def chapter_indeces(start, stop)
+      [chapters.index(chapters[start]), chapters.index(chapters[stop])]
+    end
+
+    def setup_download_dir!(dir)
+      dir += "/#{name}"
+      Dir.mkdir(dir) unless Dir.exist?(dir)
+      dir
+    end
+
+    def validate_indeces!(start, stop)
+      i_start, i_stop = chapter_indeces(start, stop)
+      if i_stop < i_stop
+        error = 'Last index must be greater than first index'
+        raise ArgumentError, error
+      end 
+      [i_start, i_stop]
+    end
+
+    # create a progress bar object for start and stop indexes
+    def progress_bar(start, stop)
+      ProgressBar.new(stop - start + 1)
     end
   end
 end
