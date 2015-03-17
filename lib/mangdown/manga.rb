@@ -21,6 +21,13 @@ module Mangdown
       @chapters.select! { |chapter| @properties.is_chapter?(chapter) }
     end
 
+    def inspect
+      "#<#{self.class} @name=#{name} @uri=#{uri} " +
+      "@chapters=[#{chapters.first(10).join(',')}" +
+      "#{",..." if chapters.length > 10}]>"
+    end
+    alias_method :to_s, :inspect
+
     # download to current directory convenience method
     def download(*args)
       download_to(DOWNLOAD_DIR,*args)

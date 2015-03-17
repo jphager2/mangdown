@@ -5,7 +5,7 @@ module Mangdown
     end
 
     def ==(other)
-      puts "You may want to use :eql?"
+      # puts "You may want to use :eql?"
       super
     end
   end

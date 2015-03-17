@@ -54,10 +54,14 @@ module Mangdown
       @hash[key]
     end
 
-    def inspect
+    def to_hash
       @hash
     end
-    alias_method :to_hash, :inspect
+
+    def inspect
+      to_hash.to_s
+    end
+    alias_method :to_s, :inspect
 
     def type
       @properties.type

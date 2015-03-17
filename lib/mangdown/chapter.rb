@@ -20,6 +20,13 @@ module Mangdown
       @pages.sort_by! {|page| page.name}
 		end
 
+    def inspect
+      "#<#{self.class} @name=#{name} @uri=#{uri} " +
+      "@pages=[#{pages.first(10).join(',')}"       +
+      "#{",..." if pages.length > 10}]>"
+    end
+    alias_method :to_s, :inspect
+
     # enumerates through pages
     def each
       block_given? ? @pages.each { |page| yield(page) } : @pages.each
