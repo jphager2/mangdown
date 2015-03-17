@@ -35,14 +35,16 @@ module Mangdown
       dir = File.expand_path(dir + '/' + @name)
       Dir.mkdir(dir) unless Dir.exists?(dir)
       
-      threads = []
-      each do |page| 
-        threads << Thread.new(page) do |this_page| 
-          this_page.to_page.download_to(dir)
+      # Limit active threads to 20
+      each_slice(20) do |slice| 
+        threads = []
+        slice.each do |page|
+          threads << Thread.new(page) do |this_page| 
+            this_page.to_page.download_to(dir)
+          end
         end
+        threads.each {|thread| thread.join}
       end
-
-      threads.each {|thread| thread.join}
 		end
 
 		private
