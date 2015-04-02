@@ -5,11 +5,11 @@ files.push('LICENSE', 'doc/help.txt')
 
 Gem::Specification.new do |s|
   s.name        = 'mangdown'
-  s.version     = '0.10.2'
+  s.version     = '0.11.0'
 	s.date        = "#{Time.now.strftime("%Y-%m-%d")}"
 	s.homepage    = 'https://github.com/jphager2/mangdown'
-  s.summary     = 'Downloads Manga, 0.10.0 has some big API changes'
-  s.description = 'A gem to download Manga, (pg integration in dev)'
+  s.summary     = 'Downloads Manga'
+  s.description = 'A gem to download Manga, (now using hydra)'
   s.authors     = ['jphager2']
   s.email       = 'jphager2@gmail.com'
   s.files       = files 
