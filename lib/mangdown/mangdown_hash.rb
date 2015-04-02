@@ -25,7 +25,7 @@ module Mangdown
 		# explicit conversion to chapter 
 		def to_chapter
       if @properties.is_chapter?(self)
-        @properties.chapter_klass.new(name, uri)
+        Chapter.new(name, uri)
       else
         raise NoMethodError, 'This is not a known chapter type'
       end

@@ -51,7 +51,7 @@ module Mangdown
 		private
     # get page objects for all pages in a chapter
     def get_pages
-      pages = (1..get_num_pages(Tools.get_doc(uri)))
+      pages = (1..@properties.num_pages(Tools.get_doc(uri)))
         .map { |num| get_page_hash(num) }
 
       Tools.hydra(pages) do |page, body|
@@ -59,43 +59,6 @@ module Mangdown
       end
     end
 
-    # get the number of pages in a chapter
-    def get_num_pages(doc)
-      # the select is a dropdown menu of chapter pages
-      doc.css('select')[1].css('option').length
-    end	
-
-  end
-
-	# mangareader chapter object
-	class MRChapter < Chapter
-		private
-      # get the doc for a given page number
-      def get_page_hash(num)
-        root     = @properties.root
-        manga    = @manga.gsub(' ', '-')
-        uri_str  = "#{root}/#{manga}/#{@chapter}/#{num}"
-
-        MDHash.new(
-          uri: Mangdown::Uri.new(uri_str).downcase, name: num
-        )
-      end
-		
-			# get the page uri and name
-			def get_page(doc)
-				image = doc.css('img')[0]
-
-				MDHash.new(
-					uri: image['src'], 
-					name: (image['alt'] + ".jpg"),
-          site: @properties.type,
-        )
-			end
-	end
-
-	# mangafox chapter object
-	class MFChapter < Chapter
-		private
     # get the doc for a given page number
     def get_page_hash(num)
       uri_str = @properties.build_page_uri(uri, @manga, @chapter, num)
@@ -110,13 +73,8 @@ module Mangdown
       MDHash.new(
         uri:  @properties.page_image_src(doc), 
         name: @properties.page_image_name(doc),
-        site: @properties.type,
+        site: @properties.type
       )
     end
-
-    # get the number of pages
-    def get_num_pages(doc)
-      super - 1
-    end
-	end
+  end
 end
