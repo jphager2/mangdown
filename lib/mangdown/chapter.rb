@@ -48,7 +48,7 @@ module Mangdown
       end
 		end
 
-		#private
+		private
     # get page objects for all pages in a chapter
     def get_pages
       pages = (1..get_num_pages(Tools.get_doc(uri)))
@@ -98,9 +98,7 @@ module Mangdown
 		private
     # get the doc for a given page number
     def get_page_hash(num)
-      root     = @properties.root
-      manga    = @manga.gsub(' ', '_')
-      uri_str  = "/manga/#{manga}/c#{@chapter}/#{num}.html"
+      uri_str = uri.sub(/\d+\.html/, "#{num}.html")
 
       MDHash.new(
         uri: Mangdown::Uri.new(uri_str).downcase, name: num
