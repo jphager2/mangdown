@@ -36,6 +36,14 @@ module Mangdown
       @info[:chapter_uri_regex]    = 
         /#{@info[:root]}(\/[^\/]+){1,2}\/(\d+|chapter-\d+\.html)/i
       @info[:page_uri_regex]       = /.+\.(png|jpg|jpeg)$/i
+      @info[:page_image_block]     = ->(doc)   { doc.css('img')[0] }
+      @info[:page_image_src_block] = ->(image) { image[:src] }
+      @info[:page_image_name_block] = ->(image) { 
+        image[:alt].sub(/.+\//, '') 
+      }
+      @info[:build_page_uri_block] = ->(uri, manga, chapter, num) {
+        uri.sub(/\d+\.html/, "#{num}.html")
+      }
 		end
 
     def mangapanda
@@ -58,6 +66,14 @@ module Mangdown
         (v\d+\/)?(c\d+\/)(1\.html)
       /xi
       @info[:page_uri_regex]       = /.+\.(png|jpg|jpeg)$/i
+      @info[:page_image_block]     = ->(doc)   { doc.css('img')[0] }
+      @info[:page_image_src_block] = ->(image) { image[:src] }
+      @info[:page_image_name_block] = ->(image) { 
+        image[:alt].sub(/.+\//, '') 
+      }
+      @info[:build_page_uri_block] = ->(uri, manga, chapter, num) {
+        uri.sub(/\d+\.html/, "#{num}.html")
+      }
 		end
 
     def is_manga?(obj)
@@ -74,6 +90,22 @@ module Mangdown
 
     def empty?
       @info.empty?
+    end
+
+    def page_image(doc)
+      @info[:page_image_block].call(doc)
+    end
+
+    def page_image_src(doc)
+      @info[:page_image_src_block].call(page_image(doc))
+    end
+
+    def page_image_name(doc)
+      @info[:page_image_name_block].call(page_image(doc))
+    end
+
+    def build_page_uri(*args)
+      @info[:build_page_uri_block].call(*args)
     end
 
 		private

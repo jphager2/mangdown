@@ -98,7 +98,7 @@ module Mangdown
 		private
     # get the doc for a given page number
     def get_page_hash(num)
-      uri_str = uri.sub(/\d+\.html/, "#{num}.html")
+      uri_str = @properties.build_page_uri(uri, @manga, @chapter, num)
 
       MDHash.new(
         uri: Mangdown::Uri.new(uri_str).downcase, name: num
@@ -107,11 +107,9 @@ module Mangdown
 
     # get the page name and uri
     def get_page(doc)
-      image = doc.css('img')[0]
-
       MDHash.new(
-        uri: image[:src], 
-        name: image[:src].sub(/.+\//, ''),
+        uri:  @properties.page_image_src(doc), 
+        name: @properties.page_image_name(doc),
         site: @properties.type,
       )
     end
