@@ -5,6 +5,7 @@ module Mangdown
     attr_reader :name, :uri
 
     def initialize(name, uri)
+      name.gsub!(/_/, ' ') && name.gsub!(/-/, '')
       @name = name.sub(/([^\d])(\d+)(\.\w+)$/) { 
         "#{Regexp.last_match[1]}" +
         "#{Regexp.last_match[2].to_s.rjust(3, '0')}" +
