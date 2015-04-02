@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.version     = '0.11.0'
 	s.date        = "#{Time.now.strftime("%Y-%m-%d")}"
 	s.homepage    = 'https://github.com/jphager2/mangdown'
-  s.summary     = 'Downloads Manga'
+  s.summary     = 'Downloads Manga (no longer MRChapter nor MFChapter)'
   s.description = 'A gem to download Manga, (now using hydra)'
   s.authors     = ['jphager2']
   s.email       = 'jphager2@gmail.com'
