@@ -5,7 +5,7 @@ module Mangdown
     extend self
   
 		def get_doc(uri)
-			@doc = ::Nokogiri::HTML(open(uri))
+			@doc = ::Nokogiri::HTML(Typhoeus.get("uri"))
     end
 
     def get_root(uri)
