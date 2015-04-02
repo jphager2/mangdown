@@ -43,7 +43,8 @@ module Mangdown
       Dir.mkdir(dir) unless Dir.exists?(dir)
       
       Tools.hydra(map { |page| page.to_page }) do |page, data|
-        page.write_to_path(dir, data)
+        next if File.exist?(path = page.file_path(dir))
+        File.open(path, 'wb') { |file| file.write(data) }
       end
 		end
 

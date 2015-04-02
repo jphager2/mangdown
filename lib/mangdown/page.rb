@@ -21,14 +21,10 @@ module Mangdown
 
     # downloads to specified directory
     def download_to(dir = Dir.pwd)
-      write_to_path(dir, Tools.get(uri))
+      return if File.exist?(path = file_path(dir))
+      File.open(path, 'wb') { |file| file.write(Tools.get(uri)) }
     rescue SocketError => error
       STDERR.puts( "#{error.message} | #{name} | #{uri}" )
-    end
-
-    def write_to_path(dir, data)
-      return if File.exist?(path = file_path(dir))
-      File.open(path, 'wb') { |file| file.write(data) }
     end
 
     def file_path(dir)
