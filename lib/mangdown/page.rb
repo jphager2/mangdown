@@ -14,11 +14,6 @@ module Mangdown
       @uri  = Mangdown::Uri.new(uri) 
     end
 
-    # space ship operator for sorting
-    def <=>(other)
-      self.name <=> other.name
-    end
-
     # explicit conversion to page 
     def to_page
       self
@@ -26,13 +21,18 @@ module Mangdown
 
     # downloads to specified directory
     def download_to(dir = Dir.pwd)
-      path = dir + '/' + name
-      # don't download again
-      return if File.exist?(path)
-      image = open(uri).read
-      Tools.no_time_out { File.open(path, 'wb') { |file| file.write(image) } }
+      write_to_path(dir, Tools.get(uri))
     rescue SocketError => error
       STDERR.puts( "#{error.message} | #{name} | #{uri}" )
+    end
+
+    def write_to_path(dir, data)
+      return if File.exist?(path = file_path(dir))
+      File.open(path, 'wb') { |file| file.write(data) }
+    end
+
+    def file_path(dir)
+      Tools.relative_or_absolute_path(dir, name)
     end
   end
 end

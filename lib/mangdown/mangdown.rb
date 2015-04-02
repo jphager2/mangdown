@@ -8,5 +8,10 @@ module Mangdown
       # puts "You may want to use :eql?"
       super
     end
+
+    # space ship operator for sorting
+    def <=>(other)
+      self.name <=> other.name
+    end
   end
 end

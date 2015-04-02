@@ -39,48 +39,30 @@ module Mangdown
 
 		# download all pages in a chapter
 		def download_to(dir)
-      dir = File.expand_path(dir + '/' + @name)
+      dir = Tools.relative_or_absolute_path(dir, @name)
       Dir.mkdir(dir) unless Dir.exists?(dir)
       
-      # Limit active threads to 20
-      each_slice(20) do |slice| 
-        threads = []
-        slice.each do |page|
-          threads << Thread.new(page) do |this_page| 
-            this_page.to_page.download_to(dir)
-          end
-        end
-        threads.each {|thread| thread.join}
+      Tools.hydra(map { |page| page.to_page }) do |page, data|
+        page.write_to_path(dir, data)
       end
 		end
 
-		private
-			# get page objects for all pages in a chapter
-			def get_pages
-        threads = []
+		#private
+    # get page objects for all pages in a chapter
+    def get_pages
+      pages = (1..get_num_pages(Tools.get_doc(uri)))
+        .map { |num| get_page_hash(num) }
 
-        num_pages = get_num_pages(Tools.get_doc(uri))
-        1.upto(num_pages) do |num|
-          threads << Thread.new(num) do |this_num|
-            Tools.no_time_out do
-              tries = 0
-              until doc = get_page_doc(this_num) || tries > 2
-                tries += 1
-              end
-              return unless doc
-              @pages << get_page(doc)
-            end
-          end
-        end
+      Tools.hydra(pages) do |page, body|
+        @pages << get_page(Nokogiri::HTML(body))
+      end
+    end
 
-        threads.each {|thread| thread.join}
-			end
-
-      # get the number of pages in a chapter
-			def get_num_pages(doc)
-				# the select is a dropdown menu of chapter pages
-        doc.css('select')[1].css('option').length
-			end	
+    # get the number of pages in a chapter
+    def get_num_pages(doc)
+      # the select is a dropdown menu of chapter pages
+      doc.css('select')[1].css('option').length
+    end	
 
   end
 
@@ -88,15 +70,14 @@ module Mangdown
 	class MRChapter < Chapter
 		private
       # get the doc for a given page number
-      def get_page_doc(num)
+      def get_page_hash(num)
         root     = @properties.root
         manga    = @manga.gsub(' ', '-')
         uri_str  = "#{root}/#{manga}/#{@chapter}/#{num}"
-        page_uri = Mangdown::Uri.new(uri_str).downcase
 
-        Tools.get_doc(page_uri)
-      rescue SocketError => error 
-        STDERR.puts( "#{error.message} | #{name} | #{num}" )
+        MDHash.new(
+          uri: Mangdown::Uri.new(uri_str).downcase, name: num
+        )
       end
 		
 			# get the page uri and name
@@ -108,41 +89,37 @@ module Mangdown
 					name: (image['alt'] + ".jpg"),
           site: @properties.type,
         )
-      rescue NoMethodError => error
-        puts 'doc was ' + doc.class
 			end
 	end
 
 	# mangafox chapter object
 	class MFChapter < Chapter
 		private
-      # get the doc for a given page number
-      def get_page_doc(num)
-        Tools.get_doc(
-          Mangdown::Uri.new(
-            @properties.root                                + 
-            "/manga/#{@manga.gsub(' ', '_')}/c#{@chapter}/" + 
-            "#{num}.html"
-          ).downcase
-        )
-      rescue SocketError => error 
-        STDERR.puts( "#{error.message} | #{name} | #{num}" )
-      end
+    # get the doc for a given page number
+    def get_page_hash(num)
+      root     = @properties.root
+      manga    = @manga.gsub(' ', '_')
+      uri_str  = "/manga/#{manga}/c#{@chapter}/#{num}.html"
 
-			# get the page name and uri
-			def get_page(doc)
-				image = doc.css('img')[0]
+      MDHash.new(
+        uri: Mangdown::Uri.new(uri_str).downcase, name: num
+      )
+    end
 
-				MDHash.new(
-					uri: image[:src], 
-					name: image[:src].sub(/.+\//, ''),
-          site: @properties.type,
-        )
-			end
+    # get the page name and uri
+    def get_page(doc)
+      image = doc.css('img')[0]
 
-			# get the number of pages
-			def get_num_pages(doc)
-        super - 1
-			end
+      MDHash.new(
+        uri: image[:src], 
+        name: image[:src].sub(/.+\//, ''),
+        site: @properties.type,
+      )
+    end
+
+    # get the number of pages
+    def get_num_pages(doc)
+      super - 1
+    end
 	end
 end
