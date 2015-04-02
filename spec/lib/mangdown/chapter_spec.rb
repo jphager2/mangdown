@@ -10,7 +10,7 @@ describe Mangdown::Chapter do
 
   before do
     VCR.insert_cassette 'events', record: :new_episodes
-    @chapter =  Mangdown::MRChapter.new(chapter_name, uri)
+    @chapter =  Mangdown::Chapter.new(chapter_name, uri)
   end
 
   after do

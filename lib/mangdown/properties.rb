@@ -25,24 +25,24 @@ module Mangdown
 		end
 
 		def mangareader
-			@info[:manga_list_css_klass] = 'ul.series_alpha li a'
-			@info[:manga_css_klass]      = 'div#chapterlist td a'
-			@info[:chapter_klass]        = MRChapter
-			@info[:root]                 ||= 'http://www.mangareader.net'
-			@info[:manga_link_prefix]    ||= @info[:root] 
-			@info[:reverse]              = false
-      @info[:manga_uri_regex]      = 
+			@info[:manga_list_css_klass]  = 'ul.series_alpha li a'
+			@info[:manga_css_klass]       = 'div#chapterlist td a'
+			@info[:root]                  ||= 'http://www.mangareader.net'
+			@info[:manga_link_prefix]     ||= @info[:root] 
+			@info[:reverse]               = false
+      @info[:manga_uri_regex]       = 
         /#{@info[:root]}(\/\d+)?(\/[^\/]+)(\.html)?/i
-      @info[:chapter_uri_regex]    = 
+      @info[:chapter_uri_regex]     = 
         /#{@info[:root]}(\/[^\/]+){1,2}\/(\d+|chapter-\d+\.html)/i
-      @info[:page_uri_regex]       = /.+\.(png|jpg|jpeg)$/i
-      @info[:page_image_block]     = ->(doc)   { doc.css('img')[0] }
-      @info[:page_image_src_block] = ->(image) { image[:src] }
-      @info[:page_image_name_block] = ->(image) { 
-        image[:alt].sub(/.+\//, '') 
+      @info[:page_uri_regex]        = /.+\.(png|jpg|jpeg)$/i
+      @info[:page_image_block]      = ->(doc)   { doc.css('img')[0] }
+      @info[:page_image_src_block]  = ->(image) { image[:src] }
+      @info[:page_image_name_block] = ->(image) { "#{image[:alt]}.jpg" }
+      @info[:build_page_uri_block]  = ->(uri, manga, chapter, num) {
+        "#{root}/#{manga.gsub(' ', '-')}/#{chapter}/#{num}"
       }
-      @info[:build_page_uri_block] = ->(uri, manga, chapter, num) {
-        uri.sub(/\d+\.html/, "#{num}.html")
+      @info[:num_pages_block]       = ->(doc) { 
+        doc.css('select')[1].css('option').length
       }
 		end
 
@@ -53,26 +53,26 @@ module Mangdown
     end
 
 		def mangafox
-			@info[:manga_list_css_klass] = 'div.manga_list li a'
-			@info[:manga_css_klass]      = 'a.tips'
-			@info[:chapter_klass]        = MFChapter
-			@info[:root]                 = 'http://mangafox.me'
-			@info[:manga_link_prefix]    = ''
-			@info[:reverse]              = true
-      @info[:manga_uri_regex]      = 
+			@info[:manga_list_css_klass]  = 'div.manga_list li a'
+			@info[:manga_css_klass]       = 'a.tips'
+			@info[:root]                  = 'http://mangafox.me'
+			@info[:manga_link_prefix]     = ''
+			@info[:reverse]               = true
+      @info[:manga_uri_regex]       = 
         /#{@info[:root]}\/manga\/[^\/]+?\//i
-      @info[:chapter_uri_regex]    = /
-        #{@info[:manga_uri_regex]}
-        (v\d+\/)?(c\d+\/)(1\.html)
-      /xi
-      @info[:page_uri_regex]       = /.+\.(png|jpg|jpeg)$/i
-      @info[:page_image_block]     = ->(doc)   { doc.css('img')[0] }
-      @info[:page_image_src_block] = ->(image) { image[:src] }
+      @info[:chapter_uri_regex]     = 
+        /#{@info[:manga_uri_regex]}(v\d+\/)?(c\d+\/)(1\.html)/i
+      @info[:page_uri_regex]        = /.+\.(png|jpg|jpeg)$/i
+      @info[:page_image_block]      = ->(doc)   { doc.css('img')[0] }
+      @info[:page_image_src_block]  = ->(image) { image[:src] }
       @info[:page_image_name_block] = ->(image) { 
         image[:alt].sub(/.+\//, '') 
       }
-      @info[:build_page_uri_block] = ->(uri, manga, chapter, num) {
+      @info[:build_page_uri_block]  = ->(uri, manga, chapter, num) {
         uri.sub(/\d+\.html/, "#{num}.html")
+      }
+      @info[:num_pages_block]       = ->(doc) { 
+        doc.css('select')[1].css('option').length - 1
       }
 		end
 
@@ -90,6 +90,10 @@ module Mangdown
 
     def empty?
       @info.empty?
+    end
+
+    def num_pages(doc)
+      @info[:num_pages_block].call(doc)
     end
 
     def page_image(doc)
