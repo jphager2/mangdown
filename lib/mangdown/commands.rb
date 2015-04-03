@@ -7,6 +7,14 @@ module M
   HELP_FILE_PATH = File.expand_path(
     '../../doc/help.txt', File.dirname(__FILE__)
   )
+  MANGA_PAGES = (1..9).map { |p| 
+      "http://www.wiemanga.com/search/?name_sel=contain" +
+      "&author_sel=contain&completed_series=either&page=#{p}.html"
+    } +
+    [
+      'http://www.mangareader.net/alphabetical',
+      'http://mangafox.me/manga/'
+    ]
 
   # return a list of hash with :uri and :name of mangas found in list
   def find(search)
@@ -53,10 +61,9 @@ module M
     data = data_from_file
     return MangaList.from_data(data) if data.is_a? Array 
 
-    MangaList.new(
-      'http://www.mangareader.net/alphabetical',
-      'http://mangafox.me/manga/'
-    ).tap { |list| File.open(path,'w+') {|f| f.write(list.to_yaml)} }
+    MangaList.new(*MANGA_PAGES).tap { |list| 
+      File.open(path,'w+') {|f| f.write(list.to_yaml)} 
+    }
   rescue Object => error
     puts "#{path} is corrupt: #{error.message}"
     raise

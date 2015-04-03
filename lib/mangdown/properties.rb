@@ -19,6 +19,9 @@ module Mangdown
       when /mangafox/
         @type = :mangafox
 				mangafox
+      when /wiemanga/
+        @type = :wiemanga
+				wiemanga
       else
         raise ArgumentError, 
           "Bad Site: No Properties Specified for Site <#{site}>"
@@ -29,6 +32,7 @@ module Mangdown
 			@info[:manga_list_css_klass]  = 'ul.series_alpha li a'
 			@info[:manga_css_klass]       = 'div#chapterlist td a'
 			@info[:root]                  ||= 'http://www.mangareader.net'
+      @info[:manga_list_uri]        = "#{@info[:root]}/alphabetical"
 			@info[:manga_link_prefix]     ||= @info[:root] 
 			@info[:reverse]               = false
       @info[:manga_uri_regex]       = 
@@ -57,6 +61,7 @@ module Mangdown
 			@info[:manga_list_css_klass]  = 'div.manga_list li a'
 			@info[:manga_css_klass]       = 'a.tips'
 			@info[:root]                  = 'http://mangafox.me'
+      @info[:manga_list_uri]        = "#{@info[:root]}/manga"
 			@info[:manga_link_prefix]     = ''
 			@info[:reverse]               = true
       @info[:manga_uri_regex]       = 
@@ -77,6 +82,34 @@ module Mangdown
       }
 		end
 
+		def wiemanga
+			@info[:root]                  ||= 'http://www.wiemanga.com'
+      @info[:manga_list_uri]        = 
+        "#{@info[:root]}/search/?name_sel=contain&author_sel=contain" +
+        "&completed_series=either"
+			@info[:manga_list_css_klass]  = 'a.resultbookname'
+			@info[:manga_css_klass]       = 
+        '.chapterlist tr:not(:first-child) .col1 a'
+			@info[:manga_link_prefix]     ||= '' 
+			@info[:reverse]               = true
+      @info[:manga_uri_regex]       = 
+        /#{@info[:root]}\/manga\/([^\/]+)(\.html)?/i
+      @info[:chapter_uri_regex]     = 
+        /#{@info[:root]}\/chapter\/([^\/]+)\/(\d+)(\/|\.html)?/i
+      @info[:page_uri_regex]        = /.+\.(png|jpg|jpeg)$/i
+      @info[:page_image_block]      = -> { doc.css('img#comicpic')[0] }
+      @info[:page_image_src_block]  = -> { page_image[:src] }
+      @info[:page_image_name_block] = -> { 
+        page_image[:src].sub(/.+\//, '') 
+      }
+      @info[:build_page_uri_block]  = ->(uri, manga, chapter, num) {
+        "#{uri}-#{num}.html"
+      }
+      @info[:num_pages_block]       = -> { 
+        doc.css('select#page')[1].css('option').length
+      }
+		end
+
     def is_manga?(uri = @uri)
       uri.slice(@info[:manga_uri_regex]) == uri
     end
@@ -87,10 +120,6 @@ module Mangdown
 
     def is_page?(uri = @uri)
       uri.slice(@info[:page_uri_regex]) == uri
-    end
-
-    def empty?
-      @info.empty?
     end
 
     def num_pages
@@ -126,20 +155,20 @@ module Mangdown
         next(nil) unless is_chapter?(chapter.first)
         block_given? ? yield(chapter) : chapter 
       }.compact
-      reverse? ? chapters.reverse! : chapters
+      reverse? ? chapters.reverse : chapters
     end
 
     def reverse?
       !!@info[:reverse]
     end
 
+    def root
+      @info[:root]
+    end
+
 		private
     def doc
       @doc ||= Tools.get_doc(@uri)
-    end
-
-    def method_missing(method, *args, &block)
-      @info.fetch(method) { super }
     end
 	end
 end
