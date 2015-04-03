@@ -1,26 +1,26 @@
 module Mangdown
 	class Properties
 
-		attr_reader :info, :type
+		attr_reader :info, :type, :doc
 
-		def initialize(site)
-			@info = Hash.new
+		def initialize(uri, site = nil)
+			@info  = Hash.new
+      @doc   = Tools.get_doc(uri)
+      site ||= uri
 
       case site.to_s 
       when /mangareader/
         @type = :mangareader
 				mangareader
       when /mangapanda/ 
-        #mangapanda is a mirror of mangareader
-        #that being said, I really don't think this works
-        #especially with @info[:root]
         @type = :mangapanda
         mangapanda
       when /mangafox/
         @type = :mangafox
 				mangafox
       else
-        nil
+        raise ArgumentError, 
+          "Bad Site: No Properties Specified for Site <#{site}>"
       end
 		end
 
@@ -35,13 +35,13 @@ module Mangdown
       @info[:chapter_uri_regex]     = 
         /#{@info[:root]}(\/[^\/]+){1,2}\/(\d+|chapter-\d+\.html)/i
       @info[:page_uri_regex]        = /.+\.(png|jpg|jpeg)$/i
-      @info[:page_image_block]      = ->(doc)   { doc.css('img')[0] }
-      @info[:page_image_src_block]  = ->(image) { image[:src] }
-      @info[:page_image_name_block] = ->(image) { "#{image[:alt]}.jpg" }
+      @info[:page_image_block]      = -> { doc.css('img')[0] }
+      @info[:page_image_src_block]  = -> { page_image[:src] }
+      @info[:page_image_name_block] = -> { "#{page_image[:alt]}.jpg" }
       @info[:build_page_uri_block]  = ->(uri, manga, chapter, num) {
         "#{root}/#{manga.gsub(' ', '-')}/#{chapter}/#{num}"
       }
-      @info[:num_pages_block]       = ->(doc) { 
+      @info[:num_pages_block]       = -> { 
         doc.css('select')[1].css('option').length
       }
 		end
@@ -63,61 +63,78 @@ module Mangdown
       @info[:chapter_uri_regex]     = 
         /#{@info[:manga_uri_regex]}(v\d+\/)?(c\d+\/)(1\.html)/i
       @info[:page_uri_regex]        = /.+\.(png|jpg|jpeg)$/i
-      @info[:page_image_block]      = ->(doc)   { doc.css('img')[0] }
-      @info[:page_image_src_block]  = ->(image) { image[:src] }
-      @info[:page_image_name_block] = ->(image) { 
-        image[:alt].sub(/.+\//, '') 
+      @info[:page_image_block]      = -> { doc.css('img')[0] }
+      @info[:page_image_src_block]  = -> { page_image[:src] }
+      @info[:page_image_name_block] = -> { 
+        page_image[:alt].sub(/.+\//, '') 
       }
       @info[:build_page_uri_block]  = ->(uri, manga, chapter, num) {
         uri.sub(/\d+\.html/, "#{num}.html")
       }
-      @info[:num_pages_block]       = ->(doc) { 
+      @info[:num_pages_block]       = -> { 
         doc.css('select')[1].css('option').length - 1
       }
 		end
 
-    def is_manga?(obj)
-      obj.uri.slice(@info[:manga_uri_regex]) == obj.uri
+    def is_manga_uri?(uri)
+      uri.slice(@info[:manga_uri_regex]) == uri
     end
 
-    def is_chapter?(obj)
-      obj.uri.slice(@info[:chapter_uri_regex]) == obj.uri
+    def is_chapter_uri?(uri)
+      uri.slice(@info[:chapter_uri_regex]) == uri
     end
 
-    def is_page?(obj)
-      obj.uri.slice(@info[:page_uri_regex]) == obj.uri
+    def is_page_uri?(uri)
+      uri.slice(@info[:page_uri_regex]) == uri
     end
 
     def empty?
       @info.empty?
     end
 
-    def num_pages(doc)
-      @info[:num_pages_block].call(doc)
+    def num_pages
+      @info[:num_pages_block].call
     end
 
-    def page_image(doc)
-      @info[:page_image_block].call(doc)
+    def page_image
+      @info[:page_image_block].call
     end
 
-    def page_image_src(doc)
-      @info[:page_image_src_block].call(page_image(doc))
+    def page_image_src
+      @info[:page_image_src_block].call
     end
 
-    def page_image_name(doc)
-      @info[:page_image_name_block].call(page_image(doc))
+    def page_image_name
+      @info[:page_image_name_block].call
     end
 
     def build_page_uri(*args)
       @info[:build_page_uri_block].call(*args)
     end
 
+    def manga_list
+      doc.css(@info[:manga_list_css_klass]).map { |a| 
+        manga = ["#{@info[:manga_link_prefix]}#{a[:href]}", a.text]
+        block_given? ? yield(manga) : manga
+      }
+    end
+
+    def manga_chapters
+      chapters = doc.css(@info[:manga_css_klass]).map { |a|
+        chapter = [(root + a[:href].sub(root, '')), a.text, type]
+        next(nil) unless is_chapter_uri?(chapter.first)
+        block_given? ? yield(chapter) : chapter 
+      }.compact!
+      reverse? ? chapters.reverse! : chapters
+    end
+
+    def reverse?
+      !!@info[:reverse]
+    end
+
 		private
     def method_missing(method, *args, &block)
-      # this should probably be if @info.has_key?(method)
-      # or more consisely @info.fetch(method) { super }
-      return @info[method] unless @info[method].nil?
-      super
+      @info.fetch(method) { super }
     end
 	end
 end

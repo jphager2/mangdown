@@ -2,10 +2,8 @@ module Mangdown
   class MDHash
     include Equality
 
-    attr_reader :properties
-
 		def initialize(options = {})
-      @properties = Properties.new(options[:site] || options[:uri])
+      @properties = Properties.new(options[:uri], options[:site])
 
       @hash = {}
       [:uri, :name].each {|key| @hash[key] = options.fetch(key)}
@@ -15,7 +13,7 @@ module Mangdown
 
 		# explicit conversion to manga 
     def to_manga
-      if @properties.is_manga?(self)
+      if @properties.is_manga_uri?(uri)
         Manga.new(name, uri)
       else
         raise NoMethodError, 'This is not a known manga type'
@@ -24,7 +22,7 @@ module Mangdown
 
 		# explicit conversion to chapter 
 		def to_chapter
-      if @properties.is_chapter?(self)
+      if @properties.is_chapter_uri?(uri)
         Chapter.new(name, uri)
       else
         raise NoMethodError, 'This is not a known chapter type'
@@ -33,7 +31,7 @@ module Mangdown
 
 		# explicit conversion to page 
  	  def to_page 
-      if @properties.is_page?(self)
+      if @properties.is_page_uri?(uri)
         Page.new(name, uri)
       else
         raise NoMethodError, 'This is not a known page type'

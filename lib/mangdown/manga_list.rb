@@ -22,21 +22,11 @@ module Mangdown
       @mangas.map(&:to_hash).to_yaml
     end
 
+    private
 		# get a list of mangas from the uri
     def get_mangas(uri)
-			properties = Properties.new(uri)
-      if properties.empty?
-        raise ArgumentError, 
-          "Bad URI: No Properties Specified for URI <#{uri}>"
-      end
-
-      doc = Tools.get_doc(uri)
-      # This should be put in a tool
-			doc.css(properties.manga_list_css_klass).each do |a|
-				@mangas << MDHash.new( 
-					uri: "#{properties.manga_link_prefix}#{a[:href]}", 
-					name: a.text
-			  )
+			@manga += Properties.new(uri).manga_list do |uri, name|
+				MDHash.new(uri: uri, name: name) 
       end
     end
   end
