@@ -13,7 +13,7 @@ module Mangdown
 
 		# explicit conversion to manga 
     def to_manga
-      if @properties.is_manga_uri?(uri)
+      if @properties.is_manga?
         Manga.new(name, uri)
       else
         raise NoMethodError, 'This is not a known manga type'
@@ -22,7 +22,7 @@ module Mangdown
 
 		# explicit conversion to chapter 
 		def to_chapter
-      if @properties.is_chapter_uri?(uri)
+      if @properties.is_chapter?
         Chapter.new(name, uri)
       else
         raise NoMethodError, 'This is not a known chapter type'
@@ -31,7 +31,7 @@ module Mangdown
 
 		# explicit conversion to page 
  	  def to_page 
-      if @properties.is_page_uri?(uri)
+      if @properties.is_page?
         Page.new(name, uri)
       else
         raise NoMethodError, 'This is not a known page type'

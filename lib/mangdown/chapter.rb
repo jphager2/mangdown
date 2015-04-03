@@ -51,11 +51,10 @@ module Mangdown
 		private
     # get page objects for all pages in a chapter
     def get_pages
-      pages = (1..@properties.num_pages(Tools.get_doc(uri)))
-        .map { |num| get_page_hash(num) }
+      pages = (1..@properties.num_pages).map {|num| get_page_hash(num)}
 
       Tools.hydra(pages) do |page, body|
-        @pages << get_page(Nokogiri::HTML(body))
+        @pages << get_page(page.uri, Nokogiri::HTML(body))
       end
     end
 
@@ -69,11 +68,12 @@ module Mangdown
     end
 
     # get the page name and uri
-    def get_page(doc)
+    def get_page(uri, doc)
+      properties = Properties.new(uri, nil, doc)
       MDHash.new(
-        uri:  @properties.page_image_src(doc), 
-        name: @properties.page_image_name(doc),
-        site: @properties.type
+        uri:  properties.page_image_src, 
+        name: properties.page_image_name,
+        site: properties.type
       )
     end
   end

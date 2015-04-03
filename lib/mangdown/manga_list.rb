@@ -25,7 +25,7 @@ module Mangdown
     private
 		# get a list of mangas from the uri
     def get_mangas(uri)
-			@manga += Properties.new(uri).manga_list do |uri, name|
+			@mangas += Properties.new(uri).manga_list do |uri, name|
 				MDHash.new(uri: uri, name: name) 
       end
     end

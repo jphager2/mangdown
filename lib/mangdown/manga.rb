@@ -15,7 +15,7 @@ module Mangdown
 			@name = name
 			@uri  = Mangdown::Uri.new(uri)
       @chapters = []
-      @properties = Properties.new
+      @properties = Properties.new(uri)
 
       get_chapters
     end
@@ -79,9 +79,7 @@ module Mangdown
     end
 
     def setup_download_dir!(dir)
-      dir += "/#{name}"
-      Dir.mkdir(dir) unless Dir.exist?(dir)
-      dir
+      "#{dir}/#{name}".tap {|dir| Dir.mkdir(dir) unless Dir.exist?(dir)}
     end
 
     def validate_indeces!(start, stop)

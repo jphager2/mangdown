@@ -59,6 +59,7 @@ module M
     ).tap { |list| File.open(path,'w+') {|f| f.write(list.to_yaml)} }
   rescue Object => error
     puts "#{path} is corrupt: #{error.message}"
+    raise
   end
 
   # check if the search key contains letters or numbers

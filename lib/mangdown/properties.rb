@@ -1,11 +1,12 @@
 module Mangdown
 	class Properties
 
-		attr_reader :info, :type, :doc
+		attr_reader :info, :type
 
-		def initialize(uri, site = nil)
+		def initialize(uri, site = nil, doc = nil)
 			@info  = Hash.new
-      @doc   = Tools.get_doc(uri)
+      @uri   = uri
+      @doc   = doc
       site ||= uri
 
       case site.to_s 
@@ -76,15 +77,15 @@ module Mangdown
       }
 		end
 
-    def is_manga_uri?(uri)
+    def is_manga?(uri = @uri)
       uri.slice(@info[:manga_uri_regex]) == uri
     end
 
-    def is_chapter_uri?(uri)
+    def is_chapter?(uri = @uri)
       uri.slice(@info[:chapter_uri_regex]) == uri
     end
 
-    def is_page_uri?(uri)
+    def is_page?(uri = @uri)
       uri.slice(@info[:page_uri_regex]) == uri
     end
 
@@ -122,9 +123,9 @@ module Mangdown
     def manga_chapters
       chapters = doc.css(@info[:manga_css_klass]).map { |a|
         chapter = [(root + a[:href].sub(root, '')), a.text, type]
-        next(nil) unless is_chapter_uri?(chapter.first)
+        next(nil) unless is_chapter?(chapter.first)
         block_given? ? yield(chapter) : chapter 
-      }.compact!
+      }.compact
       reverse? ? chapters.reverse! : chapters
     end
 
@@ -133,6 +134,10 @@ module Mangdown
     end
 
 		private
+    def doc
+      @doc ||= Tools.get_doc(@uri)
+    end
+
     def method_missing(method, *args, &block)
       @info.fetch(method) { super }
     end
