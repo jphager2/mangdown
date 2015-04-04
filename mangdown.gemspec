@@ -23,6 +23,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rubyzip',      '~> 1.1.0'
   s.add_runtime_dependency 'progress_bar', '~> 1.0.3'
   s.add_runtime_dependency 'typhoeus',     '~> 0.7.1'
+  s.add_runtime_dependency 'ruby-filemagic'
 
   s.add_development_dependency 'webmock'
   s.add_development_dependency 'vcr'

@@ -1,9 +1,8 @@
 require 'uri'
-require 'open-uri'
 require 'nokogiri'
 require 'yaml'
-require 'timeout'
 require 'zip'
+require 'filemagic'
 
 require_relative 'mangdown/mangdown'
 

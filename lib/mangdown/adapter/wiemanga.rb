@@ -22,7 +22,7 @@ module Mangdown
     end
 
     def num_pages
-      doc.css('select#page')[1].css('option').length
+      doc.css('select#page')[0].css('option').length
     end
 
     def page_image_src
@@ -30,7 +30,8 @@ module Mangdown
     end
 
     def page_image_name
-      page_image[:src].sub(/.+\//, '') 
+      doc.css('select#page')[0].css('option[selected]')[0]
+        .text.rjust(3, '0')
     end
 
     private

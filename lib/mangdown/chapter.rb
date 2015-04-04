@@ -45,6 +45,7 @@ module Mangdown
       Tools.hydra(map { |page| page.to_page }) do |page, data|
         next if File.exist?(path = page.file_path(dir))
         File.open(path, 'wb') { |file| file.write(data) }
+        FileUtils.mv(path, "#{path}.#{Tools.file_type(path)}")
       end
 		end
 

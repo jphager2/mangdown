@@ -22,6 +22,10 @@ module Mangdown
       Pathname.new(root).join(*sub_paths)
     end
 
+    def file_type(path)
+      FileMagic.new.file(path.to_s).slice(/^\w+/).downcase
+    end
+
     def hydra(objects)
       hydra = Typhoeus::Hydra.hydra
 

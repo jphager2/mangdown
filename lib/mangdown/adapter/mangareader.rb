@@ -28,7 +28,10 @@ module Mangdown
     end
 
     def page_image_name
-      "#{page_image[:alt]}.jpg"
+      page_image[:alt].sub(/([^\d]*)(\d+)(\.\w+)?$/) { 
+        "#{Regexp.last_match[1]}" +
+        "#{Regexp.last_match[2].to_s.rjust(3, '0')}"
+      }
     end
 
     private
