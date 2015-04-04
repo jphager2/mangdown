@@ -17,8 +17,8 @@ module Mangdown
     # downloads to specified directory
     def download_to(dir = Dir.pwd)
       return if File.exist?(path = file_path(dir))
-      File.open(path, 'wb') { |file| file.write(binary) }
-      File.mv(path, "#{path}.#{Tools.file_type(path)}")
+      File.open(path, 'wb') { |file| file.write(Tools.get(uri)) }
+      FileUtils.mv(path, "#{path}.#{Tools.file_type(path)}")
     rescue SocketError => error
       STDERR.puts( "#{error.message} | #{name} | #{uri}" )
     end

@@ -28,11 +28,7 @@ module Mangdown
     end
 
     def page_image_name
-      page_image[:src].gsub(/(_|-)/, ' ')
-        .sub(/(.+\/)([^\d])(\d+)(\.\w+)$/) { 
-        "#{Regexp.last_match[2]}" +
-        "#{Regexp.last_match[3].to_s.rjust(3, '0')}"
-      }
+      page_image[:src].scan(/\d+/).last.rjust(3, '0')
     end
 
     private
