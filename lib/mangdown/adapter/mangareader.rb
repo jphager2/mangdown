@@ -1,5 +1,7 @@
 module Mangdown
   class Mangareader < Adapter::Base
+    Mangdown::ADAPTERS << self
+
     def initialize(uri, doc)
       super
 			@root                  ||= 'http://www.mangareader.net'

@@ -1,5 +1,7 @@
 module Mangdown
   class Wiemanga < Adapter::Base
+    Mangdown::ADAPTERS << self
+
     def initialize(uri, doc)
       super
 			@root                  = 'http://www.wiemanga.com'

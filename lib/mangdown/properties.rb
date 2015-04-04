@@ -2,15 +2,11 @@ module Mangdown
 	class Properties
 
 		def initialize(uri, site = nil, doc = nil)
-      case (site || uri).to_s
-      when /mangareader/
-				@adapter = Mangareader.new(uri, doc)
-      when /mangapanda/ 
-				@adapter = Mangapanda.new(uri, doc)
-      when /mangafox/
-				@adapter = Mangafox.new(uri, doc)
-      when /wiemanga/
-				@adapter = Wiemanga.new(uri, doc)
+      adapter_class = ADAPTERS.find { |adapter| 
+        (site||uri).to_s =~ /#{adapter.to_s.split('::').last.downcase}/
+      }
+      if adapter_class
+        @adapter = adapter_class.new(uri, doc)
       else
         raise ArgumentError, 
           "Bad Site: No Properties Specified for Site <#{uri}>"

@@ -1,4 +1,6 @@
 module Mangdown 
+  ADAPTERS = []
+
   module Equality
     def eql?(other)
       (self.name == other.name) && (self.uri == other.uri)
