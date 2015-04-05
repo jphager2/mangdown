@@ -57,7 +57,7 @@ module Mangdown
       # Only valid mangas should be returned (using is_manga?(uri))
       def manga_list
         doc.css(@manga_list_css).map { |a| 
-          manga = ["#{@manga_link_prefix}#{a[:href]}", a.text, type]
+          manga = ["#{@manga_link_prefix}#{a[:href]}",a.text.strip,type]
           next(nil) unless is_manga?(manga.first)
           block_given? ? yield(manga) : manga
         }.compact
@@ -69,7 +69,7 @@ module Mangdown
       # Only valid chapters should be returned (using is_chapter?(uri))
       def manga_chapters
         chapters = doc.css(@chapter_list_css).map { |a|
-          chapter = [(root + a[:href].sub(root, '')), a.text, type]
+          chapter = [(root + a[:href].sub(root, '')),a.text.strip,type]
           next(nil) unless is_chapter?(chapter.first)
           block_given? ? yield(chapter) : chapter 
         }.compact

@@ -35,11 +35,12 @@ module Mangdown
           if response.success?
             yield(obj, response.body) if block_given?
           elsif response.timed_out?
-            STDERR.puts "got a time out"
+            STDERR.puts "#{obj.uri}: got a time out"
           elsif response.code == 0
             STDERR.puts "#{obj.uri}: #{response.return_message}"
           else
-            STDERR.puts "HTTP request failed: #{response.code.to_s}"
+            STDERR.puts "#{obj.uri}: " +
+              "HTTP request failed: #{response.code.to_s}"
           end
         end
         hydra.queue(request)
