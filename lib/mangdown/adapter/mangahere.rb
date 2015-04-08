@@ -34,7 +34,8 @@ module Mangdown
     end
 
     def page_image_name
-      page_image[:src].scan(/\d+\./).last.slice(/\d+/).rjust(3, '0')
+      doc.css('.go_page span.right select')[0].css('option[selected]')
+        .text.rjust(3, '0')
     end
 
     private

@@ -39,13 +39,20 @@ module Mangdown
 
 		# download all pages in a chapter
 		def download_to(dir)
-      dir = Tools.relative_or_absolute_path(dir, @name)
+      dir   = Tools.relative_or_absolute_path(dir, @name)
+      pages = map {|page| page.to_page}
+
       Dir.mkdir(dir) unless Dir.exists?(dir)
-      
-      Tools.hydra(map { |page| page.to_page }) do |page, data|
-        next if File.exist?(path = page.file_path(dir))
-        File.open(path, 'wb') { |file| file.write(data) }
-        FileUtils.mv(path, "#{path}.#{Tools.file_type(path)}")
+      Tools.hydra_streaming(pages) do |stage, page, data=nil|
+        path = page.file_path(dir)
+        case stage
+        when :before
+          !File.exist?(path)
+        when :body
+          File.open(path, 'ab') { |file| file.write(data) } 
+        when :complete
+          FileUtils.mv(path, "#{path}.#{Tools.file_type(path)}")
+        end
       end
 		end
 

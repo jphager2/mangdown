@@ -30,7 +30,8 @@ module Mangdown
     end
 
     def page_image_name
-      page_image[:src].scan(/\d+/).last.rjust(3, '0')
+      doc.css('select')[1].css('option[selected]').first().text
+        .rjust(3,'0')
     end
 
     private
