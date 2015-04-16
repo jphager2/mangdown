@@ -47,13 +47,8 @@ describe Mangdown::Manga do
   end
 
   describe 'to_chapter' do
-    it 'must give a manga read chapter for a manga reader chapter' do
-      @md_chapter.to_chapter.must_be_instance_of Mangdown::MRChapter
-    end
-
-    it 'must give a manga fox chapter for a manga fox chapter' do
-      md = Mangdown::MDHash.new(uri: c2_uri, name: c2_name)
-      md.to_chapter.must_be_instance_of Mangdown::MFChapter
+    it 'must give a chapter' do
+      @md_chapter.to_chapter.must_be_instance_of Mangdown::Chapter
     end
 
     it 'must raise an exception if not a chapter' do

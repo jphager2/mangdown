@@ -1,11 +1,16 @@
 require 'uri'
-require 'open-uri'
 require 'nokogiri'
 require 'yaml'
-require 'timeout'
 require 'zip'
+require 'filemagic'
 
 require_relative 'mangdown/mangdown'
+
+require_relative 'mangdown/adapter'
+adapters = "#{File.expand_path('../mangdown/adapter', __FILE__)}/*.rb"
+Dir[adapters].each do |f|
+  require_relative f 
+end
 
 require_relative 'mangdown/tools'
 require_relative 'mangdown/properties'

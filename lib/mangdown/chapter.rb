@@ -39,66 +39,51 @@ module Mangdown
 
 		# download all pages in a chapter
 		def download_to(dir)
-      dir = Tools.relative_or_absolute_path(dir, @name)
+      dir   = Tools.relative_or_absolute_path(dir, @name)
+      pages = map {|page| page.to_page}
+      failed    = []
+      succeeded = []
+
       Dir.mkdir(dir) unless Dir.exists?(dir)
-      
-      Tools.hydra(map { |page| page.to_page }) do |page, data|
-        next if File.exist?(path = page.file_path(dir))
-        File.open(path, 'wb') { |file| file.write(data) }
+      Tools.hydra_streaming(pages) do |stage, page, data=nil|
+        case stage
+        when :failed
+          failed << page
+        when :succeeded
+          succeeded << page
+        when :before
+          path = page.file_path(dir)
+          !File.exist?(path)
+        when :body
+          unless failed.include?(page)
+            path = page.file_path(dir)
+            File.open(path, 'ab') { |file| file.write(data) } 
+          end
+        when :complete
+          unless failed.include?(page)
+            path = page.file_path(dir)
+            FileUtils.mv(path, "#{path}.#{Tools.file_type(path)}")
+          end
+        end
       end
+      FileUtils.rm_rf(dir) if succeeded.empty?
+
+      !succeeded.empty?
 		end
 
 		private
     # get page objects for all pages in a chapter
     def get_pages
-      pages = (1..get_num_pages(Tools.get_doc(uri)))
-        .map { |num| get_page_hash(num) }
+      pages = (1..@properties.num_pages).map {|num| get_page_hash(num)}
 
       Tools.hydra(pages) do |page, body|
-        @pages << get_page(Nokogiri::HTML(body))
+        @pages << get_page(page.uri, Nokogiri::HTML(body))
       end
     end
 
-    # get the number of pages in a chapter
-    def get_num_pages(doc)
-      # the select is a dropdown menu of chapter pages
-      doc.css('select')[1].css('option').length
-    end	
-
-  end
-
-	# mangareader chapter object
-	class MRChapter < Chapter
-		private
-      # get the doc for a given page number
-      def get_page_hash(num)
-        root     = @properties.root
-        manga    = @manga.gsub(' ', '-')
-        uri_str  = "#{root}/#{manga}/#{@chapter}/#{num}"
-
-        MDHash.new(
-          uri: Mangdown::Uri.new(uri_str).downcase, name: num
-        )
-      end
-		
-			# get the page uri and name
-			def get_page(doc)
-				image = doc.css('img')[0]
-
-				MDHash.new(
-					uri: image['src'], 
-					name: (image['alt'] + ".jpg"),
-          site: @properties.type,
-        )
-			end
-	end
-
-	# mangafox chapter object
-	class MFChapter < Chapter
-		private
     # get the doc for a given page number
     def get_page_hash(num)
-      uri_str = uri.sub(/\d+\.html/, "#{num}.html")
+      uri_str = @properties.build_page_uri(uri, @manga, @chapter, num)
 
       MDHash.new(
         uri: Mangdown::Uri.new(uri_str).downcase, name: num
@@ -106,19 +91,13 @@ module Mangdown
     end
 
     # get the page name and uri
-    def get_page(doc)
-      image = doc.css('img')[0]
-
+    def get_page(uri, doc)
+      properties = Properties.new(uri, nil, doc)
       MDHash.new(
-        uri: image[:src], 
-        name: image[:src].sub(/.+\//, ''),
-        site: @properties.type,
+        uri:  properties.page_image_src, 
+        name: properties.page_image_name,
+        site: properties.type
       )
     end
-
-    # get the number of pages
-    def get_num_pages(doc)
-      super - 1
-    end
-	end
+  end
 end

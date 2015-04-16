@@ -22,6 +22,35 @@ module Mangdown
       Pathname.new(root).join(*sub_paths)
     end
 
+    def file_type(path)
+      FileMagic.new.file(path.to_s).slice(/^\w+/).downcase
+    end
+
+    def hydra_streaming(objects)
+      hydra = Typhoeus::Hydra.hydra
+
+      requests = objects.map {|obj| 
+        next unless yield(:before, obj)
+
+        request = Typhoeus::Request.new(obj.uri)
+        request.on_headers do |response|
+          yield((response.success? ? :succeeded : :failed), obj)
+        end
+        request.on_body do |chunk|
+          yield(:body, obj, chunk) 
+        end
+        request.on_complete do |response|
+          yield(:complete, obj)
+        end
+
+        hydra.queue(request)
+        request
+      }.compact
+
+      hydra.run
+      requests
+    end
+
     def hydra(objects)
       hydra = Typhoeus::Hydra.hydra
 
@@ -31,11 +60,16 @@ module Mangdown
           if response.success?
             yield(obj, response.body) if block_given?
           elsif response.timed_out?
-            STDERR.puts "got a time out"
+            STDERR.puts "#{obj.uri}: got a time out"
           elsif response.code == 0
             STDERR.puts "#{obj.uri}: #{response.return_message}"
           else
-            STDERR.puts "HTTP request failed: #{response.code.to_s}"
+            STDERR.puts "#{obj.uri}: " +
+              "HTTP request failed: #{response.code.to_s} \n" +
+              "But maybe it succeeded..."
+            if response.body
+              yield(obj, response.body) if block_given?
+            end
           end
         end
         hydra.queue(request)

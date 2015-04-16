@@ -15,10 +15,9 @@ module Mangdown
 			@name = name
 			@uri  = Mangdown::Uri.new(uri)
       @chapters = []
-      @properties = Properties.new(@uri)
+      @properties = Properties.new(uri)
 
       get_chapters
-      @chapters.select! { |chapter| @properties.is_chapter?(chapter) }
     end
 
     def inspect
@@ -41,8 +40,12 @@ module Mangdown
       bar = progress_bar(start, stop)
       reset(start, stop)
       loop do
-        self.next.to_chapter.download_to(dir)
-        bar.increment!
+        chapter = self.next.to_chapter
+        if chapter.download_to(dir)
+          bar.increment!
+        else
+          STDERR.puts("error: #{chapter.name} was not downloaded") 
+        end
       end
     end
 
@@ -70,19 +73,9 @@ module Mangdown
 
     # get push MDHashes of manga chapters to @chapters 
     def get_chapters
-      doc        = Tools.get_doc(@uri)
-      root       = @properties.root
-
-      #get the link with chapter name and uri
-      doc.css(@properties.manga_css_klass).each do |chapter|
-        @chapters << MDHash.new(
-          uri: (root + chapter[:href].sub(root, '')), 
-          name: chapter.text,
-          site: @properties.type,
-        ) 
+      @chapters += @properties.manga_chapters do |uri, name, site|
+         MDHash.new(uri: uri, name: name, site: site)
       end
-
-      @chapters.reverse! if @properties.reverse 
     end
 
     def chapter_indeces(start, stop)
@@ -90,9 +83,7 @@ module Mangdown
     end
 
     def setup_download_dir!(dir)
-      dir += "/#{name}"
-      Dir.mkdir(dir) unless Dir.exist?(dir)
-      dir
+      "#{dir}/#{name}".tap {|dir| Dir.mkdir(dir) unless Dir.exist?(dir)}
     end
 
     def validate_indeces!(start, stop)

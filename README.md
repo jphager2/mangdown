@@ -4,6 +4,13 @@ _Note:_ Version 0.9.0 has a new api for downloading (see below)
 
 Instalation
 ===========
+Currently, this gem uses the libmagic library. Make sure you have the library, or the ruby-filemagic gem won't install correctly.
+
+For ubuntu 14.04 (and others probably):
+
+  sudo apt-get install libmagic-dev
+
+Then install the gem:
 
   gem install mangdown
 
