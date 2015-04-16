@@ -32,13 +32,12 @@ module Mangdown
       requests = objects.map {|obj| 
         next unless yield(:before, obj)
 
-        succeeded = true
-        request   = Typhoeus::Request.new(obj.uri)
+        request = Typhoeus::Request.new(obj.uri)
         request.on_headers do |response|
-          succeeded = false if response.timed_out? || response.code == 0
+          yield((response.success? ? :succeeded : :failed), obj)
         end
         request.on_body do |chunk|
-          yield(:body, obj, chunk) if succeeded
+          yield(:body, obj, chunk) 
         end
         request.on_complete do |response|
           yield(:complete, obj)

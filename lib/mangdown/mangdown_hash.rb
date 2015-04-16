@@ -48,6 +48,16 @@ module Mangdown
       @hash[:uri]
     end
 
+    # name writer
+    def name=(other)
+      @hash[:name] = other
+    end
+
+    # uri writer
+    def uri=(other)
+      @hash[:uri] = other
+    end
+
     def [](key)
       @hash[key]
     end

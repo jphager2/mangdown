@@ -41,19 +41,34 @@ module Mangdown
 		def download_to(dir)
       dir   = Tools.relative_or_absolute_path(dir, @name)
       pages = map {|page| page.to_page}
+      failed    = []
+      succeeded = []
 
       Dir.mkdir(dir) unless Dir.exists?(dir)
       Tools.hydra_streaming(pages) do |stage, page, data=nil|
-        path = page.file_path(dir)
         case stage
+        when :failed
+          failed << page
+        when :succeeded
+          succeeded << page
         when :before
+          path = page.file_path(dir)
           !File.exist?(path)
         when :body
-          File.open(path, 'ab') { |file| file.write(data) } 
+          unless failed.include?(page)
+            path = page.file_path(dir)
+            File.open(path, 'ab') { |file| file.write(data) } 
+          end
         when :complete
-          FileUtils.mv(path, "#{path}.#{Tools.file_type(path)}")
+          unless failed.include?(page)
+            path = page.file_path(dir)
+            FileUtils.mv(path, "#{path}.#{Tools.file_type(path)}")
+          end
         end
       end
+      FileUtils.rm_rf(dir) if succeeded.empty?
+
+      !succeeded.empty?
 		end
 
 		private

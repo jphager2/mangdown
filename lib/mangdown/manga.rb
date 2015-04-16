@@ -40,8 +40,12 @@ module Mangdown
       bar = progress_bar(start, stop)
       reset(start, stop)
       loop do
-        self.next.to_chapter.download_to(dir)
-        bar.increment!
+        chapter = self.next.to_chapter
+        if chapter.download_to(dir)
+          bar.increment!
+        else
+          STDERR.puts("error: #{chapter.name} was not downloaded") 
+        end
       end
     end
 
