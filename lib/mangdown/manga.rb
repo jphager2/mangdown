@@ -88,7 +88,11 @@ module Mangdown
 
     def validate_indeces!(start, stop)
       i_start, i_stop = chapter_indeces(start, stop)
-      if i_stop < i_stop
+      if i_start.nil? || i_stop.nil?
+        last  = chapters.length - 1
+        error = "This manga has chapters in the range (0..#{last})"
+        raise ArgumentError, error
+      elsif i_stop < i_stop
         error = 'Last index must be greater than first index'
         raise ArgumentError, error
       end 
