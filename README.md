@@ -21,9 +21,9 @@ In irb:
   => true
 
 
-==Mangdown
+##Mangdown
 
-===Commands
+###Commands
 
     M#find(string) - Will return an array of Mangdown::MDHash given 
                      a string which is matched to manga names of the 
