@@ -5,7 +5,7 @@ files.push('LICENSE', 'doc/help.txt')
 
 Gem::Specification.new do |s|
   s.name        = 'mangdown'
-  s.version     = '0.11.0'
+  s.version     = '0.12.0'
 	s.date        = "#{Time.now.strftime("%Y-%m-%d")}"
 	s.homepage    = 'https://github.com/jphager2/mangdown'
   s.summary     = 'Downloads Manga (no longer MRChapter nor MFChapter)'
@@ -15,14 +15,11 @@ Gem::Specification.new do |s|
   s.files       = files 
   s.license     = 'MIT'
 
-  s.add_runtime_dependency 'activerecord'
-  s.add_runtime_dependency 'pg',           '~> 0.15.1'
-
   s.add_runtime_dependency 'faraday',      '~> 0.9.0'
+  s.add_runtime_dependency 'typhoeus',     '~> 0.7.1'
   s.add_runtime_dependency 'nokogiri',     '~> 1.6.0' 
   s.add_runtime_dependency 'rubyzip',      '~> 1.1.0'
   s.add_runtime_dependency 'progress_bar', '~> 1.0.3'
-  s.add_runtime_dependency 'typhoeus',     '~> 0.7.1'
   s.add_runtime_dependency 'ruby-filemagic'
 
   s.add_development_dependency 'webmock'
