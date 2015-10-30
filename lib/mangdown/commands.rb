@@ -65,7 +65,7 @@ module M
       File.open(path,'w+') {|f| f.write(list.to_yaml)} 
     }
   rescue Object => error
-    puts "#{path} is corrupt: #{error.message}"
+    puts "#{path} may be corrupt: #{error.message}"
     raise
   end
 

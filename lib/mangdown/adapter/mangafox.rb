@@ -8,6 +8,7 @@ module Mangdown
 			@chapter_list_css      = 'a.tips'
 			@root                  = 'http://mangafox.me'
       @manga_list_uri        = "#{@root}/manga"
+      @manga_name_css        = "#title h1"
 			@manga_link_prefix     = ''
 			@reverse_chapters      = true
       @manga_uri_regex       = 
@@ -16,6 +17,10 @@ module Mangdown
         /#{@manga_uri_regex}(v\d+\/)?(c\d+\/)(1\.html)/i
       @page_uri_regex        = /.+\.(png|jpg|jpeg)$/i
 		end
+
+    def manga_name
+      CGI.unescapeHTML(super.sub(/ Manga/, '').downcase).upcase
+    end
 
     def build_page_uri(uri, manga, chapter, page_num)
       uri.sub(/\d+\.html/, "#{page_num}.html")

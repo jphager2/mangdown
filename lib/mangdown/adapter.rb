@@ -8,6 +8,7 @@ module Mangdown
         #@root                  = '' 
         #@manga_list_css        = ''
         #@chapter_list_css      = ''
+        #@manga_name_css        = ''
         #@manga_list_uri        = '' 
         #@manga_link_prefix     = '' 
         #@reverse_chapters      = true || false
@@ -33,6 +34,11 @@ module Mangdown
       # Must return true/false if uri represents a page for adapter
       def is_page?(uri = @uri)
         uri.slice(@page_uri_regex) == uri
+      end
+
+      # Must return a string
+      def manga_name
+        doc.css(@manga_name_css).text
       end
 
       # Must return a uri for a page given the arguments

@@ -8,6 +8,7 @@ module Mangdown
       @manga_list_uri        = 
         "#{@root}/search/?name_sel=contain&author_sel=contain" +
         "&completed_series=either"
+      @manga_name_css        = '.bookmessagebox h1'
 			@manga_list_css        = 'a.resultbookname'
 			@chapter_list_css      = 
         '.chapterlist tr:not(:first-child) .col1 a'
@@ -18,6 +19,10 @@ module Mangdown
         /#{@root}\/chapter\/([^\/]+)\/(\d+)(\/|\.html)?/i
       @page_uri_regex        = /.+\.(png|jpg|jpeg)$/i
 		end
+
+    def manga_name
+      super.sub(/ Manga$/, "")
+    end
 
     def build_page_uri(uri, manga, chapter, page_num)
       "#{uri}-#{page_num}.html"

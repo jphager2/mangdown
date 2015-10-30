@@ -6,6 +6,7 @@ module Mangdown
       super
 			@root                  ||= 'http://www.mangareader.net'
 			@manga_list_css        = 'ul.series_alpha li a'
+      @manga_name_css        = 'h2.aname'
 			@chapter_list_css      = 'div#chapterlist td a'
       @manga_list_uri        = "#{@root}/alphabetical"
 			@manga_link_prefix     = @root 
@@ -15,6 +16,10 @@ module Mangdown
       @chapter_uri_regex     = 
         /#{@root}(\/[^\/]+){1,2}\/(\d+|chapter-\d+\.html)/i
       @page_uri_regex        = /.+\.(png|jpg|jpeg)$/i
+    end
+
+    def manga_name
+      CGI.unescapeHTML(super)
     end
 
     def build_page_uri(uri, manga, chapter, page_num)

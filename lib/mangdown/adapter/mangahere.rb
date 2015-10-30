@@ -6,6 +6,7 @@ module Mangdown
       super
 			@root                  = 'http://www.mangahere.co'
 			@manga_list_css        = 'a.manga_info'
+      @manga_name_css        = 'h1.title'
 			@chapter_list_css      = '.detail_list ul a'
       @manga_list_uri        = "#{@root}/mangalist/"
 			@manga_link_prefix     = ''
@@ -16,6 +17,10 @@ module Mangdown
         /#{@manga_uri_regex}(v\d+\/)?(c\d+\/)(1\.html)?/i
       @page_uri_regex        = /.+\.(png|jpg|jpeg)$/i
 		end
+
+    def manga_name
+      CGI.unescapeHTML(super.downcase).upcase
+    end
 
     def build_page_uri(uri, manga, chapter, page_num)
       if page_num == 1

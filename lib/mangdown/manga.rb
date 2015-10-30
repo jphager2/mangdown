@@ -9,15 +9,19 @@ module Mangdown
 
     include Equality
     include Enumerable
-    attr_reader :name, :uri, :chapters, :enum 
+    attr_reader :uri, :chapters, :enum 
 
-    def initialize(name, uri)
-			@name = name
-			@uri  = Mangdown::Uri.new(uri)
+    def initialize(name = nil, uri)
+      @name = name
+			@uri = Mangdown::Uri.new(uri)
       @chapters = []
       @properties = Properties.new(uri)
 
       get_chapters
+    end
+
+    def name
+      @name || @properties.manga_name
     end
 
     def inspect
@@ -71,7 +75,7 @@ module Mangdown
       @enum = each[start..stop].lazy
     end
 
-    # get push MDHashes of manga chapters to @chapters 
+    # push MDHashes of manga chapters to @chapters 
     def get_chapters
       @chapters += @properties.manga_chapters do |uri, name, site|
          MDHash.new(uri: uri, name: name, site: site)
