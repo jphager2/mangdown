@@ -24,6 +24,6 @@ require_relative 'mangdown/cbz'
 require_relative 'mangdown/commands'
 require_relative 'mangdown/mangdown_hash'
 
-unless $0 == __FILE__
+if $0 == __FILE__
   puts '*** Use "M.help" for commands ***'
 end
