@@ -5,7 +5,7 @@ files.push('LICENSE', 'doc/help.txt')
 
 Gem::Specification.new do |s|
   s.name        = 'mangdown'
-  s.version     = '0.12.1'
+  s.version     = '0.12.2'
 	s.date        = "#{Time.now.strftime("%Y-%m-%d")}"
 	s.homepage    = 'https://github.com/jphager2/mangdown'
   s.summary     = 'Downloads Manga (no longer MRChapter nor MFChapter)'
