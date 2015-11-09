@@ -1,3 +1,6 @@
+![Gitten badge](http://gittens.r15.railsrumble.com//badge/jphager2/mangdown)
+
+
 _Note:_ Please use >= 0.8.3 instead of 0.8.0-2 (which have bugs with MF manga) 
 _Note:_ Version 0.9.0 has a new api for downloading (see below)
         
