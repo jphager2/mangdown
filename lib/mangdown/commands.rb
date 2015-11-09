@@ -29,7 +29,7 @@ module M
 		Dir.exist?(dir) ? (CBZ.all(dir)) : (raise Errno::ENOENT, dir) 
   end
 
-	# display help file
+	# isplay help file
   def help
     puts File.open(HELP_FILE_PATH, 'r').read
   end
