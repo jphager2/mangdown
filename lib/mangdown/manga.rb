@@ -96,8 +96,8 @@ module Mangdown
         last  = chapters.length - 1
         error = "This manga has chapters in the range (0..#{last})"
         raise ArgumentError, error
-      elsif i_stop < i_stop
-        error = 'Last index must be greater than first index'
+      elsif i_stop < i_start
+        error = 'Last index must be greater than or equal to first index'
         raise ArgumentError, error
       end 
       [i_start, i_stop]
