@@ -4,7 +4,9 @@ require 'yaml'
 require 'zip'
 require 'filemagic'
 
-require_relative 'mangdown/mangdown'
+module Mangdown
+  ADAPTERS = []
+end
 
 require_relative 'mangdown/adapter'
 adapters = "#{File.expand_path('../mangdown/adapter', __FILE__)}/*.rb"
@@ -12,6 +14,7 @@ Dir[adapters].each do |f|
   require_relative f 
 end
 
+require_relative 'mangdown/equality'
 require_relative 'mangdown/tools'
 require_relative 'mangdown/properties'
 require_relative 'mangdown/uri'
@@ -23,3 +26,5 @@ require_relative 'mangdown/manga_list.rb'
 require_relative 'mangdown/cbz'
 require_relative 'mangdown/commands'
 require_relative 'mangdown/mangdown_hash'
+
+
