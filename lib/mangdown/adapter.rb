@@ -61,11 +61,12 @@ module Mangdown
       # [manga_uri, manga_name, adapter_type]
       # If block given, then the block may alter this array
       # Only valid mangas should be returned (using is_manga?(uri))
-      def manga_list
+      def collect_manga_list
         doc.css(@manga_list_css).map { |a| 
-          manga = ["#{@manga_link_prefix}#{a[:href]}",a.text.strip,type]
-          next(nil) unless is_manga?(manga.first)
-          block_given? ? yield(manga) : manga
+          manga = ["#{@manga_link_prefix}#{a[:href]}", a.text.strip, type]
+          if is_manga?(manga.first)
+            block_given? ? yield(manga) : manga
+          end
         }.compact
       end
 
@@ -75,9 +76,11 @@ module Mangdown
       # Only valid chapters should be returned (using is_chapter?(uri))
       def manga_chapters
         chapters = doc.css(@chapter_list_css).map { |a|
-          chapter = [(root + a[:href].sub(root, '')),a.text.strip,type]
-          next(nil) unless is_chapter?(chapter.first)
-          block_given? ? yield(chapter) : chapter 
+          link = root + a[:href].sub(root, '')
+          chapter = [link, a.text.strip, type]
+          if is_chapter?(chapter.first)
+            block_given? ? yield(chapter) : chapter 
+          end
         }.compact
         @reverse_chapters ? chapters.reverse : chapters
       end
