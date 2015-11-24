@@ -25,7 +25,7 @@ module Mangdown
     end
 
     def build_page_uri(uri, manga, chapter, page_num)
-      "#{uri}-#{page_num}.html"
+      "#{uri.sub(/\/+$/, '')}-#{page_num}.html"
     end
 
     def num_pages
