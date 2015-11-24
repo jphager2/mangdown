@@ -2,9 +2,10 @@ module Mangdown
   class Page
 
     include Equality
-    attr_reader :name, :uri
 
-    def initialize(name, uri)
+    attr_reader :uri
+
+    def initialize(uri, name)
       @name = name
       @uri  = Mangdown::Uri.new(uri) 
     end

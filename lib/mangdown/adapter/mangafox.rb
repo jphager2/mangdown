@@ -2,7 +2,7 @@ module Mangdown
   class Mangafox < Adapter::Base
     Mangdown::ADAPTERS << self
 
-    def initialize(uri, doc)
+    def initialize(uri, doc, name)
       super
 			@manga_list_css        = 'div.manga_list li a'
 			@chapter_list_css      = 'a.tips'

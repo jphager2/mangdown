@@ -9,9 +9,10 @@ module Mangdown
 
     include Equality
     include Enumerable
+
     attr_reader :uri, :chapters
 
-    def initialize(name = nil, uri)
+    def initialize(uri, name = nil)
       @name = name
 			@uri = Mangdown::Uri.new(uri)
       @chapters = []

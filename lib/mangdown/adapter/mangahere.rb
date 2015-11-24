@@ -2,7 +2,7 @@ module Mangdown
   class Mangahere < Adapter::Base
     Mangdown::ADAPTERS << self
 
-    def initialize(uri, doc)
+    def initialize(uri, doc, name)
       super
 			@root                  = 'http://www.mangahere.co'
 			@manga_list_css        = 'a.manga_info'

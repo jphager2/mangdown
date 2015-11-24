@@ -1,15 +1,16 @@
 module Mangdown
 	class Properties
 
-		def initialize(uri, site = nil, doc = nil)
+		def initialize(uri, site = nil, doc = nil, name = nil)
       adapter_class = ADAPTERS.find { |adapter| 
         (site||uri).to_s =~ /#{adapter.to_s.split('::').last.downcase}/
       }
       if adapter_class
-        @adapter = adapter_class.new(uri, doc)
+        @adapter = adapter_class.new(uri, doc, name)
       else
-        raise ArgumentError, 
-          "Bad Site: No Properties Specified for Site <#{uri}>"
+        error = "Bad Site: No Properties Specified for Site <#{uri}>"
+        error << "Params given {uri: #{uri}, site: #{site}, doc: #{doc}, name: #{name}}"
+        raise ArgumentError, error
       end
 		end
 

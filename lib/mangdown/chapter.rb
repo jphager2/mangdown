@@ -3,22 +3,31 @@ module Mangdown
 
     include Equality
     include Enumerable
-		attr_reader :name, :uri, :pages, :manga, :chapter
 
-		def initialize(name, uri)
+		attr_reader :uri, :pages
+
+		def initialize(uri, name = nil, manga = nil, chapter = nil)
       # use a valid name
-			@name       = name.sub(/\s(\d+)$/) { |num| 
-        ' ' + num.to_i.to_s.rjust(3, '0')
-      }
-      @manga      = name.slice(/(^.+)\s/, 1) 
-      @chapter    = name.slice(/\d+\z/).to_i 
-			@uri        = Mangdown::Uri.new(uri)
-      @properties = Properties.new(@uri)
-			@pages      = []
+			@name = name 
+      @manga = manga
+      @chapter = chapter
+			@uri = Mangdown::Uri.new(uri)
+      @properties = Properties.new(@uri, nil, nil, name)
 
-			get_pages
-      @pages.sort_by! {|page| page.name}
+			load_pages
 		end
+
+    def name
+      @name ||= @properties.chapter_name
+    end
+
+    def manga
+       @manga ||= @properties.manga_name
+    end
+
+    def chapter
+      @chapter ||= @properties.chapter_number
+    end
 
     def inspect
       "#<#{self.class} @name=#{name} @uri=#{uri} " +
@@ -28,8 +37,8 @@ module Mangdown
     alias_method :to_s, :inspect
 
     # enumerates through pages
-    def each
-      block_given? ? @pages.each { |page| yield(page) } : @pages.each
+    def each(&block)
+      @pages.each(&block)
     end
 
 		# explicit conversion to chapter
@@ -72,22 +81,27 @@ module Mangdown
 		end
 
 		private
-    # get page objects for all pages in a chapter
-    def get_pages
-      pages = (1..@properties.num_pages).map {|num| get_page_hash(num)}
+    def load_pages
+			@pages ||= []
+      fetch_each_page do |page| @pages << page end
+      @pages.sort_by!(&:name)
+    end
 
+    # get page objects for all pages in a chapter
+    def fetch_each_page
+      pages = build_page_hashes
       Tools.hydra(pages) do |page, body|
-        @pages << get_page(page.uri, Nokogiri::HTML(body))
+        page = get_page(page.uri, Nokogiri::HTML(body))
+        yield(page)
       end
     end
 
-    # get the doc for a given page number
-    def get_page_hash(num)
-      uri_str = @properties.build_page_uri(uri, @manga, @chapter, num)
-
-      MDHash.new(
-        uri: Mangdown::Uri.new(uri_str).downcase, name: num
-      )
+    # get the docs for number of pages 
+    def build_page_hashes
+      (1..@properties.num_pages).map { |num|  
+        uri_str = @properties.build_page_uri(uri, manga, chapter, num)
+        MDHash.new(uri: Mangdown::Uri.new(uri_str).downcase, name: num)
+      }
     end
 
     # get the page name and uri

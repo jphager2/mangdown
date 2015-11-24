@@ -2,7 +2,7 @@ module Mangdown
   class Mangareader < Adapter::Base
     Mangdown::ADAPTERS << self
 
-    def initialize(uri, doc)
+    def initialize(uri, doc, name)
       super
 			@root                  ||= 'http://www.mangareader.net'
 			@manga_list_css        = 'ul.series_alpha li a'

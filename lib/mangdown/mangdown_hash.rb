@@ -3,7 +3,9 @@ module Mangdown
     include Equality
 
 		def initialize(options = {})
-      @properties = Properties.new(options[:uri], options[:site])
+      @properties = Properties.new(
+        options[:uri], options[:site], nil, options[:name]
+      )
 
       @hash = {}
       [:uri, :name].each {|key| @hash[key] = options.fetch(key)}
@@ -14,7 +16,7 @@ module Mangdown
 		# explicit conversion to manga 
     def to_manga
       if @properties.is_manga?
-        Manga.new(name, uri)
+        Manga.new(uri, name)
       else
         raise NoMethodError, 'This is not a known manga type'
       end
@@ -23,7 +25,7 @@ module Mangdown
 		# explicit conversion to chapter 
 		def to_chapter
       if @properties.is_chapter?
-        Chapter.new(name, uri)
+        Chapter.new(uri, name)
       else
         raise NoMethodError, 'This is not a known chapter type'
       end
@@ -32,7 +34,7 @@ module Mangdown
 		# explicit conversion to page 
  	  def to_page 
       if @properties.is_page?
-        Page.new(name, uri)
+        Page.new(uri, name)
       else
         raise NoMethodError, 'This is not a known page type'
       end

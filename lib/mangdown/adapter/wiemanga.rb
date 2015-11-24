@@ -2,7 +2,7 @@ module Mangdown
   class Wiemanga < Adapter::Base
     Mangdown::ADAPTERS << self
 
-    def initialize(uri, doc)
+    def initialize(uri, doc, name)
       super
 			@root                  = 'http://www.wiemanga.com'
       @manga_list_uri        = 

@@ -3,18 +3,21 @@ module Mangdown
     class Base
       
       attr_reader :root
-      def initialize(uri, doc)
-        @uri, @doc = uri, doc
-        #@root                  = '' 
-        #@manga_list_css        = ''
-        #@chapter_list_css      = ''
-        #@manga_name_css        = ''
-        #@manga_list_uri        = '' 
-        #@manga_link_prefix     = '' 
-        #@reverse_chapters      = true || false
-        #@manga_uri_regex       = /.*/i 
-        #@chapter_uri_regex     = /.*/i
-        #@page_uri_regex        = /.*/i
+      def initialize(uri, doc, name)
+        @uri, @doc, @name = uri, doc, name
+        #@root                    = '' 
+        #@manga_list_css          = ''
+        #@chapter_list_css        = ''
+        #@manga_name_css          = ''
+        #@chapter_name_css        = ''
+        #@chapter_manga_name_css  = ''
+        #@chapter_number_css        = ''
+        #@manga_list_uri          = '' 
+        #@manga_link_prefix       = '' 
+        #@reverse_chapters        = true || false
+        #@manga_uri_regex         = /.*/i 
+        #@chapter_uri_regex       = /.*/i
+        #@page_uri_regex          = /.*/i
       end
 
       def type
@@ -38,7 +41,36 @@ module Mangdown
 
       # Must return a string
       def manga_name
-        doc.css(@manga_name_css).text
+        if is_manga?
+          doc.css(@manga_name_css).text
+        elsif is_chapter?
+          chapter_manga_name
+        end
+      end
+
+      def chapter_name
+        if @name
+          @name.sub(/\s(\d+)$/) { |num| ' ' + num.to_i.to_s.rjust(5, '0') }
+        else
+          doc.css(@chapter_name_css).text
+        end
+      end
+
+      def chapter_manga_name
+        if @name
+          @name.slice(/(^.+)\s/, 1) 
+        else
+          doc.css(@chapter_manga_name_css).text
+        end
+      end
+
+      def chapter_number
+        raise NoMethodError, "Not a chapter" unless is_chapter?
+        if @name
+          @name.slice(/\d+\z/).to_i 
+        else
+          doc.css(@chapter_number_css).text
+        end
       end
 
       # Must return a uri for a page given the arguments
