@@ -9,7 +9,7 @@ module Mangdown
 
     include Equality
     include Enumerable
-    attr_reader :uri, :chapters, :enum 
+    attr_reader :uri, :chapters
 
     def initialize(name = nil, uri)
       @name = name
@@ -33,7 +33,7 @@ module Mangdown
 
     # download to current directory convenience method
     def download(*args)
-      download_to(DOWNLOAD_DIR,*args)
+      download_to(DOWNLOAD_DIR, *args)
     end
     
     # download using enumerable
@@ -42,9 +42,8 @@ module Mangdown
       dir         = setup_download_dir!(dir)
 
       bar = progress_bar(start, stop)
-      reset(start, stop)
-      loop do
-        chapter = self.next.to_chapter
+      chapters.each do |md_hash|
+        chapter = md_hash.to_chapter
         if chapter.download_to(dir)
           bar.increment!
         else
@@ -59,22 +58,11 @@ module Mangdown
     end
 
     # each for enumerating through chapters
-    def each
-      @chapters.each {|chapter| yield(chapter) if block_given?}
+    def each(&block)
+      @chapters.each(&block)
     end 
 
-    # go through the chapters one at a time
-    def next
-      @enum || reset
-      @enum.next
-    end
-
     private
-    # reset enum for next
-    def reset(start = 0, stop = -1)
-      @enum = each[start..stop].lazy
-    end
-
     # push MDHashes of manga chapters to @chapters 
     def get_chapters
       @chapters += @properties.manga_chapters do |uri, name, site|
@@ -83,11 +71,12 @@ module Mangdown
     end
 
     def chapter_indeces(start, stop)
-      [chapters.index(chapters[start]), chapters.index(chapters[stop])]
+      length = chapters.length
+      [start, stop].map { |i| i < 0 ? length + i : i }
     end
 
     def setup_download_dir!(dir)
-      "#{dir}/#{name}".tap {|dir| Dir.mkdir(dir) unless Dir.exist?(dir)}
+      "#{dir}/#{name}".tap { |dir| Dir.mkdir(dir) unless Dir.exist?(dir) }
     end
 
     def validate_indeces!(start, stop)
