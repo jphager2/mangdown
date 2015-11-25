@@ -7,6 +7,7 @@ module M
   HELP_FILE_PATH = File.expand_path(
     '../../doc/help.txt', File.dirname(__FILE__)
   )
+=begin
   MANGA_PAGES = (1..9).map { |p| 
       "http://www.wiemanga.com/search/?name_sel=contain" +
       "&author_sel=contain&completed_series=either&page=#{p}.html"
@@ -15,6 +16,8 @@ module M
       'http://www.mangareader.net/alphabetical',
       'http://mangafox.me/manga/'
     ]
+=end
+  MANGA_PAGES = ['http://www.mangareader.net/alphabetical']
 
   # return a list of hash with :uri and :name of mangas found in list
   def find(search)
