@@ -6,7 +6,8 @@ module Mangdown
     extend self
   
 		def get_doc(uri)
-			@doc = ::Nokogiri::HTML(get(uri))
+      data = get(uri)
+			@doc = ::Nokogiri::HTML(data)
     end
 
     def get(uri)
@@ -29,12 +30,13 @@ module Mangdown
     def hydra_streaming(objects)
       hydra = Typhoeus::Hydra.hydra
 
-      requests = objects.map {|obj| 
+      requests = objects.map { |obj| 
         next unless yield(:before, obj)
 
         request = Typhoeus::Request.new(obj.uri)
         request.on_headers do |response|
-          yield((response.success? ? :succeeded : :failed), obj)
+          status = response.success? ? :succeeded : :failed
+          yield(status, obj)
         end
         request.on_body do |chunk|
           yield(:body, obj, chunk) 
@@ -81,4 +83,3 @@ module Mangdown
     end
   end
 end
-
