@@ -48,41 +48,37 @@ module Mangdown
 
 		# download all pages in a chapter
 		def download_to(dir)
-      dir   = Tools.relative_or_absolute_path(dir, @name)
-      pages = map {|page| page.to_page}
-      failed    = []
+      dir = Tools.relative_or_absolute_path(dir, @name)
+      pages = map(&:to_page)
+      failed = []
       succeeded = []
 
       Dir.mkdir(dir) unless Dir.exists?(dir)
-      Tools.hydra_streaming(pages) do |stage, page, data=nil|
+
+      Tools.hydra_streaming(pages) do |stage, page, data = nil|
         case stage
         when :failed
           failed << page
         when :succeeded
           succeeded << page
         when :before
-          path = page.file_path(dir)
-          !File.exist?(path)
+          !page.file_exist?(dir)
         when :body
-          unless failed.include?(page)
-            path = page.file_path(dir)
-            File.open(path, 'ab') { |file| file.write(data) } 
-          end
+          page.append_file_data(dir, data) unless failed.include?(page)
         when :complete
-          unless failed.include?(page)
-            path = page.file_path(dir)
-            FileUtils.mv(path, "#{path}.#{Tools.file_type(path)}")
-          end
+          page.append_file_ext(dir) unless failed.include?(page)
         end
       end
-      FileUtils.rm_rf(dir) if succeeded.empty?
 
-      !succeeded.empty?
+      FileUtils.rm_r(dir) if succeeded.empty?
+
+      { failed: failed, succeeded: succeeded }
 		end
 
 		private
     def load_pages
 			@pages ||= []
+
       fetch_each_page do |page| @pages << page end
       @pages.sort_by!(&:name)
     end
@@ -107,11 +103,11 @@ module Mangdown
     # get the page name and uri
     def get_page(uri, doc)
       properties = Properties.new(uri, nil, doc)
-      MDHash.new(
-        uri:  properties.page_image_src, 
-        name: properties.page_image_name,
-        site: properties.type
-      )
+      uri = properties.page_image_src 
+      name = properties.page_image_name
+      site = properties.type
+
+      MDHash.new( uri: uri, name: name, site: site)
     end
   end
 end
