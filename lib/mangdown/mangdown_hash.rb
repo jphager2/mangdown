@@ -3,13 +3,14 @@ module Mangdown
     include Equality
 
 		def initialize(options = {})
-      @properties = Properties.new(
-        options[:uri], options[:site], nil, options[:name]
-      )
+      uri = options.fetch(:uri)
+      name = options[:name]
+      site = options[:site]
+      @properties = Properties.new(uri, site, nil, name)
 
       @hash = {}
-      [:uri, :name].each {|key| @hash[key] = options.fetch(key)}
-      @hash[:uri]  = Mangdown::Uri.new(@hash[:uri])
+      @hash[:name] = name
+      @hash[:uri] = Mangdown::Uri.new(uri)
       @hash[:site] = @properties.type
 		end
 
@@ -78,4 +79,3 @@ module Mangdown
     end
   end
 end
-
