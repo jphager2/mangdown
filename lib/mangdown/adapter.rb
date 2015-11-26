@@ -20,8 +20,26 @@ module Mangdown
         #@page_uri_regex          = /.*/i
       end
 
+      def self.type
+        name.split('::').last.downcase.to_sym
+      end
+
       def type
-        self.class.to_s.split('::').last.downcase.to_sym
+        self.class.type
+      end
+
+      # Override this if you want to use an adapter name for a site that is 
+      # not matched in the site's url
+      # e.g. CoolAdapterName < Adapter::Base
+      # def site
+      #   "mangareader"
+      # end
+      def self.site
+        type.to_s
+      end
+
+      def site
+        self.class.site
       end
 
       # Must return true/false if uri represents a manga for adapter
