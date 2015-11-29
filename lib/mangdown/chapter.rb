@@ -46,14 +46,27 @@ module Mangdown
 			self
 		end
 
+    def to_path
+      @path ||= set_path
+    end
+
+    def set_path(dir = nil)
+      dir ||= File.join(DOWNLOAD_DIR, manga)
+      path = File.join(dir, name)
+      @path = Tools.relative_or_absolute_path(path)
+    end
+
+    def cbz(dir = to_path)
+      CBZ.one(dir)
+    end
+
 		# download all pages in a chapter
-		def download_to(dir)
-      dir = Tools.relative_or_absolute_path(dir, @name)
+		def download_to(dir = nil)
       pages = map(&:to_page)
       failed = []
       succeeded = []
 
-      Dir.mkdir(dir) unless Dir.exists?(dir)
+      setup_download_dir!(dir)
 
       Tools.hydra_streaming(pages) do |stage, page, data = nil|
         case stage
@@ -62,20 +75,25 @@ module Mangdown
         when :succeeded
           succeeded << page
         when :before
-          !page.file_exist?(dir)
+          !page.file_exist?(to_path)
         when :body
-          page.append_file_data(dir, data) unless failed.include?(page)
+          page.append_file_data(to_path, data) unless failed.include?(page)
         when :complete
-          page.append_file_ext(dir) unless failed.include?(page)
+          page.append_file_ext(to_path) unless failed.include?(page)
         end
       end
 
-      FileUtils.rm_r(dir) if succeeded.empty?
+      FileUtils.rm_r(to_path) if succeeded.empty?
 
       { failed: failed, succeeded: succeeded }
 		end
 
 		private
+    def setup_download_dir!(dir)
+      set_path(dir)
+      FileUtils.mkdir_p(to_path) unless Dir.exists?(to_path)
+    end
+
     def load_pages
 			@pages ||= []
 
@@ -96,7 +114,8 @@ module Mangdown
     def build_page_hashes
       (1..@properties.num_pages).map { |num|  
         uri_str = @properties.build_page_uri(uri, manga, chapter, num)
-        MDHash.new(uri: Mangdown::Uri.new(uri_str).downcase, name: num)
+        uri = Mangdown::Uri.new(uri_str).downcase 
+        MDHash.new(uri: uri, name: num, chapter: name, manga: manga)
       }
     end
 
@@ -104,10 +123,10 @@ module Mangdown
     def get_page(uri, doc)
       properties = Properties.new(uri, nil, doc)
       uri = properties.page_image_src 
-      name = properties.page_image_name
+      page = properties.page_image_name
       site = properties.type
 
-      MDHash.new( uri: uri, name: name, site: site)
+      MDHash.new(uri: uri, name: page, chapter: name, manga: manga, site: site)
     end
   end
 end

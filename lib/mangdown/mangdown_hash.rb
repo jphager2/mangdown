@@ -12,6 +12,8 @@ module Mangdown
       @hash[:name] = name
       @hash[:uri] = Mangdown::Uri.new(uri)
       @hash[:site] = @properties.type
+      @hash[:manga] = options[:manga]
+      @hash[:chapter] = options[:chapter]
 		end
 
 		# explicit conversion to manga 
@@ -26,7 +28,7 @@ module Mangdown
 		# explicit conversion to chapter 
 		def to_chapter
       if @properties.is_chapter?
-        Chapter.new(uri, name)
+        Chapter.new(uri, name, manga)
       else
         raise NoMethodError, 'This is not a known chapter type'
       end
@@ -35,7 +37,7 @@ module Mangdown
 		# explicit conversion to page 
  	  def to_page 
       if @properties.is_page?
-        Page.new(uri, name)
+        Page.new(uri, name, manga, chapter)
       else
         raise NoMethodError, 'This is not a known page type'
       end
@@ -51,6 +53,14 @@ module Mangdown
       @hash[:uri]
     end
 
+    def manga
+      @hash[:manga]
+    end
+
+    def chapter
+      @hash[:chapter ]
+    end
+
     # name writer
     def name=(other)
       @hash[:name] = other
@@ -59,6 +69,14 @@ module Mangdown
     # uri writer
     def uri=(other)
       @hash[:uri] = other
+    end
+
+    def manga=(other)
+      @hash[:manga] = other
+    end
+    
+    def chapter=(other)
+      @hash[:chapter] = other
     end
 
     def [](key)

@@ -6,6 +6,8 @@ require 'filemagic'
 
 module Mangdown
   ADAPTERS = []
+
+  DOWNLOAD_DIR ||= Dir.home + '/manga'
 end
 
 require_relative 'mangdown/adapter'

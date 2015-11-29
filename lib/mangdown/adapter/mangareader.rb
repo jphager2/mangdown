@@ -48,7 +48,7 @@ module Mangdown
     end
 
     def slug(string)
-      string.gsub(' ', '-').gsub(/:/, '')
+      string.gsub(' ', '-').gsub(/[:,]/, '')
     end
   end
 end

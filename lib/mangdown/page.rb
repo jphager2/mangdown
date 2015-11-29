@@ -3,10 +3,12 @@ module Mangdown
 
     include Equality
 
-    attr_reader :uri, :name
+    attr_reader :uri, :name, :manga, :chapter
 
-    def initialize(uri, name)
+    def initialize(uri, name, manga, chapter)
       @name = name
+      @chapter = chapter
+      @manga = manga
       @uri  = Mangdown::Uri.new(uri) 
     end
 
@@ -14,6 +16,20 @@ module Mangdown
     def to_page
       self
     end	
+
+    def to_path
+      @path ||= set_path
+    end
+
+    def set_path(dir = nil)
+      dir ||= File.join(manga, chapter)
+      path = File.join(dir, name)
+      if Dir.exist?(dir)
+        @path = Dir.entries(dir).find { |file| file.to_s[path] }
+      end
+      @path ||= path
+      @path = Tools.relative_or_absolute_path(@path)
+    end
 
     # downloads to specified directory
     def download_to(dir = Dir.pwd)
@@ -28,27 +44,24 @@ module Mangdown
     end
 
     def append_file_data(dir, data)
-      path = file_path(dir)
+      set_path(dir)
 
-      File.open(path, 'ab') { |file| file.write(data) } 
+      File.open(to_path, 'ab') { |file| file.write(data) } 
     end
 
-    def file_path(dir)
-      Tools.relative_or_absolute_path(dir, name)
-    end
-
-    def append_file_ext(dir)
-      path = file_path(dir)
+    def append_file_ext(dir = nil)
+      set_path(dir) if dir
+      path = to_path
       ext = Tools.file_type(path)
       filename = "#{path}.#{ext}"
 
       FileUtils.mv(path, filename)
     end
 
-    def file_exist?(dir)
-      path = file_path(dir)
+    def file_exist?(dir = nil)
+      set_path(dir) if dir
 
-      Dir.entries(dir).any? { |file| file.to_s[path.to_s] }
+      Dir.entries(dir).any? { |file| file.to_s[to_path.to_s] }
     end
   end
 end
