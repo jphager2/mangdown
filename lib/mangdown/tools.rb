@@ -5,8 +5,9 @@ module Mangdown
   module Tools
     extend self
   
-		def get_doc(uri)
-			@doc = ::Nokogiri::HTML(get(uri))
+    def get_doc(uri)
+      data = get(uri)
+      @doc = ::Nokogiri::HTML(data)
     end
 
     def get(uri)
@@ -22,6 +23,18 @@ module Mangdown
       Pathname.new(root).join(*sub_paths)
     end
 
+    def valid_path_name(name)
+      number_matcher = /(\d+)(\.\w+)*\Z/
+      num = name.to_s.slice(number_matcher, 1)
+
+      if num
+        num = num.rjust(5, "0")
+        name.sub(number_matcher, num + '\2')
+      else
+        name
+      end
+    end 
+
     def file_type(path)
       FileMagic.new.file(path.to_s).slice(/^\w+/).downcase
     end
@@ -29,12 +42,13 @@ module Mangdown
     def hydra_streaming(objects)
       hydra = Typhoeus::Hydra.hydra
 
-      requests = objects.map {|obj| 
+      requests = objects.map { |obj| 
         next unless yield(:before, obj)
 
         request = Typhoeus::Request.new(obj.uri)
         request.on_headers do |response|
-          yield((response.success? ? :succeeded : :failed), obj)
+          status = response.success? ? :succeeded : :failed
+          yield(status, obj)
         end
         request.on_body do |chunk|
           yield(:body, obj, chunk) 
@@ -81,4 +95,3 @@ module Mangdown
     end
   end
 end
-

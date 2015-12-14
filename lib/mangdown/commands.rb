@@ -7,6 +7,7 @@ module M
   HELP_FILE_PATH = File.expand_path(
     '../../doc/help.txt', File.dirname(__FILE__)
   )
+=begin
   MANGA_PAGES = (1..9).map { |p| 
       "http://www.wiemanga.com/search/?name_sel=contain" +
       "&author_sel=contain&completed_series=either&page=#{p}.html"
@@ -15,6 +16,8 @@ module M
       'http://www.mangareader.net/alphabetical',
       'http://mangafox.me/manga/'
     ]
+=end
+  MANGA_PAGES = ['http://www.mangareader.net/alphabetical']
 
   # return a list of hash with :uri and :name of mangas found in list
   def find(search)
@@ -24,17 +27,17 @@ module M
     }
   end
 
-	# cbz all subdirectories in a directory
+  # cbz all subdirectories in a directory
   def cbz(dir)
-		Dir.exist?(dir) ? (CBZ.all(dir)) : (raise Errno::ENOENT, dir) 
+    Dir.exist?(dir) ? (CBZ.all(dir)) : (raise Errno::ENOENT, dir) 
   end
 
-	# isplay help file
+  # isplay help file
   def help
     puts File.open(HELP_FILE_PATH, 'r').read
   end
 
-	# delete data file
+  # delete data file
   def clean_up
     File.delete(DATA_FILE_PATH) if File.exist?(DATA_FILE_PATH)
   end

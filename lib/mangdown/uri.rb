@@ -1,8 +1,8 @@
 module Mangdown::Uri 
 
-	extend self
+  extend self
 
-	def new(uri)
-		URI.encode(uri, '[]')
-	end	
+  def new(uri)
+    URI.encode(uri, '[]')
+  end 
 end

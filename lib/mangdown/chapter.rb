@@ -1,24 +1,33 @@
 module Mangdown
-	class Chapter
+  class Chapter
 
     include Equality
     include Enumerable
-		attr_reader :name, :uri, :pages, :manga, :chapter
 
-		def initialize(name, uri)
+    attr_reader :uri, :pages
+
+    def initialize(uri, name = nil, manga = nil, chapter = nil)
       # use a valid name
-			@name       = name.sub(/\s(\d+)$/) { |num| 
-        ' ' + num.to_i.to_s.rjust(3, '0')
-      }
-      @manga      = name.slice(/(^.+)\s/, 1) 
-      @chapter    = name.slice(/\d+\z/).to_i 
-			@uri        = Mangdown::Uri.new(uri)
-      @properties = Properties.new(@uri)
-			@pages      = []
+      @name = name 
+      @manga = manga
+      @chapter = chapter
+      @uri = Mangdown::Uri.new(uri)
+      @properties = Properties.new(@uri, nil, nil, name)
 
-			get_pages
-      @pages.sort_by! {|page| page.name}
-		end
+      load_pages
+    end
+
+    def name
+      @name ||= @properties.chapter_name
+    end
+
+    def manga
+       @manga ||= @properties.manga_name
+    end
+
+    def chapter
+      @chapter ||= @properties.chapter_number
+    end
 
     def inspect
       "#<#{self.class} @name=#{name} @uri=#{uri} " +
@@ -28,76 +37,97 @@ module Mangdown
     alias_method :to_s, :inspect
 
     # enumerates through pages
-    def each
-      block_given? ? @pages.each { |page| yield(page) } : @pages.each
+    def each(&block)
+      @pages.each(&block)
     end
 
-		# explicit conversion to chapter
-		def to_chapter
-			self
-		end
+    # explicit conversion to chapter
+    def to_chapter
+      self
+    end
 
-		# download all pages in a chapter
-		def download_to(dir)
-      dir   = Tools.relative_or_absolute_path(dir, @name)
-      pages = map {|page| page.to_page}
-      failed    = []
+    def to_path
+      @path ||= set_path
+    end
+
+    def set_path(dir = nil)
+      dir ||= File.join(DOWNLOAD_DIR, manga)
+      path = File.join(dir, name)
+      path = Tools.valid_path_name(path)
+      @path = Tools.relative_or_absolute_path(path)
+    end
+
+    def cbz(dir = to_path)
+      CBZ.one(dir)
+    end
+
+    # download all pages in a chapter
+    def download_to(dir = nil)
+      pages = map(&:to_page)
+      failed = []
       succeeded = []
 
-      Dir.mkdir(dir) unless Dir.exists?(dir)
-      Tools.hydra_streaming(pages) do |stage, page, data=nil|
+      setup_download_dir!(dir)
+
+      Tools.hydra_streaming(pages) do |stage, page, data = nil|
         case stage
         when :failed
           failed << page
         when :succeeded
           succeeded << page
         when :before
-          path = page.file_path(dir)
-          !File.exist?(path)
+          !page.file_exist?(to_path)
         when :body
-          unless failed.include?(page)
-            path = page.file_path(dir)
-            File.open(path, 'ab') { |file| file.write(data) } 
-          end
+          page.append_file_data(to_path, data) unless failed.include?(page)
         when :complete
-          unless failed.include?(page)
-            path = page.file_path(dir)
-            FileUtils.mv(path, "#{path}.#{Tools.file_type(path)}")
-          end
+          page.append_file_ext(to_path) unless failed.include?(page)
         end
       end
-      FileUtils.rm_rf(dir) if succeeded.empty?
 
-      !succeeded.empty?
-		end
+      FileUtils.rm_r(to_path) if succeeded.empty?
 
-		private
+      { failed: failed, succeeded: succeeded }
+    end
+
+    private
+    def setup_download_dir!(dir)
+      set_path(dir)
+      FileUtils.mkdir_p(to_path) unless Dir.exists?(to_path)
+    end
+
+    def load_pages
+      @pages ||= []
+
+      fetch_each_page do |page| @pages << page end
+      @pages.sort_by!(&:name)
+    end
+
     # get page objects for all pages in a chapter
-    def get_pages
-      pages = (1..@properties.num_pages).map {|num| get_page_hash(num)}
-
+    def fetch_each_page
+      pages = build_page_hashes
       Tools.hydra(pages) do |page, body|
-        @pages << get_page(page.uri, Nokogiri::HTML(body))
+        page = get_page(page.uri, Nokogiri::HTML(body))
+        yield(page)
       end
     end
 
-    # get the doc for a given page number
-    def get_page_hash(num)
-      uri_str = @properties.build_page_uri(uri, @manga, @chapter, num)
-
-      MDHash.new(
-        uri: Mangdown::Uri.new(uri_str).downcase, name: num
-      )
+    # get the docs for number of pages 
+    def build_page_hashes
+      (1..@properties.num_pages).map { |num|  
+        uri_str = @properties.build_page_uri(uri, manga, chapter, num)
+        uri = Mangdown::Uri.new(uri_str).downcase 
+        MDHash.new(uri: uri, name: num, chapter: name, manga: manga)
+      }
     end
 
     # get the page name and uri
     def get_page(uri, doc)
       properties = Properties.new(uri, nil, doc)
-      MDHash.new(
-        uri:  properties.page_image_src, 
-        name: properties.page_image_name,
-        site: properties.type
-      )
+      uri = properties.page_image_src 
+      page = properties.page_image_name
+      site = properties.type
+
+      MDHash.new(uri: uri, name: page, chapter: name, manga: manga, site: site)
     end
   end
 end

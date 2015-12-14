@@ -1,19 +1,17 @@
 require 'progress_bar'
 
 module Mangdown
-
-  DOWNLOAD_DIR ||= Dir.home + '/manga'
-
-	# mangdown manga object, which holds chapters
+  # mangdown manga object, which holds chapters
   class Manga
 
     include Equality
     include Enumerable
-    attr_reader :uri, :chapters, :enum 
 
-    def initialize(name = nil, uri)
+    attr_reader :uri, :chapters
+
+    def initialize(uri, name = nil)
       @name = name
-			@uri = Mangdown::Uri.new(uri)
+      @uri = Mangdown::Uri.new(uri)
       @chapters = []
       @properties = Properties.new(uri)
 
@@ -31,21 +29,25 @@ module Mangdown
     end
     alias_method :to_s, :inspect
 
+    def cbz
+      CBZ.all(to_path)
+    end
+
     # download to current directory convenience method
     def download(*args)
-      download_to(DOWNLOAD_DIR,*args)
+      download_to(nil, *args)
     end
     
     # download using enumerable
     def download_to(dir, start = 0, stop = -1)
       start, stop = validate_indeces!(start, stop)
-      dir         = setup_download_dir!(dir)
+      setup_download_dir!(dir)
 
       bar = progress_bar(start, stop)
-      reset(start, stop)
-      loop do
-        chapter = self.next.to_chapter
-        if chapter.download_to(dir)
+      chapters[start..stop].each do |md_hash|
+        chapter = md_hash.to_chapter
+
+        if chapter.download_to(to_path)
           bar.increment!
         else
           STDERR.puts("error: #{chapter.name} was not downloaded") 
@@ -58,49 +60,51 @@ module Mangdown
       self
     end
 
+    def to_path
+      @path ||= set_path
+    end
+
+    def set_path(dir = nil)
+      dir ||= DOWNLOAD_DIR 
+      path = File.join(dir, name)
+      @path = Tools.relative_or_absolute_path(path)
+    end
+
     # each for enumerating through chapters
-    def each
-      @chapters.each {|chapter| yield(chapter) if block_given?}
+    def each(&block)
+      @chapters.each(&block)
     end 
 
-    # go through the chapters one at a time
-    def next
-      @enum || reset
-      @enum.next
-    end
-
     private
-    # reset enum for next
-    def reset(start = 0, stop = -1)
-      @enum = each[start..stop].lazy
-    end
-
     # push MDHashes of manga chapters to @chapters 
     def get_chapters
-      @chapters += @properties.manga_chapters do |uri, name, site|
-         MDHash.new(uri: uri, name: name, site: site)
+      @chapters += @properties.manga_chapters do |uri, chapter, site|
+         MDHash.new(uri: uri, name: chapter, manga: name, site: site)
       end
     end
 
     def chapter_indeces(start, stop)
-      [chapters.index(chapters[start]), chapters.index(chapters[stop])]
+      length = chapters.length
+      [start, stop].map { |i| i < 0 ? length + i : i }
     end
 
     def setup_download_dir!(dir)
-      "#{dir}/#{name}".tap {|dir| Dir.mkdir(dir) unless Dir.exist?(dir)}
+      set_path(dir) 
+      FileUtils.mkdir_p(to_path) unless Dir.exist?(to_path)
     end
 
     def validate_indeces!(start, stop)
-      i_start, i_stop = chapter_indeces(start, stop)
-      if i_start.nil? || i_stop.nil?
-        last  = chapters.length - 1
-        error = "This manga has chapters in the range (0..#{last})"
-        raise ArgumentError, error
-      elsif i_stop < i_start
-        error = 'Last index must be greater than or equal to first index'
-        raise ArgumentError, error
-      end 
-      [i_start, i_stop]
+      chapter_indeces(start, stop).tap { |i_start, i_stop|
+        last = chapters.length - 1
+
+        if i_start > last || i_stop > last
+          error = "This manga has chapters in the range (0..#{last})"
+          raise ArgumentError, error
+        elsif i_stop < i_start
+          error = 'Last index must be greater than or equal to first index'
+          raise ArgumentError, error
+        end 
+      }
     end
 
     # create a progress bar object for start and stop indexes

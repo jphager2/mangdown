@@ -2,41 +2,46 @@ module Mangdown
   class MDHash
     include Equality
 
-		def initialize(options = {})
-      @properties = Properties.new(options[:uri], options[:site])
+    def initialize(options = {})
+      uri = options.fetch(:uri)
+      name = options[:name]
+      site = options[:site]
+      @properties = Properties.new(uri, site, nil, name)
 
       @hash = {}
-      [:uri, :name].each {|key| @hash[key] = options.fetch(key)}
-      @hash[:uri]  = Mangdown::Uri.new(@hash[:uri])
+      @hash[:name] = name
+      @hash[:uri] = Mangdown::Uri.new(uri)
       @hash[:site] = @properties.type
-		end
+      @hash[:manga] = options[:manga]
+      @hash[:chapter] = options[:chapter]
+    end
 
-		# explicit conversion to manga 
+    # explicit conversion to manga 
     def to_manga
       if @properties.is_manga?
-        Manga.new(name, uri)
+        Manga.new(uri, name)
       else
         raise NoMethodError, 'This is not a known manga type'
       end
     end
 
-		# explicit conversion to chapter 
-		def to_chapter
+    # explicit conversion to chapter 
+    def to_chapter
       if @properties.is_chapter?
-        Chapter.new(name, uri)
+        Chapter.new(uri, name, manga)
       else
         raise NoMethodError, 'This is not a known chapter type'
       end
-		end
+    end
 
-		# explicit conversion to page 
- 	  def to_page 
+    # explicit conversion to page 
+    def to_page 
       if @properties.is_page?
-        Page.new(name, uri)
+        Page.new(uri, name, manga, chapter)
       else
         raise NoMethodError, 'This is not a known page type'
       end
-		end	
+    end 
 
     # name reader
     def name
@@ -48,6 +53,14 @@ module Mangdown
       @hash[:uri]
     end
 
+    def manga
+      @hash[:manga]
+    end
+
+    def chapter
+      @hash[:chapter ]
+    end
+
     # name writer
     def name=(other)
       @hash[:name] = other
@@ -56,6 +69,14 @@ module Mangdown
     # uri writer
     def uri=(other)
       @hash[:uri] = other
+    end
+
+    def manga=(other)
+      @hash[:manga] = other
+    end
+    
+    def chapter=(other)
+      @hash[:chapter] = other
     end
 
     def [](key)
@@ -76,4 +97,3 @@ module Mangdown
     end
   end
 end
-

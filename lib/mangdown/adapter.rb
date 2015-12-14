@@ -3,22 +3,43 @@ module Mangdown
     class Base
       
       attr_reader :root
-      def initialize(uri, doc)
-        @uri, @doc = uri, doc
-        #@root                  = '' 
-        #@manga_list_css        = ''
-        #@chapter_list_css      = ''
-        #@manga_name_css        = ''
-        #@manga_list_uri        = '' 
-        #@manga_link_prefix     = '' 
-        #@reverse_chapters      = true || false
-        #@manga_uri_regex       = /.*/i 
-        #@chapter_uri_regex     = /.*/i
-        #@page_uri_regex        = /.*/i
+      def initialize(uri, doc, name)
+        @uri, @doc, @name = uri, doc, name
+        #@root                    = '' 
+        #@manga_list_css          = ''
+        #@chapter_list_css        = ''
+        #@manga_name_css          = ''
+        #@chapter_name_css        = ''
+        #@chapter_manga_name_css  = ''
+        #@chapter_number_css        = ''
+        #@manga_list_uri          = '' 
+        #@manga_link_prefix       = '' 
+        #@reverse_chapters        = true || false
+        #@manga_uri_regex         = /.*/i 
+        #@chapter_uri_regex       = /.*/i
+        #@page_uri_regex          = /.*/i
+      end
+
+      def self.type
+        name.split('::').last.downcase.to_sym
       end
 
       def type
-        self.class.to_s.split('::').last.downcase.to_sym
+        self.class.type
+      end
+
+      # Override this if you want to use an adapter name for a site that is 
+      # not matched in the site's url
+      # e.g. CoolAdapterName < Adapter::Base
+      # def site
+      #   "mangareader"
+      # end
+      def self.site
+        type.to_s
+      end
+
+      def site
+        self.class.site
       end
 
       # Must return true/false if uri represents a manga for adapter
@@ -38,7 +59,36 @@ module Mangdown
 
       # Must return a string
       def manga_name
-        doc.css(@manga_name_css).text
+        if is_manga?
+          doc.css(@manga_name_css).text
+        elsif is_chapter?
+          chapter_manga_name
+        end
+      end
+
+      def chapter_name
+        if @name
+          @name.sub(/\s(\d+)$/) { |num| ' ' + num.to_i.to_s.rjust(5, '0') }
+        else
+          doc.css(@chapter_name_css).text
+        end
+      end
+
+      def chapter_manga_name
+        if @name
+          @name.slice(/(^.+)\s/, 1) 
+        else
+          doc.css(@chapter_manga_name_css).text
+        end
+      end
+
+      def chapter_number
+        raise NoMethodError, "Not a chapter" unless is_chapter?
+        if @name
+          @name.slice(/\d+\z/).to_i 
+        else
+          doc.css(@chapter_number_css).text
+        end
       end
 
       # Must return a uri for a page given the arguments
@@ -61,11 +111,12 @@ module Mangdown
       # [manga_uri, manga_name, adapter_type]
       # If block given, then the block may alter this array
       # Only valid mangas should be returned (using is_manga?(uri))
-      def manga_list
+      def collect_manga_list
         doc.css(@manga_list_css).map { |a| 
-          manga = ["#{@manga_link_prefix}#{a[:href]}",a.text.strip,type]
-          next(nil) unless is_manga?(manga.first)
-          block_given? ? yield(manga) : manga
+          manga = ["#{@manga_link_prefix}#{a[:href]}", a.text.strip, type]
+          if is_manga?(manga.first)
+            block_given? ? yield(manga) : manga
+          end
         }.compact
       end
 
@@ -75,9 +126,11 @@ module Mangdown
       # Only valid chapters should be returned (using is_chapter?(uri))
       def manga_chapters
         chapters = doc.css(@chapter_list_css).map { |a|
-          chapter = [(root + a[:href].sub(root, '')),a.text.strip,type]
-          next(nil) unless is_chapter?(chapter.first)
-          block_given? ? yield(chapter) : chapter 
+          link = root + a[:href].sub(root, '')
+          chapter = [link, a.text.strip, type]
+          if is_chapter?(chapter.first)
+            block_given? ? yield(chapter) : chapter 
+          end
         }.compact
         @reverse_chapters ? chapters.reverse : chapters
       end

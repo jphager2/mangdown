@@ -2,7 +2,7 @@ module Mangdown
   class Mangareader < Adapter::Base
     Mangdown::ADAPTERS << self
 
-    def initialize(uri, doc)
+    def initialize(uri, doc, name)
       super
 			@root                  ||= 'http://www.mangareader.net'
 			@manga_list_css        = 'ul.series_alpha li a'
@@ -23,7 +23,8 @@ module Mangdown
     end
 
     def build_page_uri(uri, manga, chapter, page_num)
-      "#{root}/#{manga.gsub(' ', '-')}/#{chapter}/#{page_num}"
+      slug = slug(manga)
+      "#{root}/#{slug}/#{chapter}/#{page_num}"
     end
 
     def num_pages
@@ -44,6 +45,10 @@ module Mangdown
     private
     def page_image
       doc.css('img')[0]
+    end
+
+    def slug(string)
+      string.gsub(' ', '-').gsub(/[:,]/, '')
     end
   end
 end
