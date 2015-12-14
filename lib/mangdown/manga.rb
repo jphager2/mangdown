@@ -29,8 +29,8 @@ module Mangdown
     end
     alias_method :to_s, :inspect
 
-    def cbz(dir = to_path)
-      CBZ.all(dir)
+    def cbz
+      CBZ.all(to_path)
     end
 
     # download to current directory convenience method

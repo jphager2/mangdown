@@ -52,21 +52,9 @@ module Mangdown
 
     def validate_file_or_dir_names(dir)
       each_dir_or_page(dir) do |file_name|
-        checked_name = check_file_or_dir_name(file_name)
+        checked_name = Tools.valid_path_name(file_name)
         File.rename(file_name, checked_name)
       end
     end
-
-    def check_file_or_dir_name(name)
-      number_matcher = /(\d+)(\.\w+)*\Z/
-      num = name.slice(number_matcher, 1)
-
-      if num
-        num = num.rjust(5, "0")
-        name.sub(number_matcher, num + '\2')
-      else
-        name
-      end
-    end 
   end
 end

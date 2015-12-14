@@ -23,6 +23,18 @@ module Mangdown
       Pathname.new(root).join(*sub_paths)
     end
 
+    def valid_path_name(name)
+      number_matcher = /(\d+)(\.\w+)*\Z/
+      num = name.to_s.slice(number_matcher, 1)
+
+      if num
+        num = num.rjust(5, "0")
+        name.sub(number_matcher, num + '\2')
+      else
+        name
+      end
+    end 
+
     def file_type(path)
       FileMagic.new.file(path.to_s).slice(/^\w+/).downcase
     end
