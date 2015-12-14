@@ -2,7 +2,7 @@ module Mangdown
   class MDHash
     include Equality
 
-		def initialize(options = {})
+    def initialize(options = {})
       uri = options.fetch(:uri)
       name = options[:name]
       site = options[:site]
@@ -14,9 +14,9 @@ module Mangdown
       @hash[:site] = @properties.type
       @hash[:manga] = options[:manga]
       @hash[:chapter] = options[:chapter]
-		end
+    end
 
-		# explicit conversion to manga 
+    # explicit conversion to manga 
     def to_manga
       if @properties.is_manga?
         Manga.new(uri, name)
@@ -25,23 +25,23 @@ module Mangdown
       end
     end
 
-		# explicit conversion to chapter 
-		def to_chapter
+    # explicit conversion to chapter 
+    def to_chapter
       if @properties.is_chapter?
         Chapter.new(uri, name, manga)
       else
         raise NoMethodError, 'This is not a known chapter type'
       end
-		end
+    end
 
-		# explicit conversion to page 
- 	  def to_page 
+    # explicit conversion to page 
+    def to_page 
       if @properties.is_page?
         Page.new(uri, name, manga, chapter)
       else
         raise NoMethodError, 'This is not a known page type'
       end
-		end	
+    end 
 
     # name reader
     def name

@@ -4,19 +4,19 @@ module Mangdown
 
     def initialize(uri, doc, name)
       super
-			@manga_list_css        = 'div.manga_list li a'
-			@chapter_list_css      = 'a.tips'
-			@root                  = 'http://mangafox.me'
+      @manga_list_css        = 'div.manga_list li a'
+      @chapter_list_css      = 'a.tips'
+      @root                  = 'http://mangafox.me'
       @manga_list_uri        = "#{@root}/manga"
       @manga_name_css        = "#title h1"
-			@manga_link_prefix     = ''
-			@reverse_chapters      = true
+      @manga_link_prefix     = ''
+      @reverse_chapters      = true
       @manga_uri_regex       = 
         /#{@root}\/manga\/[^\/]+?\//i
       @chapter_uri_regex     = 
         /#{@manga_uri_regex}(v\d+\/)?(c\d+\/)(1\.html)/i
       @page_uri_regex        = /.+\.(png|jpg|jpeg)$/i
-		end
+    end
 
     def manga_name
       CGI.unescapeHTML(super.sub(/ Manga/, '').downcase).upcase

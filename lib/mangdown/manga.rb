@@ -1,7 +1,7 @@
 require 'progress_bar'
 
 module Mangdown
-	# mangdown manga object, which holds chapters
+  # mangdown manga object, which holds chapters
   class Manga
 
     include Equality
@@ -11,7 +11,7 @@ module Mangdown
 
     def initialize(uri, name = nil)
       @name = name
-			@uri = Mangdown::Uri.new(uri)
+      @uri = Mangdown::Uri.new(uri)
       @chapters = []
       @properties = Properties.new(uri)
 

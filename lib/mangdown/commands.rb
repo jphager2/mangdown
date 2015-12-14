@@ -27,17 +27,17 @@ module M
     }
   end
 
-	# cbz all subdirectories in a directory
+  # cbz all subdirectories in a directory
   def cbz(dir)
-		Dir.exist?(dir) ? (CBZ.all(dir)) : (raise Errno::ENOENT, dir) 
+    Dir.exist?(dir) ? (CBZ.all(dir)) : (raise Errno::ENOENT, dir) 
   end
 
-	# isplay help file
+  # isplay help file
   def help
     puts File.open(HELP_FILE_PATH, 'r').read
   end
 
-	# delete data file
+  # delete data file
   def clean_up
     File.delete(DATA_FILE_PATH) if File.exist?(DATA_FILE_PATH)
   end

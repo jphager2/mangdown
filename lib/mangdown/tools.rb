@@ -5,9 +5,9 @@ module Mangdown
   module Tools
     extend self
   
-		def get_doc(uri)
+    def get_doc(uri)
       data = get(uri)
-			@doc = ::Nokogiri::HTML(data)
+      @doc = ::Nokogiri::HTML(data)
     end
 
     def get(uri)

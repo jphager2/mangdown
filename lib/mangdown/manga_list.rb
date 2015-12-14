@@ -1,6 +1,6 @@
 module Mangdown
 
-	# a list of manga
+  # a list of manga
   class MangaList
 
     def self.from_data(mangas)
@@ -21,10 +21,10 @@ module Mangdown
     end
 
     private
-		# get a list of mangas from the uri
+    # get a list of mangas from the uri
     def get_mangas(uri)
       
-			@mangas += Properties.new(uri).collect_manga_list { |uri, name, site| 
+      @mangas += Properties.new(uri).collect_manga_list { |uri, name, site| 
         MDHash.new(uri: uri, name: name, site: site) 
       }
     end

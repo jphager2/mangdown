@@ -5,18 +5,18 @@ module Mangdown
 
     def all(main_dir)
       main_dir = String(main_dir)
-			# Make sure all sub dirs are checked
-			validate_file_or_dir_names(main_dir)
-			# Make sure all sub dirs have files checked
-			each_dir_or_page(main_dir) { |dir| validate_file_or_dir_names(dir)}
-			# Create cbz files for all sub dirs
-			cbz_sub_dirs(main_dir)
+      # Make sure all sub dirs are checked
+      validate_file_or_dir_names(main_dir)
+      # Make sure all sub dirs have files checked
+      each_dir_or_page(main_dir) { |dir| validate_file_or_dir_names(dir)}
+      # Create cbz files for all sub dirs
+      cbz_sub_dirs(main_dir)
     end
 
     def one(dir)
       dir = String(dir)
-			validate_file_or_dir_names(dir)
-			cbz_dir(dir)
+      validate_file_or_dir_names(dir)
+      cbz_dir(dir)
     end
 
     private

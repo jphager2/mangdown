@@ -1,21 +1,21 @@
 module Mangdown
-	class Chapter
+  class Chapter
 
     include Equality
     include Enumerable
 
-		attr_reader :uri, :pages
+    attr_reader :uri, :pages
 
-		def initialize(uri, name = nil, manga = nil, chapter = nil)
+    def initialize(uri, name = nil, manga = nil, chapter = nil)
       # use a valid name
-			@name = name 
+      @name = name 
       @manga = manga
       @chapter = chapter
-			@uri = Mangdown::Uri.new(uri)
+      @uri = Mangdown::Uri.new(uri)
       @properties = Properties.new(@uri, nil, nil, name)
 
-			load_pages
-		end
+      load_pages
+    end
 
     def name
       @name ||= @properties.chapter_name
@@ -41,10 +41,10 @@ module Mangdown
       @pages.each(&block)
     end
 
-		# explicit conversion to chapter
-		def to_chapter
-			self
-		end
+    # explicit conversion to chapter
+    def to_chapter
+      self
+    end
 
     def to_path
       @path ||= set_path
@@ -60,8 +60,8 @@ module Mangdown
       CBZ.one(dir)
     end
 
-		# download all pages in a chapter
-		def download_to(dir = nil)
+    # download all pages in a chapter
+    def download_to(dir = nil)
       pages = map(&:to_page)
       failed = []
       succeeded = []
@@ -86,16 +86,16 @@ module Mangdown
       FileUtils.rm_r(to_path) if succeeded.empty?
 
       { failed: failed, succeeded: succeeded }
-		end
+    end
 
-		private
+    private
     def setup_download_dir!(dir)
       set_path(dir)
       FileUtils.mkdir_p(to_path) unless Dir.exists?(to_path)
     end
 
     def load_pages
-			@pages ||= []
+      @pages ||= []
 
       fetch_each_page do |page| @pages << page end
       @pages.sort_by!(&:name)

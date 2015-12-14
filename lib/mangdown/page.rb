@@ -15,7 +15,7 @@ module Mangdown
     # explicit conversion to page 
     def to_page
       self
-    end	
+    end 
 
     def to_path
       @path ||= set_path

@@ -1,7 +1,7 @@
 module Mangdown
-	class Properties
+  class Properties
 
-		def initialize(uri, site = nil, doc = nil, name = nil)
+    def initialize(uri, site = nil, doc = nil, name = nil)
       adapter_class = adapter_for_site(uri || site)
 
       if adapter_class
@@ -9,7 +9,7 @@ module Mangdown
       else
         raise Adapter::NoAdapterError.new(uri || site)
       end
-		end
+    end
 
     private
     def adapter_for_site(site)
@@ -23,5 +23,5 @@ module Mangdown
         super
       end
     end
-	end
+  end
 end
