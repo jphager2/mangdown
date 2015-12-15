@@ -5,7 +5,7 @@ module M
 
   DATA_FILE_PATH = Dir.home + '/.manga_list.yml'
   HELP_FILE_PATH = File.expand_path(
-    '../../doc/help.txt', File.dirname(__FILE__)
+    '../../README.md', File.dirname(__FILE__)
   )
 =begin
   MANGA_PAGES = (1..9).map { |p| 
@@ -29,12 +29,12 @@ module M
 
   # cbz all subdirectories in a directory
   def cbz(dir)
-    Dir.exist?(dir) ? (CBZ.all(dir)) : (raise Errno::ENOENT, dir) 
+    Dir.exist?(dir) ? CBZ.all(dir) : raise(Errno::ENOENT, dir) 
   end
 
-  # isplay help file
+  # display help file
   def help
-    puts File.open(HELP_FILE_PATH, 'r').read
+    puts File.read(HELP_FILE_PATH)
   end
 
   # delete data file

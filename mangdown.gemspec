@@ -1,11 +1,13 @@
+require_relative 'lib/mangdown/version'
+
 files = Dir.glob(Dir.pwd + '/**/*.rb')
 #files.select! {|file| !( file =~ /\/db/)} 
 files.collect! {|file| file.sub(Dir.pwd + '/', '')}
-files.push('LICENSE', 'doc/help.txt')
+files.push('LICENSE', 'README.md')
 
 Gem::Specification.new do |s|
   s.name        = 'mangdown'
-  s.version     = '0.13.0'
+  s.version     = Mangdown::VERSION
 	s.date        = "#{Time.now.strftime("%Y-%m-%d")}"
 	s.homepage    = 'https://github.com/jphager2/mangdown'
   s.summary     = 'Downloads Manga'
