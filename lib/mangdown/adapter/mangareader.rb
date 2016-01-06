@@ -4,13 +4,13 @@ module Mangdown
 
     def initialize(uri, doc, name)
       super
-			@root                  ||= 'http://www.mangareader.net'
-			@manga_list_css        = 'ul.series_alpha li a'
+      @root                  ||= 'http://www.mangareader.net'
+      @manga_list_css        = 'ul.series_alpha li a'
       @manga_name_css        = 'h2.aname'
-			@chapter_list_css      = 'div#chapterlist td a'
+      @chapter_list_css      = 'div#chapterlist td a'
       @manga_list_uri        = "#{@root}/alphabetical"
-			@manga_link_prefix     = @root 
-			@reverse_chapters      = false
+      @manga_link_prefix     = @root 
+      @reverse_chapters      = false
       @manga_uri_regex       = 
         /#{@root}(\/\d+)?(\/[^\/]+)(\.html)?/i
       @chapter_uri_regex     = 
