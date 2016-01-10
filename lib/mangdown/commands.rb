@@ -62,10 +62,10 @@ module M
   # otherwise fetch new data and write it to the data file
   def current_manga_list
     data = data_from_file
-    return MangaList.from_data(data) if data.is_a? Array 
+    return MangaList.from_data(data) if data
 
     MangaList.new(*MANGA_PAGES).tap { |list| 
-      File.open(path,'w+') {|f| f.write(list.to_yaml)} 
+      File.open(path, 'w+') { |f| f.write(list.to_yaml) } 
     }
   rescue Object => error
     puts "#{path} may be corrupt: #{error.message}"
