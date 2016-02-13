@@ -62,7 +62,7 @@ module Mangdown
     end
 
     # download all pages in a chapter
-    def download_to(dir = nil)
+    def download_to(dir = nil, opts = { force_download: false })
       pages = map(&:to_page)
       failed = []
       succeeded = []
