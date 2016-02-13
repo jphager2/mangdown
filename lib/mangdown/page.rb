@@ -62,7 +62,7 @@ module Mangdown
     def file_exist?(dir = nil)
       set_path(dir) if dir
 
-      File.exist?(to_path)
+      Dir.entries(dir).any? { |file| file.to_s[to_path.basename.to_s] }
     end
   end
 end
