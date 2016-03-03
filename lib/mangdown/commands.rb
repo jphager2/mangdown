@@ -20,11 +20,12 @@ module M
   MANGA_PAGES = ['http://www.mangareader.net/alphabetical']
 
   # return a list of hash with :uri and :name of mangas found in list
-  def find(search)
-    validate_search(search)
-    current_manga_list.mangas.select { |manga| 
-      manga[:name].downcase.include?(search.downcase) 
-    }
+  def find(search, exact_search = false)
+    if exact_search
+      find_exact(search)
+    else
+      find_includes(search)
+    end
   end
 
   # cbz all subdirectories in a directory
@@ -56,6 +57,20 @@ module M
   # attempt to get the list from the data file
   def data_from_file
     YAML.load(File.read(path)) if file_current?(path)
+  end
+
+  # search functions
+  def find_includes(search)
+    validate_search(search)
+    current_manga_list.mangas.select { |manga| 
+      manga[:name].downcase.include?(search.downcase) 
+    }
+  end
+  def find_exact(search)
+    validate_search(search)
+    current_manga_list.mangas.select { |manga| 
+      manga[:name] == search
+    }
   end
 
   # get saved current manga list, if data is less than a week old
