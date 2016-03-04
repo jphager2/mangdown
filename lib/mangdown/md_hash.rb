@@ -37,7 +37,7 @@ module Mangdown
     # explicit conversion to page 
     def to_page 
       if @properties.is_page?
-        Page.new(uri, name, chapter)
+        Page.new(uri, name, manga, chapter)
       else
         raise NoMethodError, 'This is not a known page type'
       end
