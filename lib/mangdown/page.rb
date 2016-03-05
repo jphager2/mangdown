@@ -33,8 +33,11 @@ module Mangdown
     end
 
     # downloads to specified directory
-    def download_to(dir = Dir.pwd)
-      return if file_exist?(dir)
+    def download_to(dir = Dir.pwd, opts = { force_download: false })
+      # cleanup existing file (all extensions)
+      file_delete(dir) if file_exist?(dir) && opts[:force_download]
+      
+      return if file_exist?(dir) && !opts[:force_download]
       
       image = Tools.get(uri)
 
@@ -62,7 +65,17 @@ module Mangdown
     def file_exist?(dir = nil)
       set_path(dir) if dir
 
-      File.exist?(to_path)
+      Dir.entries(dir).any? { |file| file.to_s[to_path.basename.to_s] }
+    end
+
+    def file_delete(dir = nil)
+      set_path(dir) if dir
+
+      Dir.entries(dir).each { |file| 
+        if file[to_path.basename.to_s]
+          File.delete(dir + File::SEPARATOR + file)
+        end
+      }
     end
   end
 end
