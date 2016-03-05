@@ -39,7 +39,7 @@ module Mangdown
     end
     
     # download using enumerable
-    def download_to(dir, start = 0, stop = -1)
+    def download_to(dir, start = 0, stop = -1, opts = { force_download: false })
       start, stop = validate_indeces!(start, stop)
       setup_download_dir!(dir)
 
@@ -47,7 +47,7 @@ module Mangdown
       chapters[start..stop].each do |md_hash|
         chapter = md_hash.to_chapter
 
-        if chapter.download_to(to_path)
+        if chapter.download_to(to_path, opts)
           bar.increment!
         else
           STDERR.puts("error: #{chapter.name} was not downloaded") 

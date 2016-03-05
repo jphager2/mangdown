@@ -62,10 +62,11 @@ module Mangdown
     end
 
     # download all pages in a chapter
-    def download_to(dir = nil)
+    def download_to(dir = nil, opts = { force_download: false })
       pages = map(&:to_page)
       failed = []
       succeeded = []
+      skipped = []
 
       setup_download_dir!(dir)
 
@@ -76,7 +77,7 @@ module Mangdown
         when :succeeded
           succeeded << page
         when :before
-          !page.file_exist?(to_path)
+          !(page.file_exist?(to_path) && skipped << page)
         when :body
           page.append_file_data(to_path, data) unless failed.include?(page)
         when :complete
@@ -84,9 +85,9 @@ module Mangdown
         end
       end
 
-      FileUtils.rm_r(to_path) if succeeded.empty?
+      FileUtils.rm_r(to_path) if succeeded.empty? && skipped.empty?
 
-      { failed: failed, succeeded: succeeded }
+      { failed: failed, succeeded: succeeded, skipped: skipped }
     end
 
     private
