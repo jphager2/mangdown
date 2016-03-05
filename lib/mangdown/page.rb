@@ -26,7 +26,7 @@ module Mangdown
       dir = Tools.valid_path_name(dir)
       path = File.join(dir, name)
       if Dir.exist?(dir)
-        path = Dir.entries(dir).find { |file| file.to_s[path] }
+        path = Dir.entries(dir).find { |file| file.to_s[path] } || path
       end
       path = Tools.valid_path_name(path)
       @path = Tools.relative_or_absolute_path(path)
@@ -34,10 +34,10 @@ module Mangdown
 
     # downloads to specified directory
     def download_to(dir = Dir.pwd, opts = { force_download: false })
-      # cleanup existing file (all extensions)
-      file_delete(dir) if file_exist?(dir) && opts[:force_download]
-      
       return if file_exist?(dir) && !opts[:force_download]
+
+      # cleanup existing file (all extensions)
+      delete_files!(dir) if opts[:force_download]
       
       image = Tools.get(uri)
 
@@ -48,8 +48,6 @@ module Mangdown
     end
 
     def append_file_data(dir, data)
-      set_path(dir)
-
       File.open(to_path, 'ab') { |file| file.write(data) } 
     end
 
@@ -68,14 +66,10 @@ module Mangdown
       Dir.entries(dir).any? { |file| file.to_s[to_path.basename.to_s] }
     end
 
-    def file_delete(dir = nil)
-      set_path(dir) if dir
-
-      Dir.entries(dir).each { |file| 
-        if file[to_path.basename.to_s]
-          File.delete(dir + File::SEPARATOR + file)
-        end
-      }
+    def delete_files!(dir)
+      while set_path(dir) && File.exist?(to_path)
+        File.delete(to_path)
+      end
     end
   end
 end

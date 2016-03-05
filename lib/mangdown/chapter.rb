@@ -69,6 +69,10 @@ module Mangdown
       skipped = []
 
       setup_download_dir!(dir)
+      if opts[:force_download]
+        FileUtils.rm_r(to_path)
+        setup_download_dir!(dir)
+      end
 
       Tools.hydra_streaming(pages) do |stage, page, data = nil|
         case stage
