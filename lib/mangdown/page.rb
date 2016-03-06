@@ -6,7 +6,7 @@ module Mangdown
     attr_reader :uri, :name, :manga, :chapter
 
     def initialize(uri, name, manga, chapter)
-      @name = name
+      @name = Tools.valid_path_name(name)
       @chapter = chapter
       @manga = manga
       @uri  = Mangdown::Uri.new(uri) 
@@ -21,14 +21,16 @@ module Mangdown
       @path ||= set_path
     end
 
+    # Set path of page to file path if a file exists or to path
+    # without file extension if file is not found. File extensions
+    # are appended only after the file has been downloaded.
     def set_path(dir = nil)
       dir ||= File.join(manga, chapter)
       dir = Tools.valid_path_name(dir)
-      path = File.join(dir, name)
       if Dir.exist?(dir)
-        path = Dir.entries(dir).find { |file| file.to_s[path] } || path
+        file = Dir.entries(dir).find { |file| file[name] }
       end
-      path = Tools.valid_path_name(path)
+      path = File.join(dir, file || name)
       @path = Tools.relative_or_absolute_path(path)
     end
 
