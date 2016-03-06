@@ -42,17 +42,29 @@ module Mangdown
     def download_to(dir, start = 0, stop = -1, opts = { force_download: false })
       start, stop = validate_indeces!(start, stop)
       setup_download_dir!(dir)
+      failed = []
+      succeeded = []
+      skipped = []
 
       bar = progress_bar(start, stop)
       chapters[start..stop].each do |md_hash|
         chapter = md_hash.to_chapter
-
-        if chapter.download_to(to_path, opts)
-          bar.increment!
+        chapter_result = chapter.download_to(to_path, opts)
+        
+        if chapter_result[:failed].any?
+          failed << chapter
+        elsif chapter_result[:succeeded].any?
+          succeeded << chapter
+        elsif chapter_result[:skipped].any?
+          skipped << chapter
+        end
+        if chapter_result[:failed].any?
+          STDERR.puts("error: #{chapter.name} was not fully downloaded") 
         else
-          STDERR.puts("error: #{chapter.name} was not downloaded") 
+          bar.increment!
         end
       end
+      { failed: failed, succeeded: succeeded, skipped: skipped }
     end
 
     # explicit conversion to manga
