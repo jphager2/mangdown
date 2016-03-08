@@ -25,7 +25,4 @@ require_relative 'mangdown/chapter'
 require_relative 'mangdown/manga'
 require_relative 'mangdown/manga_list.rb'
 require_relative 'mangdown/cbz'
-require_relative 'mangdown/commands'
 require_relative 'mangdown/md_hash'
-
-

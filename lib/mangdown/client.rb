@@ -1,7 +1,7 @@
+require_relative '../mangdown'
+
 module M
   extend self
-
-  include ::Mangdown
 
   DATA_FILE_PATH = Dir.home + '/.manga_list.yml'
   HELP_FILE_PATH = File.expand_path(
@@ -21,15 +21,19 @@ module M
 
   # return a list of hash with :uri and :name of mangas found in list
   def find(search)
-    validate_search(search)
+    search = Regexp.new(/^#{search}$/) if search.respond_to?(:to_str)
+
     current_manga_list.mangas.select { |manga| 
-      manga[:name].downcase.include?(search.downcase) 
+      match_against = manga[:name].dup
+      match_against.downcase! if search.casefold?
+
+      match_against =~ search
     }
   end
 
   # cbz all subdirectories in a directory
   def cbz(dir)
-    Dir.exist?(dir) ? CBZ.all(dir) : raise(Errno::ENOENT, dir) 
+    Dir.exist?(dir) ? Mangdown::CBZ.all(dir) : raise(Errno::ENOENT, dir) 
   end
 
   # display help file
@@ -62,20 +66,13 @@ module M
   # otherwise fetch new data and write it to the data file
   def current_manga_list
     data = data_from_file
-    return MangaList.from_data(data) if data
+    return Mangdown::MangaList.from_data(data) if data
 
-    MangaList.new(*MANGA_PAGES).tap { |list| 
+    Mangdown::MangaList.new(*MANGA_PAGES).tap { |list| 
       File.open(path, 'w+') { |f| f.write(list.to_yaml) } 
     }
   rescue Object => error
     puts "#{path} may be corrupt: #{error.message}"
     raise
-  end
-
-  # check if the search key contains letters or numbers
-  def validate_search(search)
-    unless search =~ /\w/
-      raise ArgumentError, "Searches must contain letters and numbers"
-    end
   end
 end
