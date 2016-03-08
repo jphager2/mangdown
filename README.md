@@ -2,7 +2,7 @@
 
 There is a simple built-in client, "M", that you can use for finding manga:
 
-```
+```ruby
 require 'mangdown/client'
 
 results = M.find("Dragon Ball")
