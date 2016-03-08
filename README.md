@@ -5,7 +5,12 @@ There is a simple built-in client, "M", that you can use for finding manga:
 ```ruby
 require 'mangdown/client'
 
+# Search for an exact match
 results = M.find("Dragon Ball")
+
+# Or if you need more flexibilty when searching for a manga, 
+# use are Regex
+results = M.find(/dragon ball(\ssd)?$/i)
 
 # Get a Mangdown::Manga object
 manga = results.first.to_manga
