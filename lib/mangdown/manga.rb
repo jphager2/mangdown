@@ -24,8 +24,8 @@ module Mangdown
 
     def inspect
       "#<#{self.class} @name=#{name} @uri=#{uri} " +
-      "@chapters=[#{chapters.first(10).join(',')}" +
-      "#{",..." if chapters.length > 10}]>"
+      "@chapters=[#{chapters.first(3).join(',')}" +
+      "#{",..." if chapters.length > 3}]>"
     end
     alias_method :to_s, :inspect
 
