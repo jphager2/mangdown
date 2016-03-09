@@ -23,12 +23,7 @@ module M
   def find(search)
     search = Regexp.new(/^#{search}$/) if search.respond_to?(:to_str)
 
-    current_manga_list.mangas.select { |manga| 
-      match_against = manga[:name].dup
-      match_against.downcase! if search.casefold?
-
-      match_against =~ search
-    }
+    current_manga_list.mangas.select { |manga| manga[:name] =~ search }
   end
 
   # cbz all subdirectories in a directory
