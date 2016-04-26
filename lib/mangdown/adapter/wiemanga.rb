@@ -1,6 +1,5 @@
 module Mangdown
   class Wiemanga < Adapter::Base
-    Mangdown::ADAPTERS << self
 
     def initialize(uri, doc, name)
       super

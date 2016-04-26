@@ -23,7 +23,7 @@ module M
   def find(search)
     search = Regexp.new(/^#{search}$/) if search.respond_to?(:to_str)
 
-    current_manga_list.mangas.select { |manga| manga[:name] =~ search }
+    current_manga_list.select { |manga| manga[:name] =~ search }
   end
 
   # cbz all subdirectories in a directory
@@ -63,9 +63,11 @@ module M
     data = data_from_file
     return Mangdown::MangaList.from_data(data) if data
 
-    Mangdown::MangaList.new(*MANGA_PAGES).tap { |list| 
-      File.open(path, 'w+') { |f| f.write(list.to_yaml) } 
-    }
+    list = MANGA_PAGES.inject([]) { |manga, uri|
+      list = Mangdown::MDHash.new(uri: uri).to_manga_list
+      list.merge(manga) }
+    File.open(path, 'w+') { |f| f.write(list.to_yaml) } 
+    list
   rescue Object => error
     puts "#{path} may be corrupt: #{error.message}"
     raise

@@ -1,6 +1,12 @@
 module Mangdown
   module Adapter
     class Base
+
+      # Returns something truthy if this adapter should be used for the 
+      # given url or adapter name
+      def self.for?(url_or_adapter_name)
+        url_or_adapter_name[site]
+      end
       
       attr_reader :root
       def initialize(uri, doc, name)
@@ -28,18 +34,17 @@ module Mangdown
         self.class.type
       end
 
-      # Override this if you want to use an adapter name for a site that is 
-      # not matched in the site's url
-      # e.g. CoolAdapterName < Adapter::Base
-      # def site
-      #   "mangareader"
-      # end
       def self.site
         type.to_s
       end
 
       def site
         self.class.site
+      end
+
+      # Overwrite if you want to check the uri if it belongs to a manga list
+      def is_manga_list?(uri = @uri)
+        true
       end
 
       # Must return true/false if uri represents a manga for adapter

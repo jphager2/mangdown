@@ -6,7 +6,7 @@ module Mangdown
       uri = options.fetch(:uri)
       name = options[:name]
       site = options[:site]
-      @properties = Properties.new(uri, site, nil, name)
+      @properties = Mangdown.adapter!(uri, site, nil, name)
 
       @hash = {}
       @hash[:name] = name
@@ -16,10 +16,32 @@ module Mangdown
       @hash[:chapter] = options[:chapter]
     end
 
+    # explicit conversion to manga list
+    def to_manga_list
+      # Seems weird to do it this way, but this is to intentially make it 
+      # more tedious to create a Mangadown::Manga object 
+      # (outsite of this method)
+      #
+      if @properties.is_manga_list?
+        list = MangaList.new
+        list.load_manga(uri)
+        list
+      else
+        raise NoMethodError, 'This is not a known manga type'
+      end
+    end
+
     # explicit conversion to manga 
     def to_manga
+      # Seems weird to do it this way, but this is to intentially make it 
+      # more tedious to create a Mangadown::Manga object 
+      # (outsite of this method)
+      #
       if @properties.is_manga?
-        Manga.new(uri, name)
+        manga = Manga.new(uri, name)
+        manga.properties = @properties
+        manga.load_chapters
+        manga
       else
         raise NoMethodError, 'This is not a known manga type'
       end
@@ -27,8 +49,15 @@ module Mangdown
 
     # explicit conversion to chapter 
     def to_chapter
+      # Seems weird to do it this way, but this is to intentially make it 
+      # more tedious to create a Mangadown::Chapter object 
+      # (outsite of this method)
+      #
       if @properties.is_chapter?
-        Chapter.new(uri, name, manga)
+        chapter = Chapter.new(uri, name, manga)
+        chapter.properties = @properties
+        chapter.load_pages
+        chapter
       else
         raise NoMethodError, 'This is not a known chapter type'
       end
@@ -43,12 +72,10 @@ module Mangdown
       end
     end 
 
-    # name reader
     def name
       @hash[:name]
     end
 
-    # uri reader
     def uri
       @hash[:uri]
     end
@@ -58,15 +85,13 @@ module Mangdown
     end
 
     def chapter
-      @hash[:chapter ]
+      @hash[:chapter]
     end
 
-    # name writer
     def name=(other)
       @hash[:name] = other
     end
 
-    # uri writer
     def uri=(other)
       @hash[:uri] = other
     end

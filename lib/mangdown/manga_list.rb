@@ -1,32 +1,42 @@
 module Mangdown
-
-  # a list of manga
   class MangaList
+    include Enumerable
 
-    def self.from_data(mangas)
-      new(nil, mangas: mangas) 
+    def self.from_data(manga)
+      new(manga) 
     end
 
-    attr_reader :mangas
+    attr_reader :manga
 
-    def initialize(*uris, mangas: [])
-      @mangas = mangas.map! { |hash| MDHash.new(hash) }
-      if uris.any?
-        uris.each { |uri| get_mangas(uri) } 
-      end
+    def initialize(manga = [])
+      @manga = manga.map! { |hash| MDHash.new(hash) }
     end
+
+    def each(&block)
+      manga.each(&block)
+    end 
 
     def to_yaml
-      @mangas.map(&:to_hash).to_yaml
+      @manga.map(&:to_hash).to_yaml
     end
 
-    private
-    # get a list of mangas from the uri
-    def get_mangas(uri)
+    def load_manga(uri)
+      adapter = Mangdown.adapter!(uri)
+
+      manga = adapter.collect_manga_list { |uri, name, site| 
+        MDHash.new(uri: uri, name: name, site: site) }
       
-      @mangas += Properties.new(uri).collect_manga_list { |uri, name, site| 
-        MDHash.new(uri: uri, name: name, site: site) 
-      }
+      merge(manga)
+    end
+
+    def to_a
+      manga
+    end
+
+    def merge(other)
+      @manga += other.to_a
+
+      return self
     end
   end
 end

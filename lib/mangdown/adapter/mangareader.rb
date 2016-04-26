@@ -1,6 +1,5 @@
 module Mangdown
   class Mangareader < Adapter::Base
-    Mangdown::ADAPTERS << self
 
     def initialize(uri, doc, name)
       super

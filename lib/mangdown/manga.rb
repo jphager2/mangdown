@@ -8,14 +8,12 @@ module Mangdown
     include Enumerable
 
     attr_reader :uri, :chapters
+    attr_accessor :properties
 
     def initialize(uri, name = nil)
       @name = name
       @uri = Mangdown::Uri.new(uri)
       @chapters = []
-      @properties = Properties.new(uri)
-
-      get_chapters
     end
 
     def name
@@ -87,14 +85,14 @@ module Mangdown
       @chapters.each(&block)
     end 
 
-    private
     # push MDHashes of manga chapters to @chapters 
-    def get_chapters
+    def load_chapters
       @chapters += @properties.manga_chapters do |uri, chapter, site|
          MDHash.new(uri: uri, name: chapter, manga: name, site: site)
       end
     end
 
+    private
     def chapter_indeces(start, stop)
       length = chapters.length
       [start, stop].map { |i| i < 0 ? length + i : i }

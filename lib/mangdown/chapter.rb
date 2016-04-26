@@ -5,6 +5,7 @@ module Mangdown
     include Enumerable
 
     attr_reader :uri, :pages
+    attr_accessor :properties
 
     def initialize(uri, name = nil, manga = nil, chapter = nil)
       # use a valid name
@@ -12,21 +13,19 @@ module Mangdown
       @manga = manga
       @chapter = chapter
       @uri = Mangdown::Uri.new(uri)
-      @properties = Properties.new(@uri, nil, nil, name)
-
-      load_pages
+      @pages = []
     end
 
     def name
-      @name ||= @properties.chapter_name
+      @name ||= properties.chapter_name
     end
 
     def manga
-       @manga ||= @properties.manga_name
+       @manga ||= properties.manga_name
     end
 
     def chapter
-      @chapter ||= @properties.chapter_number
+      @chapter ||= properties.chapter_number
     end
 
     def inspect
@@ -94,17 +93,17 @@ module Mangdown
       { failed: failed, succeeded: succeeded, skipped: skipped }
     end
 
+    def load_pages
+      return @pages if @pages.any?
+
+      fetch_each_page do |page| @pages << page end
+      @pages.sort_by!(&:name)
+    end
+
     private
     def setup_download_dir!(dir)
       set_path(dir)
       FileUtils.mkdir_p(to_path) unless Dir.exists?(to_path)
-    end
-
-    def load_pages
-      @pages ||= []
-
-      fetch_each_page do |page| @pages << page end
-      @pages.sort_by!(&:name)
     end
 
     # get page objects for all pages in a chapter
@@ -118,8 +117,8 @@ module Mangdown
 
     # get the docs for number of pages 
     def build_page_hashes
-      (1..@properties.num_pages).map { |num|  
-        uri_str = @properties.build_page_uri(uri, manga, chapter, num)
+      (1..properties.num_pages).map { |num|  
+        uri_str = properties.build_page_uri(uri, manga, chapter, num)
         uri = Mangdown::Uri.new(uri_str).downcase 
         MDHash.new(uri: uri, name: num, chapter: name, manga: manga)
       }
@@ -127,12 +126,13 @@ module Mangdown
 
     # get the page name and uri
     def get_page(uri, doc)
-      properties = Properties.new(uri, nil, doc)
-      uri = properties.page_image_src 
-      page = properties.page_image_name
-      site = properties.type
+      adapter = Mangdown.adapter!(uri, nil, doc)
+      uri = adapter.page_image_src 
+      page = adapter.page_image_name
+      site = adapter.site
 
-      MDHash.new(uri: uri, name: page, chapter: name, manga: manga, site: site)
+      MDHash.new(
+        uri: uri, name: page, chapter: name, manga: manga, site: site)
     end
   end
 end
