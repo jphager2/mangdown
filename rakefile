@@ -1,9 +1,6 @@
 require 'rake'
 require 'rake/testtask'
 
-#require 'active_record'
-#require_relative 'db/environment'
-
 Rake::TestTask.new do |t|
   t.test_files = FileList['spec/lib/mangdown/*_spec.rb'].shuffle
   t.verbose = true
@@ -14,21 +11,3 @@ task :run_all_tests do
 end
 
 task default: [:test]
-
-namespace :db do
-   
-  task :create do
-    Mangdown::DB.establish_base_connection 
-    Mangdown::DB.create_database
-  end
-
-  task :drop do
-    Mangdown::DB.establish_base_connection 
-    Mangdown::DB.drop_database 
-  end
-
-  task :migrate do
-    Mangdown::DB.establish_connection 
-    Mangdown::DB.migrate
-  end
-end
