@@ -5,6 +5,7 @@ require 'zip'
 require 'filemagic'
 
 require_relative 'mangdown/equality'
+require_relative 'mangdown/properties'
 require_relative 'mangdown/tools'
 require_relative 'mangdown/uri'
 require_relative 'mangdown/page'

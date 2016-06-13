@@ -1,6 +1,9 @@
 module Mangdown
   class MDHash
     include Equality
+    include Properties
+
+    properties :name, :uri, :manga, :chapter, :site
 
     def initialize(options = {})
       uri = options.fetch(:uri)
@@ -8,12 +11,11 @@ module Mangdown
       site = options[:site]
       @adapter = Mangdown.adapter!(uri, site, nil, name)
 
-      @hash = {}
-      @hash[:name] = name
-      @hash[:uri] = Mangdown::Uri.new(uri)
-      @hash[:site] = @adapter.type
-      @hash[:manga] = options[:manga]
-      @hash[:chapter] = options[:chapter]
+      self.name = name
+      self.uri = Mangdown::Uri.new(uri)
+      self.site = @adapter.type
+      self.manga = options[:manga]
+      self.chapter = options[:chapter]
     end
 
     # explicit conversion to manga list
@@ -39,7 +41,7 @@ module Mangdown
       #
       if @adapter.is_manga?
         if name.to_s.empty?
-          @hash.merge!(@adapter.manga) { |_, before, after| 
+          properties.merge!(@adapter.manga) { |_, before, after| 
             before || after }
         end
 
@@ -59,10 +61,12 @@ module Mangdown
       # (outsite of this method)
       #
       if @adapter.is_chapter?
-        if name.to_s.empty? || manga.to_s.empty? || number.to_s.empty?
-          @hash.merge!(@adapter.chapter) { |_, before, after| 
+        if name.to_s.empty? || manga.to_s.empty? || chapter.to_s.empty?
+          properties.merge!(@adapter.chapter) { |_, before, after| 
             before || after }
         end
+        # Get a local binding
+        number = chapter
 
         chapter = Chapter.new(uri, name, manga, number)
         chapter.adapter = @adapter
@@ -82,58 +86,8 @@ module Mangdown
       end
     end 
 
-    def name
-      @hash[:name]
-    end
-
-    def uri
-      @hash[:uri]
-    end
-
-    def manga
-      @hash[:manga]
-    end
-
-    def chapter
-      @hash[:chapter]
-    end
-
-    def name=(other)
-      @hash[:name] = other
-    end
-
-    def uri=(other)
-      @hash[:uri] = other
-    end
-
-    def manga=(other)
-      @hash[:manga] = other
-    end
-    
-    def chapter=(other)
-      @hash[:chapter] = other
-    end
-
-    def [](key)
-      @hash[key]
-    end
-
-    def to_hash
-      @hash
-    end
-
-    def inspect
-      to_hash.to_s
-    end
-    alias_method :to_s, :inspect
-
     def type
       @adapter.type
-    end
-
-    private
-    def number
-      chapter
     end
   end
 end
