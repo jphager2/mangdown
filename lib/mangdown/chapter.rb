@@ -113,12 +113,10 @@ module Mangdown
     def get_page(uri, doc)
       # Local binding for adapter
       adapter = Mangdown.adapter!(uri, nil, doc)
-      uri = adapter.page_image_src 
-      page = adapter.page_image_name
-      site = adapter.site
+      page = adapter.page
+      page.merge(chapter: name, manga: manga)
 
-      MDHash.new(
-        uri: uri, name: page, chapter: name, manga: manga, site: site)
+      MDHash.new(page)
     end
   end
 end

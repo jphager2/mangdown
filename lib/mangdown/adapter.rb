@@ -2,12 +2,6 @@ module Mangdown
   module Adapter
     class Base
 
-      # public api
-      #
-      # :is_manga_list?, :is_manga?, :is_chapter?, :is_page?, :manga, 
-      # :chapter, :site, :manga_list, :chapter_list, :page_list, 
-      # :page_image_src, :page_image_name
-
       # Returns something truthy if this adapter should be used for the 
       # given url or adapter name
       def self.for?(url_or_adapter_name)
@@ -18,12 +12,11 @@ module Mangdown
         site ? @_site = site : @_site
       end
       
-      attr_reader :root
+      attr_reader :uri, :doc, :name
       def initialize(uri, doc, name)
         @uri = uri
         @doc = doc
         @name = name
-        @root = nil
       end
 
       def site
@@ -31,7 +24,7 @@ module Mangdown
       end
 
       # Overwrite if you want to check the uri if it belongs to a manga list
-      def is_manga_list?(uri)
+      def is_manga_list?(uri = nil)
         raise NotImplementedError
       end
 
@@ -47,16 +40,6 @@ module Mangdown
 
       # Must return true/false if uri represents a page for adapter
       def is_page?(uri = nil)
-        raise NotImplementedError
-      end
-
-      # Must return the src for the page image
-      def page_image_src
-        raise NotImplementedError
-      end
-
-      # Must return the name of the page image
-      def page_image_name
         raise NotImplementedError
       end
 
@@ -85,9 +68,14 @@ module Mangdown
         raise NotImplementedError
       end
 
+      # Return Hash with keys: :uri, :name, :site
+      def page
+        raise NotImplementedError
+      end
+
       private
       def doc
-        @doc ||= Tools.get_doc(@uri)
+        @doc ||= Tools.get_doc(uri)
       end
     end
   end
