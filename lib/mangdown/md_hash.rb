@@ -6,12 +6,12 @@ module Mangdown
       uri = options.fetch(:uri)
       name = options[:name]
       site = options[:site]
-      @properties = Mangdown.adapter!(uri, site, nil, name)
+      @adapter = Mangdown.adapter!(uri, site, nil, name)
 
       @hash = {}
       @hash[:name] = name
       @hash[:uri] = Mangdown::Uri.new(uri)
-      @hash[:site] = @properties.type
+      @hash[:site] = @adapter.type
       @hash[:manga] = options[:manga]
       @hash[:chapter] = options[:chapter]
     end
@@ -22,12 +22,12 @@ module Mangdown
       # more tedious to create a Mangadown::Manga object 
       # (outsite of this method)
       #
-      if @properties.is_manga_list?
+      if @adapter.is_manga_list?
         list = MangaList.new
         list.load_manga(uri)
         list
       else
-        raise NoMethodError, 'This is not a known manga type'
+        raise NoMethodError, 'This is not a known manga list type'
       end
     end
 
@@ -37,9 +37,14 @@ module Mangdown
       # more tedious to create a Mangadown::Manga object 
       # (outsite of this method)
       #
-      if @properties.is_manga?
+      if @adapter.is_manga?
+        if name.to_s.empty?
+          @hash.merge!(@adapter.manga) { |_, before, after| 
+            before || after }
+        end
+
         manga = Manga.new(uri, name)
-        manga.properties = @properties
+        manga.adapter = @adapter
         manga.load_chapters
         manga
       else
@@ -53,9 +58,14 @@ module Mangdown
       # more tedious to create a Mangadown::Chapter object 
       # (outsite of this method)
       #
-      if @properties.is_chapter?
-        chapter = Chapter.new(uri, name, manga)
-        chapter.properties = @properties
+      if @adapter.is_chapter?
+        if name.to_s.empty? || manga.to_s.empty? || number.to_s.empty?
+          @hash.merge!(@adapter.chapter) { |_, before, after| 
+            before || after }
+        end
+
+        chapter = Chapter.new(uri, name, manga, number)
+        chapter.adapter = @adapter
         chapter.load_pages
         chapter
       else
@@ -65,7 +75,7 @@ module Mangdown
 
     # explicit conversion to page 
     def to_page 
-      if @properties.is_page?
+      if @adapter.is_page?
         Page.new(uri, name, manga, chapter)
       else
         raise NoMethodError, 'This is not a known page type'
@@ -118,7 +128,12 @@ module Mangdown
     alias_method :to_s, :inspect
 
     def type
-      @properties.type
+      @adapter.type
+    end
+
+    private
+    def number
+      chapter
     end
   end
 end

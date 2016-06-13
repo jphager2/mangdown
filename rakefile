@@ -1,13 +1,11 @@
 require 'rake'
 require 'rake/testtask'
 
+=begin
 Rake::TestTask.new do |t|
-  t.test_files = FileList['spec/lib/mangdown/*_spec.rb'].shuffle
+  t.test_files = FileList[''].shuffle
   t.verbose = true
 end
 
-task :run_all_tests do
-  Dir.glob('test/**/**/*.rb').each {|file| load file}
-end
-
 task default: [:test]
+=end

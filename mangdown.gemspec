@@ -1,7 +1,6 @@
 require_relative 'lib/mangdown/version'
 
 files = Dir.glob(Dir.pwd + '/**/*.rb')
-#files.select! {|file| !( file =~ /\/db/)} 
 files.collect! {|file| file.sub(Dir.pwd + '/', '')}
 files.push('LICENSE', 'README.md')
 

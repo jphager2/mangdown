@@ -23,8 +23,7 @@ module Mangdown
     def load_manga(uri)
       adapter = Mangdown.adapter!(uri)
 
-      manga = adapter.collect_manga_list { |uri, name, site| 
-        MDHash.new(uri: uri, name: name, site: site) }
+      manga = adapter.manga_list.map { |manga| MDHash.new(manga) }
       
       merge(manga)
     end

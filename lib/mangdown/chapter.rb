@@ -4,28 +4,15 @@ module Mangdown
     include Equality
     include Enumerable
 
-    attr_reader :uri, :pages
-    attr_accessor :properties
+    attr_reader :uri, :pages, :name, :manga, :chapter
+    attr_accessor :adapter
 
-    def initialize(uri, name = nil, manga = nil, chapter = nil)
-      # use a valid name
+    def initialize(uri, name, manga, chapter = nil)
       @name = name 
       @manga = manga
       @chapter = chapter
       @uri = Mangdown::Uri.new(uri)
       @pages = []
-    end
-
-    def name
-      @name ||= properties.chapter_name
-    end
-
-    def manga
-       @manga ||= properties.manga_name
-    end
-
-    def chapter
-      @chapter ||= properties.chapter_number
     end
 
     def inspect
@@ -117,8 +104,8 @@ module Mangdown
 
     # get the docs for number of pages 
     def build_page_hashes
-      (1..properties.num_pages).map { |num|  
-        uri_str = properties.build_page_uri(uri, manga, chapter, num)
+      (1..adapter.num_pages).map { |num|  
+        uri_str = adapter.build_page_uri(uri, manga, chapter, num)
         uri = Mangdown::Uri.new(uri_str).downcase 
         MDHash.new(uri: uri, name: num, chapter: name, manga: manga)
       }
@@ -126,6 +113,7 @@ module Mangdown
 
     # get the page name and uri
     def get_page(uri, doc)
+      # Local binding for adapter
       adapter = Mangdown.adapter!(uri, nil, doc)
       uri = adapter.page_image_src 
       page = adapter.page_image_name

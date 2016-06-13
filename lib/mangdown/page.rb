@@ -36,10 +36,10 @@ module Mangdown
 
     # downloads to specified directory
     def download_to(dir = Dir.pwd, opts = { force_download: false })
-      return if file_exist?(dir) && !opts[:force_download]
-
       # cleanup existing file (all extensions)
       delete_files!(dir) if opts[:force_download]
+
+      return if file_exist?(dir)
       
       image = Tools.get(uri)
 

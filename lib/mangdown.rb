@@ -37,7 +37,7 @@ module Mangdown
 
   def self.adapter!(uri, site = nil, doc = nil, name = nil)
     adapter_name = (uri || site).to_s
-    klass = ADAPTERS.values.find { |a| a.for?(adapter_name) }
+    klass = ADAPTERS.values.find { |adapter| adapter.for?(adapter_name) }
 
     if klass
       klass.new(uri, doc, name)

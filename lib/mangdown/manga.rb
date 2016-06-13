@@ -7,17 +7,13 @@ module Mangdown
     include Equality
     include Enumerable
 
-    attr_reader :uri, :chapters
-    attr_accessor :properties
+    attr_reader :uri, :chapters, :name
+    attr_accessor :adapter
 
-    def initialize(uri, name = nil)
+    def initialize(uri, name)
       @name = name
       @uri = Mangdown::Uri.new(uri)
       @chapters = []
-    end
-
-    def name
-      @name || @properties.manga_name
     end
 
     def inspect
@@ -87,9 +83,9 @@ module Mangdown
 
     # push MDHashes of manga chapters to @chapters 
     def load_chapters
-      @chapters += @properties.manga_chapters do |uri, chapter, site|
-         MDHash.new(uri: uri, name: chapter, manga: name, site: site)
-      end
+      @chapters += adapter.chapter_list.map { |chapter|
+         chapter.merge!(manga: name)
+         MDHash.new(chapter) }
     end
 
     private

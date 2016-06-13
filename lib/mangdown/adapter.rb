@@ -17,7 +17,7 @@ module Mangdown
         #@manga_name_css          = ''
         #@chapter_name_css        = ''
         #@chapter_manga_name_css  = ''
-        #@chapter_number_css        = ''
+        #@chapter_number_css      = ''
         #@manga_list_uri          = '' 
         #@manga_link_prefix       = '' 
         #@reverse_chapters        = true || false
@@ -89,6 +89,7 @@ module Mangdown
 
       def chapter_number
         raise NoMethodError, "Not a chapter" unless is_chapter?
+
         if @name
           @name.slice(/\d+\z/).to_i 
         else
@@ -112,32 +113,37 @@ module Mangdown
       def page_image_name
       end
 
-      # If no block given, must return an array arrays 
-      # [manga_uri, manga_name, adapter_type]
-      # If block given, then the block may alter this array
       # Only valid mangas should be returned (using is_manga?(uri))
-      def collect_manga_list
+      def manga_list
         doc.css(@manga_list_css).map { |a| 
-          manga = ["#{@manga_link_prefix}#{a[:href]}", a.text.strip, type]
-          if is_manga?(manga.first)
-            block_given? ? yield(manga) : manga
-          end
+          uri = "#{@manga_link_prefix}#{a[:href]}"
+          manga = { uri: uri, name: a.text.strip, site: site }
+
+          manga if is_manga?(manga[:uri])
         }.compact
       end
 
-      # If no block given, must return an array arrays 
-      # [chapter_uri, chapter_name, adapter_type]
-      # If block given, then the block may alter this array
+      def manga
+        { uri: @uri, name: manga_name, site: site }
+      end
+
       # Only valid chapters should be returned (using is_chapter?(uri))
-      def manga_chapters
+      def chapter_list
         chapters = doc.css(@chapter_list_css).map { |a|
-          link = root + a[:href].sub(root, '')
-          chapter = [link, a.text.strip, type]
-          if is_chapter?(chapter.first)
-            block_given? ? yield(chapter) : chapter 
-          end
+          uri = root + a[:href].sub(root, '')
+          chapter = { uri: uri, name: a.text.strip, site: type }
+
+          chapter if is_chapter?(chapter[:uri])
         }.compact
         @reverse_chapters ? chapters.reverse : chapters
+      end
+
+      def chapter
+        { uri: @uri, 
+          manga: manga_name, 
+          name: chapter_name,
+          chapter: chapter_number,
+          site: site }
       end
 
       private
