@@ -21,8 +21,8 @@ module Mangdown
       CGI.unescapeHTML(super.sub(/ Manga/, '').downcase).upcase
     end
 
-    def build_page_uri(uri, manga, chapter, page_num)
-      uri.sub(/\d+\.html/, "#{page_num}.html")
+    def build_page_uri(manga, chapter, page_num)
+      @uri.sub(/\d+\.html/, "#{page_num}.html")
     end
 
     def num_pages

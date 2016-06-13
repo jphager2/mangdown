@@ -13,7 +13,7 @@ module Mangdown
 
       self.name = name
       self.uri = Mangdown::Uri.new(uri)
-      self.site = @adapter.type
+      self.site = @adapter.site
       self.manga = options[:manga]
       self.chapter = options[:chapter]
     end
@@ -85,9 +85,5 @@ module Mangdown
         raise NoMethodError, 'This is not a known page type'
       end
     end 
-
-    def type
-      @adapter.type
-    end
   end
 end

@@ -104,11 +104,9 @@ module Mangdown
 
     # get the docs for number of pages 
     def build_page_hashes
-      (1..adapter.num_pages).map { |num|  
-        uri_str = adapter.build_page_uri(uri, manga, chapter, num)
-        uri = Mangdown::Uri.new(uri_str).downcase 
-        MDHash.new(uri: uri, name: num, chapter: name, manga: manga)
-      }
+      adapter.page_list.map { |page|
+        page.merge!(chapter: name, manga: manga)
+        MDHash.new(page) }
     end
 
     # get the page name and uri
