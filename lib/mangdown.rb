@@ -18,10 +18,6 @@ require_relative 'mangdown/md_hash'
 require_relative 'mangdown/adapter'
 require_relative 'mangdown/adapter/no_adapter_error'
 require_relative 'mangdown/adapter/mangareader.rb'
-require_relative 'mangdown/adapter/mangapanda.rb'
-require_relative 'mangdown/adapter/mangafox.rb'
-require_relative 'mangdown/adapter/mangahere.rb'
-require_relative 'mangdown/adapter/wiemanga.rb'
 
 module Mangdown
   ADAPTERS = {}
@@ -49,7 +45,3 @@ module Mangdown
 end
 
 Mangdown.register_adapter(:mangareader, Mangdown::Mangareader)
-Mangdown.register_adapter(:mangapanda, Mangdown::Mangapanda)
-Mangdown.register_adapter(:mangafox, Mangdown::Mangafox)
-Mangdown.register_adapter(:mangahere, Mangdown::Mangahere)
-Mangdown.register_adapter(:wiemanga, Mangdown::Wiemanga)
