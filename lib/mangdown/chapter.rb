@@ -114,7 +114,7 @@ module Mangdown
       # Local binding for adapter
       adapter = Mangdown.adapter!(uri, nil, doc)
       page = adapter.page
-      page.merge(chapter: name, manga: manga)
+      page.merge!(chapter: name, manga: manga)
 
       MDHash.new(page)
     end

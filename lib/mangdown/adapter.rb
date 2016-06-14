@@ -24,22 +24,22 @@ module Mangdown
       end
 
       # Overwrite if you want to check the uri if it belongs to a manga list
-      def is_manga_list?(uri = nil)
+      def is_manga_list?(uri = @uri)
         raise NotImplementedError
       end
 
       # Must return true/false if uri represents a manga for adapter
-      def is_manga?(uri = nil)
+      def is_manga?(uri = @uri)
         raise NotImplementedError
       end
 
       # Must return true/false if uri represents a chapter for adapter
-      def is_chapter?(uri = nil)
+      def is_chapter?(uri = @uri)
         raise NotImplementedError
       end
 
       # Must return true/false if uri represents a page for adapter
-      def is_page?(uri = nil)
+      def is_page?(uri = @uri)
         raise NotImplementedError
       end
 

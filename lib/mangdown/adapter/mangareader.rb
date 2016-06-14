@@ -11,19 +11,19 @@ module Mangdown
       @root = 'http://www.mangareader.net'
     end
 
-    def is_manga_list?(uri = uri)
+    def is_manga_list?(uri = @uri)
       uri == "#{root}/alphabetical"
     end
 
-    def is_manga?(uri = uri)
+    def is_manga?(uri = @uri)
       uri.slice(/#{root}(\/\d+)?(\/[^\/]+)(\.html)?/i) == uri
     end
 
-    def is_chapter?(uri = uri)
+    def is_chapter?(uri = @uri)
       uri.slice(/#{root}(\/[^\/]+){1,2}\/(\d+|chapter-\d+\.html)/i) == uri
     end
 
-    def is_page?(uri = uri)
+    def is_page?(uri = @uri)
       uri.slice(/.+\.(png|jpg|jpeg)$/i) == uri
     end
 
