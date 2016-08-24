@@ -1,4 +1,4 @@
-require_relative '../test_helper'
+require 'test_helper'
 
 class MangdownTest < Minitest::Test
 
@@ -14,6 +14,8 @@ class MangdownTest < Minitest::Test
     Mangdown.register_adapter(:bogus_adapter, bogus)
 
     assert Mangdown::ADAPTERS.length == adapters_before + 1
+
+    Mangdown::ADAPTERS.delete(:bogus_adapter)
   end
 
   def test_adapter
@@ -24,10 +26,16 @@ class MangdownTest < Minitest::Test
     assert_instance_of TestAdapter, Mangdown.adapter!("test")
     assert_instance_of TestAdapter, Mangdown.adapter!(nil, "test")
     assert_instance_of TestAdapter, Mangdown.adapter!(
-      "test", nil, doc, "test")
+      "test", nil, doc, "test"
+    )
+
+    adapters = Mangdown::ADAPTERS.dup
+    Mangdown::ADAPTERS.clear
 
     assert_raises(Mangdown::Adapter::NoAdapterError) { 
       Mangdown.adapter!(nil) 
     }
+
+    Mangdown::ADAPTERS.merge!(adapters)
   end
 end

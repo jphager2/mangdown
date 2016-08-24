@@ -12,7 +12,7 @@ module Mangdown
         site ? @_site = site : @_site
       end
       
-      attr_reader :uri, :doc, :name
+      attr_reader :uri, :name
       def initialize(uri, doc, name)
         @uri = uri
         @doc = doc
@@ -73,7 +73,6 @@ module Mangdown
         raise NotImplementedError
       end
 
-      private
       def doc
         @doc ||= Tools.get_doc(uri)
       end

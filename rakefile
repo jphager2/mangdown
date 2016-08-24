@@ -1,11 +1,10 @@
 require 'rake'
 require 'rake/testtask'
 
-=begin
 Rake::TestTask.new do |t|
-  t.test_files = FileList[''].shuffle
+  t.libs << "test"
+  t.pattern = "test/lib/**/*_test.rb"
   t.verbose = true
 end
 
 task default: [:test]
-=end
