@@ -1,6 +1,5 @@
 module Mangdown
   module Properties
-
     def self.included(base)
       base.extend(ClassMethods)
     end

@@ -96,9 +96,17 @@ module Mangdown
     # get page objects for all pages in a chapter
     def fetch_each_page
       pages = build_page_hashes
-      Tools.hydra(pages) do |page, body|
-        page = get_page(page.uri, Nokogiri::HTML(body))
-        yield(page)
+      page_data = Hash.new { |h, k| h[k] = "" }
+      Tools.hydra_streaming(pages) do |status, page, data=nil|
+        case status
+        when :before
+          true
+        when :body
+          page_data[page] << data
+        when :complete
+          page = get_page(page.uri, Nokogiri::HTML(page_data[page]))
+          yield(page)
+        end
       end
     end
 

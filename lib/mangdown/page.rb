@@ -56,7 +56,7 @@ module Mangdown
     def append_file_ext(dir = nil)
       set_path(dir) if dir
       path = to_path
-      ext = Tools.file_type(path)
+      ext = Tools.image_extension(path)
       filename = "#{path}.#{ext}"
 
       FileUtils.mv(path, filename)

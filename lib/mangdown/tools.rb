@@ -3,95 +3,75 @@ require 'typhoeus'
 
 module Mangdown
   module Tools
-    extend self
+    class << self
   
-    def get_doc(uri)
-      data = get(uri)
-      @doc = ::Nokogiri::HTML(data)
-    end
-
-    def get(uri)
-      Typhoeus.get(uri).body
-    end
-
-    def get_root(uri)
-      @root = ::URI::join(uri, "/").to_s[0..-2] 
-    end
-
-    def relative_or_absolute_path(*sub_paths)
-      root = (sub_paths.first.to_s =~ /^\// ? sub_paths.shift : Dir.pwd)
-      Pathname.new(root).join(*sub_paths)
-    end
-
-    def valid_path_name(name)
-      number_matcher = /(\d+)(\.\w+)*\Z/
-      num = name.to_s.slice(number_matcher, 1)
-
-      if num
-        num = num.rjust(5, "0")
-        name.sub(number_matcher, num + '\2')
-      else
-        name
+      def get_doc(uri)
+        data = get(uri)
+        @doc = ::Nokogiri::HTML(data)
       end
-    end 
 
-    def file_type(path)
-      FileMagic.new.file(path.to_s).slice(/^\w+/).downcase
-    end
+      def get(uri)
+        Typhoeus.get(uri).body
+      end
 
-    def hydra_streaming(objects)
-      hydra = Typhoeus::Hydra.hydra
+      def get_root(uri)
+        uri = ::URI.parse(uri)
+        @root = "#{uri.scheme}://#{uri.host}"
+      end
 
-      requests = objects.map { |obj| 
-        next unless yield(:before, obj)
+      def relative_or_absolute_path(*sub_paths)
+        Pathname.new(Dir.pwd).join(*sub_paths)
+      end
 
-        request = Typhoeus::Request.new(obj.uri)
-        request.on_headers do |response|
-          status = response.success? ? :succeeded : :failed
-          yield(status, obj)
+      def valid_path_name(name)
+        name.to_s.sub(/(\d+)(\.\w+)*\Z/) do
+          digits, ext = Regexp.last_match[1..2]
+          digits.to_i.to_s.rjust(5, "0") + ext.to_s
         end
-        request.on_body do |chunk|
-          yield(:body, obj, chunk) 
-        end
-        request.on_complete do |response|
-          yield(:complete, obj)
-        end
+      end 
 
-        hydra.queue(request)
-        request
-      }.compact
+      def image_extension(path)
+        path = path.to_s
 
-      hydra.run
-      requests
-    end
+        return unless File.exist?(path)
 
-    def hydra(objects)
-      hydra = Typhoeus::Hydra.hydra
+        mime = FileMagic.new(:mime).file(path)
+        mime_to_extension(mime)
+      end
 
-      requests = objects.map {|obj| 
-        request = Typhoeus::Request.new(obj.uri)
-        request.on_complete do |response|
-          if response.success?
-            yield(obj, response.body) if block_given?
-          elsif response.timed_out?
-            STDERR.puts "#{obj.uri}: got a time out"
-          elsif response.code == 0
-            STDERR.puts "#{obj.uri}: #{response.return_message}"
-          else
-            STDERR.puts "#{obj.uri}: " +
-              "HTTP request failed: #{response.code.to_s} \n" +
-              "But maybe it succeeded..."
-            if response.body
-              yield(obj, response.body) if block_given?
-            end
+      def hydra_streaming(objects)
+        hydra = Typhoeus::Hydra.hydra
+
+        requests = objects.map { |obj| 
+          next unless yield(:before, obj)
+
+          request = Typhoeus::Request.new(obj.uri)
+          request.on_headers do |response|
+            status = response.success? ? :succeeded : :failed
+            yield(status, obj)
           end
-        end
-        hydra.queue(request)
-        request
-      }
+          request.on_body do |chunk|
+            yield(:body, obj, chunk) 
+          end
+          request.on_complete do |response|
+            yield(:complete, obj)
+          end
 
-      hydra.run
-      requests
+          hydra.queue(request)
+          request
+        }.compact
+
+        hydra.run
+        requests
+      end
+
+      private
+
+      def mime_to_extension(mime)
+        return unless mime.start_with?('image')
+
+        mime.split(';').first.split('/').last
+      end
     end
   end
 end

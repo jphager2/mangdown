@@ -18,6 +18,10 @@ module Mangdown
       self.chapter = options[:chapter]
     end
 
+    def to_hash
+      properties.to_hash
+    end
+
     # explicit conversion to manga list
     def to_manga_list
       # Seems weird to do it this way, but this is to intentially make it 
