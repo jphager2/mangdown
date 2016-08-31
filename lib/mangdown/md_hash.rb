@@ -12,7 +12,7 @@ module Mangdown
       @adapter = Mangdown.adapter!(uri, site, nil, name)
 
       self.name = name
-      self.uri = Mangdown::Uri.new(uri)
+      self.uri = URI.escape(uri)
       self.site = @adapter.site
       self.manga = options[:manga]
       self.chapter = options[:chapter]

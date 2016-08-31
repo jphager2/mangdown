@@ -64,7 +64,7 @@ module Mangdown
       (1..last_page).map { |page|  
         slug = manga_name.gsub(' ', '-').gsub(/[:,]/, '')
         uri = "#{root}/#{slug}/#{chapter_number}/#{page}"
-        uri = Mangdown::Uri.new(uri).downcase 
+        uri = URI.escape(uri).downcase 
 
         { uri: uri, name: page, site: site } }
     end

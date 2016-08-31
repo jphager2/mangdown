@@ -1,6 +1,5 @@
 module Mangdown
   class Page
-
     include Equality
 
     attr_reader :uri, :name, :manga, :chapter
@@ -9,7 +8,7 @@ module Mangdown
       @name = Tools.valid_path_name(name)
       @chapter = chapter
       @manga = manga
-      @uri = Mangdown::Uri.new(uri) 
+      @uri = URI.escape(uri) 
     end
 
     # explicit conversion to page 

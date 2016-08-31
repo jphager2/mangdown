@@ -12,7 +12,7 @@ module Mangdown
 
     def initialize(uri, name)
       @name = name
-      @uri = Mangdown::Uri.new(uri)
+      @uri = URI.escape(uri)
       @chapters = []
     end
 

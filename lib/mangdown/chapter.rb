@@ -11,7 +11,7 @@ module Mangdown
       @name = name 
       @manga = manga
       @chapter = chapter
-      @uri = Mangdown::Uri.new(uri)
+      @uri = URI.escape(uri)
       @pages = []
     end
 
