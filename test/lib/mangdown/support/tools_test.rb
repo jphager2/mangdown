@@ -60,7 +60,7 @@ module Mangdown
 
     def test_file_type
       image_dir = Pathname.new(
-        File.expand_path('../../fixtures/images', __dir__)
+        File.expand_path('../../../fixtures/images', __dir__)
       )
 
       assert_equal 'jpeg', Tools.image_extension(image_dir.join('naruto.jpg'))

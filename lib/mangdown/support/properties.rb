@@ -9,9 +9,9 @@ module Mangdown
     end
 
     def [](key)
-      properties[key]
+      __send__(key)
     end
-      
+
     def inspect
       properties.inspect
     end
