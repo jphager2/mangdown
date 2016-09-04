@@ -8,6 +8,9 @@ module Mangdown
 
     attr_reader :manga
 
+    alias to_a manga
+    alias to_ary manga
+
     def initialize(manga = [])
       @manga = manga.map! { |hash| MDHash.new(hash) }
     end
@@ -28,12 +31,8 @@ module Mangdown
       merge(manga)
     end
 
-    def to_a
-      manga
-    end
-
     def merge(other)
-      @manga += other.to_a
+      @manga += other.to_ary
 
       return self
     end

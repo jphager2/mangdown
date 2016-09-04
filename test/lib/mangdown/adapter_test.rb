@@ -2,7 +2,6 @@ require "test_helper"
 
 module Mangdown
   class AdapterTest < Minitest::Test
-
     def bogus_adapter(&block)
       Class.new(Mangdown::Adapter::Base, &block)
     end

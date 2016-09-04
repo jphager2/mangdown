@@ -1,9 +1,6 @@
-require 'progress_bar'
-
 module Mangdown
   # mangdown manga object, which holds chapters
   class Manga
-
     include Equality
     include Enumerable
 
@@ -40,7 +37,6 @@ module Mangdown
       succeeded = []
       skipped = []
 
-      bar = progress_bar(start, stop)
       chapters[start..stop].each do |md_hash|
         chapter = md_hash.to_chapter
         chapter_result = chapter.download_to(to_path, opts)
@@ -111,11 +107,6 @@ module Mangdown
           raise ArgumentError, error
         end 
       }
-    end
-
-    # create a progress bar object for start and stop indexes
-    def progress_bar(start, stop)
-      ProgressBar.new(stop - start + 1)
     end
   end
 end
