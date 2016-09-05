@@ -24,7 +24,6 @@ module Mangdown
       CBZ.all(to_path)
     end
 
-    # download to current directory convenience method
     def download(*args)
       download_to(nil, *args)
     end
@@ -57,7 +56,6 @@ module Mangdown
       { failed: failed, succeeded: succeeded, skipped: skipped }
     end
 
-    # explicit conversion to manga
     def to_manga 
       self
     end
@@ -72,19 +70,19 @@ module Mangdown
       @path = Tools.relative_or_absolute_path(path)
     end
 
-    # each for enumerating through chapters
     def each(&block)
       @chapters.each(&block)
     end 
 
-    # push MDHashes of manga chapters to @chapters 
     def load_chapters
-      @chapters += adapter.chapter_list.map { |chapter|
+      @chapters += adapter.chapter_list.map do |chapter|
          chapter.merge!(manga: name)
-         MDHash.new(chapter) }
+         MDHash.new(chapter)
+      end
     end
 
     private
+
     def chapter_indeces(start, stop)
       length = chapters.length
       [start, stop].map { |i| i < 0 ? length + i : i }
