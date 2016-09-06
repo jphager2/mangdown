@@ -134,6 +134,9 @@ module Mangdown
         end
       end
 
+      io = StringIO.new
+      Mangdown.configure_logger(file: io)
+
       manga = Manga.new('uri', 'name')
       manga.adapter = test_adapter
       manga.load_chapters
@@ -145,6 +148,10 @@ module Mangdown
       assert_equal 2, result[:succeeded].length
       assert_equal 2, result[:skipped].length
       assert_equal 1, result[:failed].length
+
+      assert_equal 1, io.string.scan(/ERROR/).length
+
+      Mangdown.configure_logger(file: STDOUT)
 
       Chapter.class_eval do
         alias download_to old_download_to

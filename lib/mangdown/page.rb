@@ -1,6 +1,7 @@
 module Mangdown
   class Page
     include Equality
+    include Logging
 
     attr_reader :uri, :name, :manga, :chapter
 
@@ -45,7 +46,7 @@ module Mangdown
       append_file_data(dir, image)
       append_file_ext(dir)
     rescue => error # SocketError not defined?
-      STDERR.puts( "#{error.message} | #{name} | #{uri}" )
+      logger.error "#{error.message} | #{name} | #{uri}"
     end
 
     def append_file_data(dir, data)

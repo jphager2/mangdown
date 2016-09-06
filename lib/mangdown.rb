@@ -4,6 +4,7 @@ require 'yaml'
 require 'zip'
 require 'filemagic'
 
+require_relative 'mangdown/support/logging'
 require_relative 'mangdown/support/equality'
 require_relative 'mangdown/support/properties'
 require_relative 'mangdown/support/tools'

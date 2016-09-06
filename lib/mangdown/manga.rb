@@ -3,6 +3,7 @@ module Mangdown
   class Manga
     include Equality
     include Enumerable
+    include Logging
 
     attr_reader :uri, :chapters, :name
     attr_accessor :adapter
@@ -48,7 +49,7 @@ module Mangdown
           skipped << chapter
         end
         if chapter_result[:failed].any?
-          STDERR.puts("error: #{chapter.name} was not fully downloaded") 
+          logger.error "#{chapter.name} was not fully downloaded"
         end
       end
       { failed: failed, succeeded: succeeded, skipped: skipped }
