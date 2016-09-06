@@ -88,6 +88,7 @@ module Mangdown
     end
 
     private
+
     def setup_download_dir!(dir)
       set_path(dir)
       FileUtils.mkdir_p(to_path) unless Dir.exists?(to_path)
@@ -112,9 +113,10 @@ module Mangdown
 
     # get the docs for number of pages 
     def build_page_hashes
-      adapter.page_list.map { |page|
+      adapter.page_list.map do |page|
         page.merge!(chapter: name, manga: manga)
-        MDHash.new(page) }
+        MDHash.new(page)
+      end
     end
 
     # get the page name and uri

@@ -1,4 +1,5 @@
-require "test_helper"
+require 'stringio'
+require 'test_helper'
 
 module Mangdown
   class MangaTest < Minitest::Test
@@ -101,27 +102,35 @@ module Mangdown
 
       manga = Manga.new('uri', 'name')
       assert_equal [nil, 1, 2, 3], manga.download(1, 2, 3)
+
+      Manga.class_eval do
+        alias download_to old_download_to
+      end
     end
 
-    # TODO: Chapter#fetch_each makes http requests. Need to think of a 
-    # way to handle this in testing.
+    # TODO: Don't write to STDERR, use a logger that has default output to
+    # $stderr
     def test_download_to
-      skip
-
       Chapter.class_eval do
+        @@counter = 0
+
         alias old_download_to download_to
 
         def download_to(*args)
-          @counter ||= 0
-          @counter += 1
+          @@counter += 1
 
-          if @counter % 3 == 1
-            { failed: [] }
-          elsif @counter % 3 == 2
-            { failed: [], skipped: [:some] }
+          if @@counter % 3 == 1
+            { failed: [], succeeded: [:some], skipped: [] }
+          elsif @@counter % 3 == 2
+            { failed: [], succeeded: [], skipped: [:some] }
           else
-            { failed: [:some] }
+            { failed: [:some], succeeded: [], skipped: [] }
           end
+        end
+
+        alias old_fetch_each_page fetch_each_page
+
+        def fetch_each_page(*)
         end
       end
 
@@ -130,9 +139,17 @@ module Mangdown
       manga.load_chapters
 
       result = manga.download_to(Dir.pwd)
-      assert_equal 2, result[:succeded]
-      assert_equal 2, result[:skipped]
-      assert_equal 1, result[:failed]
+
+      assert_equal 5, manga.count
+      assert_equal 5, result.values.flatten.length
+      assert_equal 2, result[:succeeded].length
+      assert_equal 2, result[:skipped].length
+      assert_equal 1, result[:failed].length
+
+      Chapter.class_eval do
+        alias download_to old_download_to
+        alias fetch_each_page old_fetch_each_page
+      end
     end
   end
 end

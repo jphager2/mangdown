@@ -49,8 +49,6 @@ module Mangdown
         end
         if chapter_result[:failed].any?
           STDERR.puts("error: #{chapter.name} was not fully downloaded") 
-        else
-          bar.increment!
         end
       end
       { failed: failed, succeeded: succeeded, skipped: skipped }
