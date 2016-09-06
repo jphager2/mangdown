@@ -108,8 +108,6 @@ module Mangdown
       end
     end
 
-    # TODO: Don't write to STDERR, use a logger that has default output to
-    # $stderr
     def test_download_to
       Chapter.class_eval do
         @@counter = 0

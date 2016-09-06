@@ -1,6 +1,5 @@
 module Mangdown
   class Chapter
-
     include Equality
     include Enumerable
 
@@ -22,12 +21,10 @@ module Mangdown
     end
     alias_method :to_s, :inspect
 
-    # enumerates through pages
     def each(&block)
       @pages.each(&block)
     end
 
-    # explicit conversion to chapter
     def to_chapter
       self
     end
@@ -47,7 +44,6 @@ module Mangdown
       CBZ.one(dir)
     end
 
-    # download all pages in a chapter
     def download_to(dir = nil, opts = { force_download: false })
       pages = map(&:to_page)
       failed = []
@@ -94,7 +90,6 @@ module Mangdown
       FileUtils.mkdir_p(to_path) unless Dir.exists?(to_path)
     end
 
-    # get page objects for all pages in a chapter
     def fetch_each_page
       pages = build_page_hashes
       page_data = Hash.new { |h, k| h[k] = "" }
@@ -111,7 +106,6 @@ module Mangdown
       end
     end
 
-    # get the docs for number of pages 
     def build_page_hashes
       adapter.page_list.map do |page|
         page.merge!(chapter: name, manga: manga)
@@ -119,9 +113,7 @@ module Mangdown
       end
     end
 
-    # get the page name and uri
     def get_page(uri, doc)
-      # Local binding for adapter
       adapter = Mangdown.adapter!(uri, nil, doc)
       page = adapter.page
       page.merge!(chapter: name, manga: manga)
