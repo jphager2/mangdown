@@ -16,9 +16,9 @@ Gem::Specification.new do |s|
   s.files       = files 
   s.license     = 'MIT'
 
-  s.add_runtime_dependency 'typhoeus',     '~> 0.7.1'
-  s.add_runtime_dependency 'nokogiri',     '~> 1.6.0' 
-  s.add_runtime_dependency 'rubyzip',      '~> 1.1.0'
+  s.add_runtime_dependency 'typhoeus',     '~> 0.7'
+  s.add_runtime_dependency 'nokogiri',     '~> 1.6' 
+  s.add_runtime_dependency 'rubyzip',      '~> 1.1'
   s.add_runtime_dependency 'ruby-filemagic'
 
   s.add_development_dependency 'webmock'
