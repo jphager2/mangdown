@@ -23,6 +23,10 @@ module Mangdown
         self.class.site
       end
 
+      def hydra_opts
+        {}
+      end
+
       # Overwrite if you want to check the uri if it belongs to a manga list
       def is_manga_list?(uri = @uri)
         raise NotImplementedError

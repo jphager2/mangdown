@@ -1,6 +1,8 @@
 require 'pathname'
 require 'typhoeus'
 
+Typhoeus::Config.verbose = $DEBUG
+
 module Mangdown
   module Tools
     class << self
@@ -39,13 +41,13 @@ module Mangdown
         mime_to_extension(mime)
       end
 
-      def hydra_streaming(objects)
-        hydra = Typhoeus::Hydra.hydra
+      def hydra_streaming(objects, hydra_opts = {})
+        hydra = Typhoeus::Hydra.new(hydra_opts)
 
         requests = objects.map { |obj| 
           next unless yield(:before, obj)
 
-          request = Typhoeus::Request.new(obj.uri)
+          request = typhoeus(obj.uri)
           request.on_headers do |response|
             status = response.success? ? :succeeded : :failed
             yield(status, obj)
@@ -63,6 +65,16 @@ module Mangdown
 
         hydra.run
         requests
+      end
+
+      def typhoeus(uri)
+        Typhoeus::Request.new(uri, typhoeus_options)
+      end
+
+      def typhoeus_options
+        {
+          headers: { "User-Agent" => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36' }
+        }
       end
 
       private

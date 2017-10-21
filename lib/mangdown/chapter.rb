@@ -56,7 +56,7 @@ module Mangdown
         setup_download_dir!(dir)
       end
 
-      Tools.hydra_streaming(pages) do |stage, page, data = nil|
+      Tools.hydra_streaming(pages, adapter.hydra_opts) do |stage, page, data = nil|
         case stage
         when :failed
           failed << page
@@ -93,7 +93,7 @@ module Mangdown
     def fetch_each_page
       pages = build_page_hashes
       page_data = Hash.new { |h, k| h[k] = "" }
-      Tools.hydra_streaming(pages) do |status, page, data=nil|
+      Tools.hydra_streaming(pages, adapter.hydra_opts) do |status, page, data=nil|
         case status
         when :before
           true
