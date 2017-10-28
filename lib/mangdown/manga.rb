@@ -49,7 +49,11 @@ module Mangdown
           skipped << chapter
         end
         if chapter_result[:failed].any?
-          logger.error "#{chapter.name} was not fully downloaded"
+          logger.error({
+            msg: "Chapter was not fully downloaded",
+            uri: chapter.uri,
+            chapter: chapter.name
+          }.to_s)
         end
       end
       { failed: failed, succeeded: succeeded, skipped: skipped }

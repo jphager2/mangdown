@@ -28,7 +28,7 @@ module Mangdown
       dir ||= File.join(manga, chapter)
       dir = Tools.valid_path_name(dir)
       if Dir.exist?(dir)
-        file = Dir.entries(dir).find { |file| file[name] }
+        file = Dir.entries(dir).find { |f| f[name] }
       end
       path = File.join(dir, file || name)
       @path = Tools.relative_or_absolute_path(path)
@@ -40,13 +40,20 @@ module Mangdown
       delete_files!(dir) if opts[:force_download]
 
       return if file_exist?(dir)
-      
+
       image = Tools.get(uri)
 
       append_file_data(dir, image)
       append_file_ext(dir)
-    rescue => error # SocketError not defined?
-      logger.error "#{error.message} | #{name} | #{uri}"
+    rescue => error
+      logger.error({
+        msg: 'Failed to download page',
+        page: self,
+        uri: uri,
+        error: error,
+        error_msg: error.message,
+        backtrace: error.backtrace
+      }.to_s)
     end
 
     def append_file_data(dir, data)

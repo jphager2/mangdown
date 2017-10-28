@@ -1,7 +1,6 @@
 module Mangdown
   module Adapter
     class Base
-
       # Returns something truthy if this adapter should be used for the 
       # given url or adapter name
       def self.for?(url_or_adapter_name)

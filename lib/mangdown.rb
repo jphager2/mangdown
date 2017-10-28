@@ -16,6 +16,7 @@ require_relative 'mangdown/manga_list.rb'
 require_relative 'mangdown/md_hash'
 
 require_relative 'mangdown/adapter'
+require_relative 'mangdown/adapter/proxy'
 require_relative 'mangdown/adapter/no_adapter_error'
 require_relative 'mangdown/adapter/mangareader.rb'
 
@@ -36,11 +37,12 @@ module Mangdown
     adapter_name = (uri || site).to_s
     klass = ADAPTERS.values.find { |adapter| adapter.for?(adapter_name) }
 
-    if klass
-      klass.new(uri, doc, name)
-    else
-      raise Adapter::NoAdapterError.new(adapter_name)
-    end
+    raise Adapter::NoAdapterError, adapter_name unless klass
+
+    Adapter::Proxy.new(klass.new(uri, doc, name))
+  end
+
+  class Error < StandardError
   end
 end
 

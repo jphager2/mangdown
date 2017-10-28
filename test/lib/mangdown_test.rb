@@ -20,14 +20,17 @@ class MangdownTest < Minitest::Test
 
   def test_adapter
     assert_equal TestAdapter, Mangdown.adapter(:test)
+    assert_equal TestAdapter, Mangdown.adapter(:test)
   end
 
   def test_adapter!
-    assert_instance_of TestAdapter, Mangdown.adapter!("test")
-    assert_instance_of TestAdapter, Mangdown.adapter!(nil, "test")
+    assert_instance_of Mangdown::Adapter::Proxy, Mangdown.adapter!("test")
+
+    assert_instance_of TestAdapter, Mangdown.adapter!("test").adapter
+    assert_instance_of TestAdapter, Mangdown.adapter!(nil, "test").adapter
     assert_instance_of TestAdapter, Mangdown.adapter!(
       "test", nil, doc, "test"
-    )
+    ).adapter
 
     adapters = Mangdown::ADAPTERS.dup
     Mangdown::ADAPTERS.clear

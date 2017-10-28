@@ -1,3 +1,5 @@
+require 'cgi'
+
 module Mangdown
   class Mangareader < Adapter::Base
 
@@ -62,7 +64,7 @@ module Mangdown
     def page_list
       last_page = doc.css('select')[1].css('option').length
       (1..last_page).map { |page|  
-        slug = manga_name.gsub(' ', '-').gsub(/[:,]/, '')
+        slug = manga_name.gsub(' ', '-').gsub(/[:,!]/, '')
         uri = "#{root}/#{slug}/#{chapter_number}/#{page}"
         uri = URI.escape(uri).downcase 
 

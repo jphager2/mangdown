@@ -75,7 +75,7 @@ module Mangdown
         class << self
           alias old_hydra_streaming hydra_streaming
 
-          def hydra_streaming(objects)
+          def hydra_streaming(objects, *other_args)
             objects.map do |obj| 
               next unless yield(:before, obj)
               yield(:succeeded, obj)
