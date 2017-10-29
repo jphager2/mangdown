@@ -12,7 +12,7 @@ module Mangdown
       @name = Tools.valid_path_name(name)
       @chapter = chapter
       @manga = manga
-      @uri = CGI.escape(uri)
+      @uri = Addressable::URI.escape(uri)
     end
 
     # explicit conversion to page

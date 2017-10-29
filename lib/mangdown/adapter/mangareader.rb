@@ -68,7 +68,7 @@ module Mangdown
       (1..last_page).map do |page|
         slug = manga_name.tr(' ', '-').gsub(/[:,!]/, '')
         uri = "#{root}/#{slug}/#{chapter_number}/#{page}"
-        uri = CGI.escape(uri).downcase
+        uri = Addressable::URI.escape(uri).downcase
         { uri: uri, name: page, site: site }
       end
     end

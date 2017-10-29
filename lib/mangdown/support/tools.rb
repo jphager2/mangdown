@@ -19,7 +19,7 @@ module Mangdown
       end
 
       def get_root(uri)
-        uri = URI.parse(uri)
+        uri = Addressable::URI.parse(uri)
         @root = "#{uri.scheme}://#{uri.host}"
       end
 

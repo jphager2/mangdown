@@ -20,7 +20,7 @@ module Mangdown
 
       @adapter = Mangdown.adapter!(uri, site, nil, name)
 
-      @uri = CGI.escape(uri)
+      @uri = Addressable::URI.escape(uri)
       @site = adapter.site
     end
 

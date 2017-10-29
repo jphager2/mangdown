@@ -12,7 +12,7 @@ module Mangdown
 
     def initialize(uri, name)
       @name = name
-      @uri = CGI.escape(uri)
+      @uri = Addressable::URI.escape(uri)
       @chapters = []
     end
 

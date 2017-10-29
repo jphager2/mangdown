@@ -4,15 +4,14 @@ require_relative '../mangdown'
 
 # Simple client for Mangdown
 module M
+  DATA_FILE_PATH = Dir.home + '/.manga_list.yml'
+  HELP_FILE_PATH = File.expand_path(
+    '../../README.md', File.dirname(__FILE__)
+  )
+
+  DEFAULT_MANGA_PAGES = ['http://www.mangareader.net/alphabetical'].freeze
+
   class << self
-
-    DATA_FILE_PATH = Dir.home + '/.manga_list.yml'
-    HELP_FILE_PATH = File.expand_path(
-      '../../README.md', File.dirname(__FILE__)
-    )
-
-    MANGA_PAGES = ['http://www.mangareader.net/alphabetical'].freeze
-
     # return a list of hash with :uri and :name of mangas found in list
     def find(search)
       search = Regexp.new(/^#{search}$/) if search.respond_to?(:to_str)
@@ -37,6 +36,10 @@ module M
       File.delete(DATA_FILE_PATH) if File.exist?(DATA_FILE_PATH)
     end
 
+    def manga_pages
+      @manga_pages ||= DEFAULT_MANGA_PAGES.dup
+    end
+
     private
 
     # convenience method to access the data file path
@@ -51,7 +54,7 @@ module M
 
     # attempt to get the list from the data file
     def data_from_file
-      YAML.safe_load(File.read(path)) if file_current?(path)
+      YAML.load(File.read(path)) if file_current?(path)
     end
 
     # get saved current manga list, if data is less than a week old
@@ -60,7 +63,7 @@ module M
       data = data_from_file
       return Mangdown::MangaList.from_data(data) if data
 
-      list = MANGA_PAGES.inject([]) do |manga, uri|
+      list = manga_pages.inject([]) do |manga, uri|
         list = Mangdown::MDHash.new(uri: uri).to_manga_list
         list.merge(manga)
       end

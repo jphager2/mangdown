@@ -13,7 +13,7 @@ module Mangdown
       @name = name
       @manga = manga
       @chapter = chapter
-      @uri = CGI.escape(uri)
+      @uri = Addressable::URI.escape(uri)
       @pages = []
     end
 
