@@ -5,6 +5,7 @@ require 'nokogiri'
 require 'yaml'
 require 'zip'
 require 'filemagic'
+require 'cgi'
 
 require_relative 'mangdown/error'
 
@@ -25,26 +26,31 @@ require_relative 'mangdown/adapter/no_adapter_error'
 require_relative 'mangdown/adapter/not_implemented_error'
 require_relative 'mangdown/adapter/mangareader.rb'
 
+# Find, download and package manga from the web
 module Mangdown
-  ADAPTERS = {}
-
   DOWNLOAD_DIR ||= Dir.home + '/manga'
 
-  def self.register_adapter(name, adapter)
-    ADAPTERS[name] = adapter
+  module_function
+
+  def register_adapter(name, adapter)
+    adapters[name] = adapter
   end
 
-  def self.adapter(name)
-    ADAPTERS[name]
+  def adapter(name)
+    adapters[name]
   end
 
-  def self.adapter!(uri, site = nil, doc = nil, name = nil)
+  def adapter!(uri, site = nil, doc = nil, name = nil)
     adapter_name = (uri || site).to_s
-    klass = ADAPTERS.values.find { |adapter| adapter.for?(adapter_name) }
+    klass = adapters.values.find { |adapter| adapter.for?(adapter_name) }
 
     raise Adapter::NoAdapterError, adapter_name unless klass
 
     Adapter::Proxy.new(klass.new(uri, doc, name))
+  end
+
+  def adapters
+    @adapters ||= {}
   end
 end
 

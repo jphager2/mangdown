@@ -2,8 +2,9 @@
 
 module Mangdown
   module Adapter
+    # Abstract Adapter class
     class Base
-      # Returns something truthy if this adapter should be used for the 
+      # Returns something truthy if this adapter should be used for the
       # given url or adapter name
       def self.for?(url_or_adapter_name)
         url_or_adapter_name[site.to_s]
@@ -12,7 +13,7 @@ module Mangdown
       def self.site(site = nil)
         site ? @_site = site : @_site
       end
-      
+
       attr_reader :uri, :name
       def initialize(uri, doc, name)
         @uri = uri
@@ -29,22 +30,22 @@ module Mangdown
       end
 
       # Overwrite if you want to check the uri if it belongs to a manga list
-      def is_manga_list?(uri = @uri)
+      def is_manga_list?(_uri = @uri)
         raise Adapter::NotImplementedError
       end
 
       # Must return true/false if uri represents a manga for adapter
-      def is_manga?(uri = @uri)
+      def is_manga?(_uri = @uri)
         raise Adapter::NotImplementedError
       end
 
       # Must return true/false if uri represents a chapter for adapter
-      def is_chapter?(uri = @uri)
+      def is_chapter?(_uri = @uri)
         raise Adapter::NotImplementedError
       end
 
       # Must return true/false if uri represents a page for adapter
-      def is_page?(uri = @uri)
+      def is_page?(_uri = @uri)
         raise Adapter::NotImplementedError
       end
 

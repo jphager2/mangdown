@@ -22,18 +22,6 @@ module Mangdown
       assert_equal 'adapter', @chapter.adapter
     end
 
-    def test_inspect_differs_from_object_inspect
-      unbound_inspect = Object.instance_method(:inspect)
-
-      refute_equal unbound_inspect.bind(@chapter).call(), @chapter.inspect
-    end
-
-    def test_to_s_differs_from_object_to_s
-      unbound_to_s = Object.instance_method(:to_s)
-
-      refute_equal unbound_to_s.bind(@chapter).call(), @chapter.to_s
-    end
-
     def test_cbz
       CBZ.class_eval do
         class << self

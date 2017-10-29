@@ -1,7 +1,12 @@
+# frozen_string_literal: true
+
 module Mangdown
+  # Mangdown hash like object that can be converted to other Mangdown objects.
   class MDHash
     include Equality
     include Properties
+
+    attr_reader :adapter
 
     properties :name, :uri, :manga, :chapter, :site
 
@@ -15,7 +20,7 @@ module Mangdown
 
       @adapter = Mangdown.adapter!(uri, site, nil, name)
 
-      @uri = URI.escape(uri)
+      @uri = CGI.escape(uri)
       @site = adapter.site
     end
 
@@ -29,10 +34,8 @@ module Mangdown
 
     def to_manga
       type_error('manga') unless adapter.is_manga?
-      
-      if name.to_s.empty?
-        fill_properties(adapter.manga)
-      end
+
+      fill_properties(adapter.manga) if name.to_s.empty?
 
       manga = Manga.new(uri, name)
       manga.adapter = adapter
@@ -55,17 +58,13 @@ module Mangdown
       chapter
     end
 
-    def to_page 
+    def to_page
       type_error('page') unless adapter.is_page?
 
       Page.new(uri, name, manga, chapter)
-    end 
+    end
 
     private
-
-    def adapter
-      @adapter
-    end
 
     def type_error(type)
       raise Mangdown::Error, "This is not a known #{type} type"

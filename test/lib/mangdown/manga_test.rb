@@ -17,20 +17,6 @@ module Mangdown
       assert_equal 'adapter', manga.adapter
     end
 
-    def test_inspect_differs_from_object_inspect
-      unbound_inspect = Object.instance_method(:inspect)
-      manga = Manga.new('uri', 'name')
-
-      refute_equal unbound_inspect.bind(manga).call(), manga.inspect
-    end
-
-    def test_to_s_differs_from_object_to_s
-      unbound_to_s = Object.instance_method(:to_s)
-      manga = Manga.new('uri', 'name')
-
-      refute_equal unbound_to_s.bind(manga).call(), manga.to_s
-    end
-
     def test_cbz
       CBZ.class_eval do
         class << self

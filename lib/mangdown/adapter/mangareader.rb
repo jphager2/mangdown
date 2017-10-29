@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'cgi'
 
 module Mangdown
+  # Mangdown adapter for mangareader
   class Mangareader < Adapter::Base
-
     site :mangareader
 
     attr_reader :root
@@ -31,12 +33,12 @@ module Mangdown
 
     # Only valid mangas should be returned (using is_manga?(uri))
     def manga_list
-      doc.css('ul.series_alpha li a').map { |a| 
+      doc.css('ul.series_alpha li a').map do |a|
         uri = "#{root}#{a[:href]}"
         manga = { uri: uri, name: a.text.strip, site: site }
 
         manga if is_manga?(uri)
-      }.compact
+      end.compact
     end
 
     def manga
@@ -45,17 +47,17 @@ module Mangdown
 
     # Only valid chapters should be returned (using is_chapter?(uri))
     def chapter_list
-      doc.css('div#chapterlist td a').map { |a|
+      doc.css('div#chapterlist td a').map do |a|
         uri = root + a[:href].sub(root, '')
         chapter = { uri: uri, name: a.text.strip, site: site }
 
         chapter if is_chapter?(uri)
-      }.compact
+      end.compact
     end
 
     def chapter
-      { uri: uri, 
-        manga: manga_name, 
+      { uri: uri,
+        manga: manga_name,
         name: chapter_name,
         chapter: chapter_number,
         site: site }
@@ -63,20 +65,20 @@ module Mangdown
 
     def page_list
       last_page = doc.css('select')[1].css('option').length
-      (1..last_page).map { |page|  
-        slug = manga_name.gsub(' ', '-').gsub(/[:,!]/, '')
+      (1..last_page).map do |page|
+        slug = manga_name.tr(' ', '-').gsub(/[:,!]/, '')
         uri = "#{root}/#{slug}/#{chapter_number}/#{page}"
-        uri = URI.escape(uri).downcase 
-
-        { uri: uri, name: page, site: site } }
+        uri = CGI.escape(uri).downcase
+        { uri: uri, name: page, site: site }
+      end
     end
 
     def page
       page_image = doc.css('img')[0]
       uri = page_image[:src]
-      name = page_image[:alt].sub(/([^\d]*)(\d+)(\.\w+)?$/) { 
+      name = page_image[:alt].sub(/([^\d]*)(\d+)(\.\w+)?$/) do
         Regexp.last_match[1].to_s + Regexp.last_match[2].to_s.rjust(3, '0')
-      }
+      end
 
       { uri: uri, name: name, site: site }
     end
@@ -97,25 +99,24 @@ module Mangdown
       if @name
         @name.sub(/\s(\d+)$/) { |num| ' ' + num.to_i.to_s.rjust(5, '0') }
       else
-        doc.css("").text # Not implimented
+        doc.css('').text # Not implimented
       end
     end
 
     def chapter_manga_name
       if @name
-        @name.slice(/(^.+)\s/, 1) 
+        @name.slice(/(^.+)\s/, 1)
       else
-        doc.css("").text # Not implimented
+        doc.css('').text # Not implimented
       end
     end
 
     def chapter_number
       if @name
-        @name.slice(/\d+\z/).to_i 
+        @name.slice(/\d+\z/).to_i
       else
-        doc.css("").text # Not implimented
+        doc.css('').text # Not implimented
       end
     end
   end
 end
-

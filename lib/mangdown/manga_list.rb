@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 module Mangdown
+  # Mangdown manga list, which holds manga
   class MangaList
     include Enumerable
 
     def self.from_data(manga)
-      new(manga) 
+      new(manga)
     end
 
     attr_reader :manga
@@ -17,7 +20,7 @@ module Mangdown
 
     def each(&block)
       manga.each(&block)
-    end 
+    end
 
     def to_yaml
       @manga.map(&:to_hash).to_yaml
@@ -26,15 +29,15 @@ module Mangdown
     def load_manga(uri)
       adapter = Mangdown.adapter!(uri)
 
-      manga = adapter.manga_list.map { |manga| MDHash.new(manga) }
-      
+      manga = adapter.manga_list.map { |m| MDHash.new(m) }
+
       merge(manga)
     end
 
     def merge(other)
       @manga += other.to_ary
 
-      return self
+      self
     end
   end
 end

@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module Mangdown
-  # mangdown manga object, which holds chapters
+  # Mangdown manga object, which holds chapters
   class Manga
     include Equality
     include Enumerable
@@ -10,16 +12,9 @@ module Mangdown
 
     def initialize(uri, name)
       @name = name
-      @uri = URI.escape(uri)
+      @uri = CGI.escape(uri)
       @chapters = []
     end
-
-    def inspect
-      "#<#{self.class} @name=#{name} @uri=#{uri} " +
-      "@chapters=[#{chapters.first(3).join(',')}" +
-      "#{",..." if chapters.length > 3}]>"
-    end
-    alias_method :to_s, :inspect
 
     def cbz
       CBZ.all(to_path)
@@ -28,7 +23,7 @@ module Mangdown
     def download(*args)
       download_to(nil, *args)
     end
-    
+
     # download using enumerable
     def download_to(dir, start = 0, stop = -1, opts = { force_download: false })
       start, stop = validate_indeces!(start, stop)
@@ -40,7 +35,7 @@ module Mangdown
       chapters[start..stop].each do |md_hash|
         chapter = md_hash.to_chapter
         chapter_result = chapter.download_to(to_path, opts)
-        
+
         if chapter_result[:failed].any?
           failed << chapter
         elsif chapter_result[:succeeded].any?
@@ -48,18 +43,17 @@ module Mangdown
         elsif chapter_result[:skipped].any?
           skipped << chapter
         end
-        if chapter_result[:failed].any?
-          logger.error({
-            msg: "Chapter was not fully downloaded",
-            uri: chapter.uri,
-            chapter: chapter.name
-          }.to_s)
-        end
+        next unless chapter_result[:failed].any?
+        logger.error({
+          msg: 'Chapter was not fully downloaded',
+          uri: chapter.uri,
+          chapter: chapter.name
+        }.to_s)
       end
       { failed: failed, succeeded: succeeded, skipped: skipped }
     end
 
-    def to_manga 
+    def to_manga
       self
     end
 
@@ -68,19 +62,19 @@ module Mangdown
     end
 
     def set_path(dir = nil)
-      dir ||= DOWNLOAD_DIR 
+      dir ||= DOWNLOAD_DIR
       path = File.join(dir, name)
       @path = Tools.relative_or_absolute_path(path)
     end
 
     def each(&block)
       @chapters.each(&block)
-    end 
+    end
 
     def load_chapters
       @chapters += adapter.chapter_list.map do |chapter|
-         chapter.merge!(manga: name)
-         MDHash.new(chapter)
+        chapter[:manga] = name
+        MDHash.new(chapter)
       end
     end
 
@@ -88,16 +82,16 @@ module Mangdown
 
     def chapter_indeces(start, stop)
       length = chapters.length
-      [start, stop].map { |i| i < 0 ? length + i : i }
+      [start, stop].map { |i| i.negative? ? length + i : i }
     end
 
     def setup_download_dir!(dir)
-      set_path(dir) 
+      set_path(dir)
       FileUtils.mkdir_p(to_path) unless Dir.exist?(to_path)
     end
 
     def validate_indeces!(start, stop)
-      chapter_indeces(start, stop).tap { |i_start, i_stop|
+      chapter_indeces(start, stop).tap do |i_start, i_stop|
         last = chapters.length - 1
 
         if i_start > last || i_stop > last
@@ -106,8 +100,8 @@ module Mangdown
         elsif i_stop < i_start
           error = 'Last index must be greater than or equal to first index'
           raise Mangdown::Error, error
-        end 
-      }
+        end
+      end
     end
   end
 end

@@ -1,9 +1,12 @@
-module Mangdown 
+# frozen_string_literal: true
+
+module Mangdown
+  # Mangdown object equality
   module Equality
     include Comparable
 
     def <=>(other)
-      self.name <=> other.name
+      name <=> other.name
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mangdown
   module Adapter
     # Wraps Adapters to provide error reporting
@@ -17,17 +19,25 @@ module Mangdown
 
         adapter.public_send(method, *args, &block)
       rescue => e
-        logger.error({
+        logger.error(debug_error)
+        raise Mangdown::Error, "Adapter failed: #{e.message}"
+      end
+
+      def respond_to_missing?(method, include_all)
+        @adapter.respond_to?(method, include_all)
+      end
+
+      def debug_error(error)
+        {
           msg: 'Adapter method failed',
           adapter: adapter.class,
           uri: adapter.uri,
           doc: adapter.doc.to_s,
           method: method,
-          error: e,
-          error_msg: e.message,
-          backtrace: e.backtrace
-        }.to_s)
-        raise Mangdown::Error, "Adapter failed: #{e.message}"
+          error: error,
+          error_msg: error.message,
+          backtrace: error.backtrace
+        }.to_s
       end
     end
   end

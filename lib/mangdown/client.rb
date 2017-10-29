@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 require_relative '../mangdown'
 
+# Simple client for Mangdown
 module M
   module_function
 
@@ -35,6 +38,7 @@ module M
   end
 
   private
+
   # convenience method to access the data file path
   def path
     DATA_FILE_PATH
@@ -56,10 +60,11 @@ module M
     data = data_from_file
     return Mangdown::MangaList.from_data(data) if data
 
-    list = MANGA_PAGES.inject([]) { |manga, uri|
+    list = MANGA_PAGES.inject([]) do |manga, uri|
       list = Mangdown::MDHash.new(uri: uri).to_manga_list
-      list.merge(manga) }
-    File.open(path, 'w+') { |f| f.write(list.to_yaml) } 
+      list.merge(manga)
+    end
+    File.open(path, 'w+') { |f| f.write(list.to_yaml) }
     list
   rescue => error
     raise Mangdown::Error, "#{path} may be corrupt: #{error.message}"

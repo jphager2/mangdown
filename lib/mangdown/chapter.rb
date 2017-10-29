@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 module Mangdown
+  # Mangdown chapter object, which holds pages
   class Chapter
     include Equality
     include Enumerable
@@ -7,19 +10,12 @@ module Mangdown
     attr_accessor :adapter
 
     def initialize(uri, name, manga, chapter = nil)
-      @name = name 
+      @name = name
       @manga = manga
       @chapter = chapter
-      @uri = URI.escape(uri)
+      @uri = CGI.escape(uri)
       @pages = []
     end
-
-    def inspect
-      "#<#{self.class} @name=#{name} @uri=#{uri} " +
-      "@pages=[#{pages.first(3).join(',')}"       +
-      "#{",..." if pages.length > 3}]>"
-    end
-    alias_method :to_s, :inspect
 
     def each(&block)
       @pages.each(&block)
@@ -79,7 +75,7 @@ module Mangdown
     def load_pages
       return @pages if @pages.any?
 
-      fetch_each_page do |page| @pages << page end
+      fetch_each_page { |page| @pages << page }
       @pages.sort_by!(&:name)
     end
 
@@ -87,13 +83,13 @@ module Mangdown
 
     def setup_download_dir!(dir)
       set_path(dir)
-      FileUtils.mkdir_p(to_path) unless Dir.exists?(to_path)
+      FileUtils.mkdir_p(to_path) unless Dir.exist?(to_path)
     end
 
     def fetch_each_page
       pages = build_page_hashes
-      page_data = Hash.new { |h, k| h[k] = "" }
-      Tools.hydra_streaming(pages, adapter.hydra_opts) do |status, page, data=nil|
+      page_data = Hash.new { |h, k| h[k] = +'' }
+      Tools.hydra_streaming(pages, adapter.hydra_opts) do |status, page, data = nil|
         case status
         when :before
           true
@@ -108,7 +104,8 @@ module Mangdown
 
     def build_page_hashes
       adapter.page_list.map do |page|
-        page.merge!(chapter: name, manga: manga)
+        page[:chapter] = name
+        page[:manga] = manga
         MDHash.new(page)
       end
     end
@@ -116,7 +113,8 @@ module Mangdown
     def get_page(uri, doc)
       adapter = Mangdown.adapter!(uri, nil, doc)
       page = adapter.page
-      page.merge!(chapter: name, manga: manga)
+      page[:chapter] = name
+      page[:manga] = manga
 
       MDHash.new(page)
     end

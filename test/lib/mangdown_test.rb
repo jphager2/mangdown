@@ -7,15 +7,15 @@ class MangdownTest < Minitest::Test
   end
 
   def test_register_adapter
-    adapters_before = Mangdown::ADAPTERS.length
+    adapters_before = Mangdown.adapters.length
 
     bogus = Class.new(Mangdown::Adapter::Base)
 
     Mangdown.register_adapter(:bogus_adapter, bogus)
 
-    assert Mangdown::ADAPTERS.length == adapters_before + 1
+    assert Mangdown.adapters.length == adapters_before + 1
 
-    Mangdown::ADAPTERS.delete(:bogus_adapter)
+    Mangdown.adapters.delete(:bogus_adapter)
   end
 
   def test_adapter
@@ -32,13 +32,13 @@ class MangdownTest < Minitest::Test
       "test", nil, doc, "test"
     ).adapter
 
-    adapters = Mangdown::ADAPTERS.dup
-    Mangdown::ADAPTERS.clear
+    adapters = Mangdown.adapters.dup
+    Mangdown.adapters.clear
 
     assert_raises(Mangdown::Adapter::NoAdapterError) { 
       Mangdown.adapter!(nil) 
     }
 
-    Mangdown::ADAPTERS.merge!(adapters)
+    Mangdown.adapters.merge!(adapters)
   end
 end

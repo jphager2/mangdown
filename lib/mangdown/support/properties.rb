@@ -1,11 +1,14 @@
+# frozen_string_literal: true
+
 module Mangdown
+  # Provide hash-like access for object attributes
   module Properties
     def self.included(base)
       base.extend(ClassMethods)
     end
 
     def properties
-      keys = self.class.property_names
+      keys = self.class.properties
       values = keys.map { |name| self[name] }
       Hash[keys.zip(values)]
     end
@@ -33,14 +36,14 @@ module Mangdown
       properties.to_s
     end
 
+    # Macro for setting property names
     module ClassMethods
       def properties(*names)
-        @properties = names
+        @properties ||= []
+        return @properties if names.empty?
+
+        @properties.concat(names).uniq!
         attr_accessor(*names)
-      end
-      
-      def property_names
-        @properties || []
       end
     end
   end

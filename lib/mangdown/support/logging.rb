@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'logger'
 
 module Mangdown
+  # Configure and access the Mangdown logger
   module Logging
-
     private
 
     def logger

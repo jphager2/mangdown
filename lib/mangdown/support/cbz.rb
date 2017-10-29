@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 module Mangdown
+  # Package manga or chapter directories into .cbz archive files
   module CBZ
     class << self
       extend Tools
@@ -6,7 +9,7 @@ module Mangdown
       def all(main_dir)
         main_dir = String(main_dir)
         main_dir = validate_file_or_dir_names(main_dir)
-        each_dir_or_page(main_dir) { |dir| validate_file_or_dir_names(dir)}
+        each_dir_or_page(main_dir) { |dir| validate_file_or_dir_names(dir) }
         cbz_sub_dirs(main_dir)
       end
 
@@ -19,14 +22,14 @@ module Mangdown
       private
 
       def cbz_dir(dir)
-        dir = dir.to_s.sub(/\/*$/, "")
-        
+        dir = dir.to_s.sub(/\/*$/, '')
+
         zip_filename = dir + '.cbz'
         return if File.exist?(zip_filename)
 
         ::Zip::File.open(zip_filename, ::Zip::File::CREATE) do |zip|
           file_matcher = File.join(dir, '**', '**')
-          dir << "/"
+          dir << '/'
 
           Dir.glob(file_matcher).each do |file|
             filename = file.sub(dir, '')
@@ -39,14 +42,14 @@ module Mangdown
         each_dir_or_page(dir) do |sub_dir|
           cbz_dir(sub_dir)
         end
-      end 
+      end
 
       def each_dir_or_page(dir)
-        Dir.glob(dir + '/*').each do |filename| 
+        Dir.glob(dir + '/*').each do |filename|
           next if filename.include?('.cbz')
           yield(filename)
         end
-      end 
+      end
 
       def validate_file_or_dir_names(dir)
         each_dir_or_page(dir) do |filename|

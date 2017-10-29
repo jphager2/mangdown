@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 require 'pathname'
 require 'typhoeus'
 
 Typhoeus::Config.verbose = $DEBUG
 
 module Mangdown
+  # Common helpers
   module Tools
     class << self
-  
       def get_doc(uri)
         data = get(uri)
-        @doc = ::Nokogiri::HTML(data)
+        @doc = Nokogiri::HTML(data)
       end
 
       def get(uri)
@@ -17,7 +19,7 @@ module Mangdown
       end
 
       def get_root(uri)
-        uri = ::URI.parse(uri)
+        uri = URI.parse(uri)
         @root = "#{uri.scheme}://#{uri.host}"
       end
 
@@ -28,9 +30,9 @@ module Mangdown
       def valid_path_name(name)
         name.to_s.sub(/(\d+)(\.\w+)*\Z/) do
           digits, ext = Regexp.last_match[1..2]
-          digits.to_i.to_s.rjust(5, "0") + ext.to_s
+          digits.to_i.to_s.rjust(5, '0') + ext.to_s
         end
-      end 
+      end
 
       def image_extension(path)
         path = path.to_s
@@ -44,7 +46,7 @@ module Mangdown
       def hydra_streaming(objects, hydra_opts = {})
         hydra = Typhoeus::Hydra.new(hydra_opts)
 
-        requests = objects.map { |obj| 
+        requests = objects.map do |obj|
           next unless yield(:before, obj)
 
           request = typhoeus(obj.uri)
@@ -53,15 +55,15 @@ module Mangdown
             yield(status, obj)
           end
           request.on_body do |chunk|
-            yield(:body, obj, chunk) 
+            yield(:body, obj, chunk)
           end
-          request.on_complete do |response|
+          request.on_complete do |_response|
             yield(:complete, obj)
           end
 
           hydra.queue(request)
           request
-        }.compact
+        end.compact
 
         hydra.run
         requests
@@ -73,7 +75,9 @@ module Mangdown
 
       def typhoeus_options
         {
-          headers: { "User-Agent" => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36' }
+          headers: {
+            'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
+          }
         }
       end
 

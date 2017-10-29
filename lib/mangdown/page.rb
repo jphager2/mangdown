@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 module Mangdown
+  # Mangdown page
   class Page
     include Equality
     include Logging
@@ -9,13 +12,13 @@ module Mangdown
       @name = Tools.valid_path_name(name)
       @chapter = chapter
       @manga = manga
-      @uri = URI.escape(uri) 
+      @uri = CGI.escape(uri)
     end
 
-    # explicit conversion to page 
+    # explicit conversion to page
     def to_page
       self
-    end 
+    end
 
     def to_path
       @path ||= set_path
@@ -27,16 +30,13 @@ module Mangdown
     def set_path(dir = nil)
       dir ||= File.join(manga, chapter)
       dir = Tools.valid_path_name(dir)
-      if Dir.exist?(dir)
-        file = Dir.entries(dir).find { |f| f[name] }
-      end
+      file = Dir.entries(dir).find { |f| f[name] } if Dir.exist?(dir)
       path = File.join(dir, file || name)
       @path = Tools.relative_or_absolute_path(path)
     end
 
     # downloads to specified directory
-    def download_to(dir = Dir.pwd, opts = { force_download: false })
-      # cleanup existing file (all extensions)
+    def download_to(dir = Dir.pwd, force_download: false)
       delete_files!(dir) if opts[:force_download]
 
       return if file_exist?(dir)
@@ -56,8 +56,8 @@ module Mangdown
       }.to_s)
     end
 
-    def append_file_data(dir, data)
-      File.open(to_path, 'ab') { |file| file.write(data) } 
+    def append_file_data(_dir, data)
+      File.open(to_path, 'ab') { |file| file.write(data) }
     end
 
     def append_file_ext(dir = nil)
@@ -75,10 +75,9 @@ module Mangdown
       Dir.entries(dir).any? { |file| file.to_s[to_path.basename.to_s] }
     end
 
+    # cleanup existing file (all extensions)
     def delete_files!(dir)
-      while set_path(dir) && File.exist?(to_path)
-        File.delete(to_path)
-      end
+      File.delete(to_path) while set_path(dir) && File.exist?(to_path)
     end
   end
 end
