@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mangdown
   module Adapter
     class Base
@@ -28,52 +30,52 @@ module Mangdown
 
       # Overwrite if you want to check the uri if it belongs to a manga list
       def is_manga_list?(uri = @uri)
-        raise NotImplementedError
+        raise Adapter::NotImplementedError
       end
 
       # Must return true/false if uri represents a manga for adapter
       def is_manga?(uri = @uri)
-        raise NotImplementedError
+        raise Adapter::NotImplementedError
       end
 
       # Must return true/false if uri represents a chapter for adapter
       def is_chapter?(uri = @uri)
-        raise NotImplementedError
+        raise Adapter::NotImplementedError
       end
 
       # Must return true/false if uri represents a page for adapter
       def is_page?(uri = @uri)
-        raise NotImplementedError
+        raise Adapter::NotImplementedError
       end
 
       # Return Array of Hash with keys: :uri, :name, :site
       def manga_list
-        raise NotImplementedError
+        raise Adapter::NotImplementedError
       end
 
       # Return Hash with keys: :uri, :name, :site
       def manga
-        raise NotImplementedError
+        raise Adapter::NotImplementedError
       end
 
       # Return Array of Hash with keys: :uri, :name, :site
       def chapter_list
-        raise NotImplementedError
+        raise Adapter::NotImplementedError
       end
 
       # Return Hash with keys: :uri, :name, :chapter, :manga, :site
       def chapter
-        raise NotImplementedError
+        raise Adapter::NotImplementedError
       end
 
       # Return Array of Hash with keys: :uri, :name, :site
       def page_list
-        raise NotImplementedError
+        raise Adapter::NotImplementedError
       end
 
       # Return Hash with keys: :uri, :name, :site
       def page
-        raise NotImplementedError
+        raise Adapter::NotImplementedError
       end
 
       def doc

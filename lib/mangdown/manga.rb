@@ -102,10 +102,10 @@ module Mangdown
 
         if i_start > last || i_stop > last
           error = "This manga has chapters in the range (0..#{last})"
-          raise ArgumentError, error
+          raise Mangdown::Error, error
         elsif i_stop < i_start
           error = 'Last index must be greater than or equal to first index'
-          raise ArgumentError, error
+          raise Mangdown::Error, error
         end 
       }
     end

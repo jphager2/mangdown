@@ -1,8 +1,12 @@
+# frozen_string_literal: true
+
 require 'uri'
 require 'nokogiri'
 require 'yaml'
 require 'zip'
 require 'filemagic'
+
+require_relative 'mangdown/error'
 
 require_relative 'mangdown/support/logging'
 require_relative 'mangdown/support/equality'
@@ -18,6 +22,7 @@ require_relative 'mangdown/md_hash'
 require_relative 'mangdown/adapter'
 require_relative 'mangdown/adapter/proxy'
 require_relative 'mangdown/adapter/no_adapter_error'
+require_relative 'mangdown/adapter/not_implemented_error'
 require_relative 'mangdown/adapter/mangareader.rb'
 
 module Mangdown
@@ -40,9 +45,6 @@ module Mangdown
     raise Adapter::NoAdapterError, adapter_name unless klass
 
     Adapter::Proxy.new(klass.new(uri, doc, name))
-  end
-
-  class Error < StandardError
   end
 end
 

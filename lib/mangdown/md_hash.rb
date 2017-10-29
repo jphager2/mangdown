@@ -68,7 +68,7 @@ module Mangdown
     end
 
     def type_error(type)
-      raise NoMethodError, "This is not a known #{type} type"
+      raise Mangdown::Error, "This is not a known #{type} type"
     end
   end
 end
