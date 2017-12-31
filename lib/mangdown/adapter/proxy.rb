@@ -18,16 +18,16 @@ module Mangdown
         return super unless @adapter.respond_to?(method)
 
         adapter.public_send(method, *args, &block)
-      rescue => e
-        logger.error(debug_error(e))
-        raise Mangdown::Error, "Adapter failed: #{e.message}"
+      rescue => error
+        logger.error(debug_error(method, error))
+        raise Mangdown::Error, "Adapter failed: #{error.message}"
       end
 
       def respond_to_missing?(method, include_all)
         @adapter.respond_to?(method, include_all)
       end
 
-      def debug_error(error)
+      def debug_error(method, error)
         {
           msg: 'Adapter method failed',
           adapter: adapter.class,
