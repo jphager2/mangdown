@@ -19,7 +19,7 @@ module Mangdown
 
         adapter.public_send(method, *args, &block)
       rescue => e
-        logger.error(debug_error)
+        logger.error(debug_error(e))
         raise Mangdown::Error, "Adapter failed: #{e.message}"
       end
 
