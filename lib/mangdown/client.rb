@@ -9,7 +9,7 @@ module M
     '../../README.md', File.dirname(__FILE__)
   )
 
-  DEFAULT_MANGA_PAGES = ['http://www.mangareader.net/alphabetical'].freeze
+  DEFAULT_MANGA_PAGES = ['https://www.mangareader.net/alphabetical'].freeze
 
   class << self
     # return a list of hash with :uri and :name of mangas found in list

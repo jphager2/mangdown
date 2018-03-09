@@ -12,7 +12,7 @@ module Mangdown
     def initialize(uri, doc, name)
       super
 
-      @root = 'http://www.mangareader.net'
+      @root = 'https://www.mangareader.net'
     end
 
     def is_manga_list?(uri = @uri)
