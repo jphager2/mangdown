@@ -13,9 +13,9 @@ module Mangdown
         cbz_sub_dirs(main_dir)
       end
 
-      def one(dir)
+      def one(dir, validate_main_dir = true)
         dir = String(dir)
-        dir = validate_file_or_dir_names(dir)
+        dir = validate_file_or_dir_names(dir, validate_main_dir)
         cbz_dir(dir)
       end
 
@@ -51,11 +51,11 @@ module Mangdown
         end
       end
 
-      def validate_file_or_dir_names(dir)
+      def validate_file_or_dir_names(dir, validate_main_dir = true)
         each_dir_or_page(dir) do |filename|
           rename_with_valid_name(filename)
         end
-        rename_with_valid_name(dir)
+        rename_with_valid_name(dir) if validate_main_dir
       end
 
       def rename_with_valid_name(filename)

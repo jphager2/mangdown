@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mangdown (0.17.2)
+    mangdown (0.17.3)
       addressable
       nokogiri (~> 1.6)
       ruby-filemagic
