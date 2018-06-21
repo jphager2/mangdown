@@ -3,7 +3,7 @@ PATH
   specs:
     mangdown (0.17.5)
       addressable
-      nokogiri (~> 1.6)
+      nokogiri (~> 1.8)
       ruby-filemagic
       rubyzip (~> 1.1)
       typhoeus (~> 0.7)
@@ -17,10 +17,13 @@ GEM
       safe_yaml (~> 1.0.0)
     ethon (0.11.0)
       ffi (>= 1.3.0)
-    ffi (1.9.18)
+    ffi (1.9.25)
+    ffi (1.9.25-x86-mingw32)
     mini_portile2 (2.3.0)
     minitest (5.5.1)
-    nokogiri (1.8.1)
+    nokogiri (1.8.3)
+      mini_portile2 (~> 2.3.0)
+    nokogiri (1.8.3-x86-mingw32)
       mini_portile2 (~> 2.3.0)
     parallel (1.12.0)
     parser (2.4.0.0)
@@ -37,6 +40,7 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-filemagic (0.7.2)
+    ruby-filemagic (0.7.2-x86-mingw32)
     ruby-progressbar (1.9.0)
     rubyzip (1.2.1)
     safe_yaml (1.0.4)

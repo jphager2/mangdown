@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
   s.license     = 'MIT'
 
   s.add_runtime_dependency 'addressable'
-  s.add_runtime_dependency 'nokogiri', '~> 1.6'
+  s.add_runtime_dependency 'nokogiri', '~> 1.8'
   s.add_runtime_dependency 'ruby-filemagic'
   s.add_runtime_dependency 'rubyzip',      '~> 1.1'
   s.add_runtime_dependency 'typhoeus',     '~> 0.7'
