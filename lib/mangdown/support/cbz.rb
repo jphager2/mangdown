@@ -55,7 +55,7 @@ module Mangdown
         each_dir_or_page(dir) do |filename|
           rename_with_valid_name(filename)
         end
-        rename_with_valid_name(dir) if validate_main_dir
+        validate_main_dir ? rename_with_valid_name(dir) : dir
       end
 
       def rename_with_valid_name(filename)
