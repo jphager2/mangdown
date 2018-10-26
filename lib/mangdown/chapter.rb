@@ -25,11 +25,12 @@ module Mangdown
       self
     end
 
-    def to_path
-      @path ||= set_path
+    def path
+      @path ||= setup_path
     end
+    alias to_path path
 
-    def set_path(dir = nil)
+    def setup_path(dir = nil)
       dir ||= File.join(DOWNLOAD_DIR, manga)
       path = File.join(dir, name)
       path = Tools.valid_path_name(path)
@@ -82,7 +83,7 @@ module Mangdown
     private
 
     def setup_download_dir!(dir)
-      set_path(dir)
+      setup_path(dir)
       FileUtils.mkdir_p(to_path) unless Dir.exist?(to_path)
     end
 

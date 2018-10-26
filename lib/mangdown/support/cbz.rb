@@ -22,7 +22,7 @@ module Mangdown
       private
 
       def cbz_dir(dir)
-        dir = dir.to_s.sub(/\/*$/, '')
+        dir = dir.to_s.sub(%r{/*$}, '')
 
         zip_filename = dir + '.cbz'
         return if File.exist?(zip_filename)
@@ -47,6 +47,7 @@ module Mangdown
       def each_dir_or_page(dir)
         Dir.glob(dir + '/*').each do |filename|
           next if filename.include?('.cbz')
+
           yield(filename)
         end
       end

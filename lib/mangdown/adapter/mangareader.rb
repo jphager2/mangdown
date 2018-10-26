@@ -20,11 +20,11 @@ module Mangdown
     end
 
     def is_manga?(uri = @uri)
-      uri.slice(/#{root}(\/\d+)?(\/[^\/]+)(\.html)?/i) == uri
+      uri.slice(%r{#{root}(/\d+)?(/[^/]+)(\.html)?}i) == uri
     end
 
     def is_chapter?(uri = @uri)
-      uri.slice(/#{root}(\/[^\/]+){1,2}\/(\d+|chapter-\d+\.html)/i) == uri
+      uri.slice(%r{#{root}(/[^/]+){1,2}/(\d+|chapter-\d+\.html)}i) == uri
     end
 
     def is_page?(uri = @uri)

@@ -53,8 +53,8 @@ module Mangdown
       )
     end
 
-    def test_set_path
-      @chapter.set_path(Dir.pwd)
+    def test_setup_path
+      @chapter.setup_path(Dir.pwd)
       assert_equal "#{Dir.pwd}/name", @chapter.to_path.to_s
     end
 
@@ -64,7 +64,7 @@ module Mangdown
           alias old_hydra_streaming hydra_streaming
 
           def hydra_streaming(objects, *other_args)
-            objects.map do |obj| 
+            objects.map do |obj|
               next unless yield(:before, obj)
               yield(:succeeded, obj)
               yield(:body, obj, 'data')

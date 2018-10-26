@@ -22,7 +22,7 @@ module M
     # cbz all subdirectories in a directory
     def cbz(dir)
       Mangdown::CBZ.all(dir)
-    rescue => error
+    rescue StandardError => error
       raise Mangdown::Error, "Failed to package #{dir}: #{error.message}"
     end
 
@@ -48,8 +48,8 @@ module M
     end
 
     # check if the data file is current
-    def file_current?(f)
-      File.exist?(f) && File.mtime(f) > (Time.now - 604_800)
+    def file_current?(file)
+      File.exist?(file) && File.mtime(file) > (Time.now - 604_800)
     end
 
     # attempt to get the list from the data file
@@ -69,7 +69,7 @@ module M
       end
       File.open(path, 'w+') { |f| f.write(list.to_yaml) }
       list
-    rescue => error
+    rescue StandardError => error
       raise Mangdown::Error, "#{path} may be corrupt: #{error.message}"
     end
   end

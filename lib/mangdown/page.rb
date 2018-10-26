@@ -20,14 +20,15 @@ module Mangdown
       self
     end
 
-    def to_path
-      @path ||= set_path
+    def path
+      @path ||= setup_path
     end
+    alias to_path path
 
     # Set path of page to file path if a file exists or to path
     # without file extension if file is not found. File extensions
     # are appended only after the file has been downloaded.
-    def set_path(dir = nil)
+    def setup_path(dir = nil)
       dir ||= File.join(manga, chapter)
       dir = Tools.valid_path_name(dir)
       file = Dir.entries(dir).find { |f| f[name] } if Dir.exist?(dir)
@@ -45,7 +46,7 @@ module Mangdown
 
       append_file_data(dir, image)
       append_file_ext(dir)
-    rescue => error
+    rescue StandardError => error
       logger.error({
         msg: 'Failed to download page',
         page: self,
@@ -61,7 +62,7 @@ module Mangdown
     end
 
     def append_file_ext(dir = nil)
-      set_path(dir) if dir
+      setup_path(dir) if dir
       path = to_path
       ext = Tools.image_extension(path)
       filename = "#{path}.#{ext}"
@@ -70,14 +71,14 @@ module Mangdown
     end
 
     def file_exist?(dir = nil)
-      set_path(dir) if dir
+      setup_path(dir) if dir
 
       Dir.entries(dir).any? { |file| file.to_s[to_path.basename.to_s] }
     end
 
     # cleanup existing file (all extensions)
     def delete_files!(dir)
-      File.delete(to_path) while set_path(dir) && File.exist?(to_path)
+      File.delete(to_path) while setup_path(dir) && File.exist?(to_path)
     end
   end
 end

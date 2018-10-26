@@ -1,5 +1,3 @@
-![Gitten badge](http://gittens.r15.railsrumble.com//badge/jphager2/mangdown)
-
 ## Adapters [New]
 Check out lib/mangdown/adapter.rb and lib/mangdown/adapters/mangareader.rb for examples of how to build an adapter.
 
@@ -21,7 +19,7 @@ require 'mangdown/client'
 # Search for an exact match
 results = M.find("Dragon Ball")
 
-# Or if you need more flexibilty when searching for a manga, 
+# Or if you need more flexibilty when searching for a manga,
 # use are Regex
 results = M.find(/dragon ball(\ssd)?$/i)
 
@@ -34,7 +32,7 @@ manga.count
 # Download everything
 manga.download
 
-# Download a specific range 
+# Download a specific range
 manga.download(0, 99)
 
 # Convert all downloaded chapters to CBZ

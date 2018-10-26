@@ -18,7 +18,7 @@ module Mangdown
         return super unless @adapter.respond_to?(method)
 
         adapter.public_send(method, *args, &block)
-      rescue => error
+      rescue StandardError => error
         logger.error(debug_error(method, error))
         raise Mangdown::Error, "Adapter failed: #{error.message}"
       end

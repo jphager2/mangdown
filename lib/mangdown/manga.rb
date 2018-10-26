@@ -43,7 +43,9 @@ module Mangdown
         elsif chapter_result[:skipped].any?
           skipped << chapter
         end
+
         next unless chapter_result[:failed].any?
+
         logger.error({
           msg: 'Chapter was not fully downloaded',
           uri: chapter.uri,
@@ -57,11 +59,12 @@ module Mangdown
       self
     end
 
-    def to_path
-      @path ||= set_path
+    def path
+      @path ||= setup_path
     end
+    alias to_path path
 
-    def set_path(dir = nil)
+    def setup_path(dir = nil)
       dir ||= DOWNLOAD_DIR
       path = File.join(dir, name)
       @path = Tools.relative_or_absolute_path(path)
@@ -86,7 +89,7 @@ module Mangdown
     end
 
     def setup_download_dir!(dir)
-      set_path(dir)
+      setup_path(dir)
       FileUtils.mkdir_p(to_path) unless Dir.exist?(to_path)
     end
 

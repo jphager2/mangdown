@@ -51,10 +51,10 @@ module Mangdown
       assert_equal "#{Mangdown::DOWNLOAD_DIR}/name", manga.to_path.to_s
     end
 
-    def test_set_path
+    def test_setup_path
       manga = Manga.new('uri', 'name')
 
-      manga.set_path(Dir.pwd)
+      manga.setup_path(Dir.pwd)
       assert_equal "#{Dir.pwd}/name", manga.to_path.to_s
     end
 
