@@ -39,7 +39,7 @@ module Mangdown
 
         return unless File.exist?(path)
 
-        mime = FileMagic.new(:mime).file(path)
+        mime = MimeMagic.by_magic(File.open(path, 'r'))
         mime_to_extension(mime)
       end
 
@@ -84,9 +84,9 @@ module Mangdown
       private
 
       def mime_to_extension(mime)
-        return unless mime.start_with?('image')
+        return unless mime.mediatype == 'image'
 
-        mime.split(';').first.split('/').last
+        mime.subtype
       end
     end
   end

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'addressable/uri'
+require 'mimemagic'
 require 'nokogiri'
 require 'yaml'
 require 'zip'
-require 'filemagic'
 
 require_relative 'mangdown/error'
 
