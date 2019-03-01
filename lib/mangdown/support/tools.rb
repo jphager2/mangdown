@@ -19,7 +19,7 @@ module Mangdown
 
         return response.body if response.success?
 
-        raise Mangdown::Error "Failed to GET: #{uri}"
+        raise Mangdown::Error, "Failed to GET: #{uri}"
       end
 
       def get_root(uri)
