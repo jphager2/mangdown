@@ -66,7 +66,7 @@ module Mangdown
     def page_list
       last_page = doc.css('select')[1].css('option').length
       (1..last_page).map do |page|
-        slug = manga_name.tr(' ', '-').gsub(/[:,!']/, '')
+        slug = manga_name.tr(' ', '-').gsub(/[:,!'&]/, '')
         uri = "#{root}/#{slug}/#{chapter_number}/#{page}"
         uri = Addressable::URI.escape(uri).downcase
         { uri: uri, name: page, site: site }
