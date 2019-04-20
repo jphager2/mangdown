@@ -92,23 +92,36 @@ module Mangdown
         name = chapter_manga_name
       end
 
-      CGI.unescapeHTML(name) if name
+      return unless name
+
+      name = name.gsub(%r{[/]}, '|')
+      CGI.unescapeHTML(name)
     end
 
     def chapter_name
-      if @name
-        @name.sub(/\s(\d+)$/) { |num| ' ' + num.to_i.to_s.rjust(5, '0') }
-      else
-        doc.css('').text # Not implimented
-      end
+      name = if @name
+               @name.sub(/\s(\d+)$/) { |num| ' ' + num.to_i.to_s.rjust(5, '0') }
+             else
+               doc.css('').text # Not implimented
+             end
+
+      return unless name
+
+      name = name.gsub(%r{[/]}, '|')
+      CGI.unescapeHTML(name)
     end
 
     def chapter_manga_name
-      if @name
-        @name.slice(/(^.+)\s/, 1)
-      else
-        doc.css('').text # Not implimented
-      end
+      name = if @name
+               @name.slice(/(^.+)\s/, 1)
+             else
+               doc.css('').text # Not implimented
+             end
+
+      return unless name
+
+      name = name.gsub(%r{[/]}, '|')
+      CGI.unescapeHTML(name)
     end
 
     def chapter_number
