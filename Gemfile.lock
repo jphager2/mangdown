@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mangdown (0.20.4)
+    mangdown (0.20.5)
       addressable
       mimemagic
       nokogiri (~> 1.8)

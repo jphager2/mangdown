@@ -1,3 +1,7 @@
+# v0.20.5
+
+  * Again ...
+
 # v0.20.4
 
   * Fix manga and chapter name path separator

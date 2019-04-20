@@ -94,7 +94,7 @@ module Mangdown
 
       return unless name
 
-      name = name.gsub(%r{[/]}, '|')
+      name = name.gsub(%r{[/]}, '-')
       CGI.unescapeHTML(name)
     end
 
@@ -107,7 +107,7 @@ module Mangdown
 
       return unless name
 
-      name = name.gsub(%r{[/]}, '|')
+      name = name.gsub(%r{[/]}, '-')
       CGI.unescapeHTML(name)
     end
 
@@ -120,7 +120,7 @@ module Mangdown
 
       return unless name
 
-      name = name.gsub(%r{[/]}, '|')
+      name = name.gsub(%r{[/]}, '-')
       CGI.unescapeHTML(name)
     end
 
