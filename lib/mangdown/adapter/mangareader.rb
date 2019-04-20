@@ -80,7 +80,7 @@ module Mangdown
         Regexp.last_match[1].to_s + Regexp.last_match[2].to_s.rjust(3, '0')
       end
 
-      { uri: uri, name: name, site: site }
+      { uri: uri, name: name.to_s.tr('/', ''), site: site }
     end
 
     private
