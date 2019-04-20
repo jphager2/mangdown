@@ -35,7 +35,7 @@ module Mangdown
     def manga_list
       doc.css('ul.series_alpha li a').map do |a|
         uri = "#{root}#{a[:href]}"
-        manga = { uri: uri, name: a.text.strip, site: site }
+        manga = { uri: uri, name: a.text.strip.tr('/', ''), site: site }
 
         manga if is_manga?(uri)
       end.compact
@@ -49,7 +49,7 @@ module Mangdown
     def chapter_list
       doc.css('div#chapterlist td a').map do |a|
         uri = root + a[:href].sub(root, '')
-        chapter = { uri: uri, name: a.text.strip, site: site }
+        chapter = { uri: uri, name: a.text.strip.tr('/', ''), site: site }
 
         chapter if is_chapter?(uri)
       end.compact
@@ -94,7 +94,7 @@ module Mangdown
 
       return unless name
 
-      name = name.gsub(%r{[/]}, '-')
+      name = name.gsub(%r{[/]}, '')
       CGI.unescapeHTML(name)
     end
 
@@ -107,7 +107,7 @@ module Mangdown
 
       return unless name
 
-      name = name.gsub(%r{[/]}, '-')
+      name = name.gsub(%r{[/]}, '')
       CGI.unescapeHTML(name)
     end
 
@@ -120,7 +120,7 @@ module Mangdown
 
       return unless name
 
-      name = name.gsub(%r{[/]}, '-')
+      name = name.gsub(%r{[/]}, '')
       CGI.unescapeHTML(name)
     end
 
