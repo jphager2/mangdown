@@ -3,17 +3,26 @@
 module Mangdown
   # Mangdown manga object, which holds chapters
   class Manga
+    extend Forwardable
+
     include Equality
     include Enumerable
     include Logging
 
-    attr_reader :uri, :chapters, :name
-    attr_accessor :adapter
+    attr_accessor :manga
 
-    def initialize(uri, name)
-      @name = name
-      @uri = Addressable::URI.escape(uri)
-      @chapters = []
+    def_delegators :manga, :url, :name
+
+    alias uri url
+
+    def initialize(manga)
+      @manga = manga
+    end
+
+    def chapters
+      @chapters ||= manga
+                    .chapters
+                    .map { |chapter| Mangdown.chapter(chapter) }
     end
 
     def cbz
@@ -24,7 +33,6 @@ module Mangdown
       download_to(nil, *args)
     end
 
-    # download using enumerable
     def download_to(dir, start = 0, stop = -1, opts = { force_download: false })
       start, stop = validate_indeces!(start, stop)
       setup_download_dir!(dir)
@@ -32,16 +40,15 @@ module Mangdown
       succeeded = []
       skipped = []
 
-      chapters[start..stop].each do |md_hash|
-        chapter = md_hash.to_chapter
+      chapters[start..stop].each do |chapter|
         chapter_result = chapter.download_to(to_path, opts)
 
         if chapter_result[:failed].any?
-          failed << chapter
+          failed << [chapter, chapter_result]
         elsif chapter_result[:succeeded].any?
-          succeeded << chapter
+          succeeded << [chapter, chapter_result]
         elsif chapter_result[:skipped].any?
-          skipped << chapter
+          skipped << [chapter, chapter_result]
         end
 
         next unless chapter_result[:failed].any?
@@ -52,11 +59,8 @@ module Mangdown
           chapter: chapter.name
         }.to_s)
       end
-      { failed: failed, succeeded: succeeded, skipped: skipped }
-    end
 
-    def to_manga
-      self
+      { failed: failed, succeeded: succeeded, skipped: skipped }
     end
 
     def path
@@ -68,17 +72,6 @@ module Mangdown
       dir ||= DOWNLOAD_DIR
       path = File.join(dir, name)
       @path = Tools.relative_or_absolute_path(path)
-    end
-
-    def each(&block)
-      @chapters.each(&block)
-    end
-
-    def load_chapters
-      @chapters += adapter.chapter_list.map do |chapter|
-        chapter[:manga] = name
-        MDHash.new(chapter)
-      end
     end
 
     private

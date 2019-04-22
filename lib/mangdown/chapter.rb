@@ -3,26 +3,31 @@
 module Mangdown
   # Mangdown chapter object, which holds pages
   class Chapter
+    extend Forwardable
+
     include Equality
     include Enumerable
 
-    attr_reader :uri, :pages, :name, :manga, :chapter
-    attr_accessor :adapter
+    attr_reader :chapter
 
-    def initialize(uri, name, manga, chapter = nil)
-      @name = name
-      @manga = manga
+    def_delegators :chapter, :url, :name
+
+    alias uri url
+
+    def initialize(chapter)
       @chapter = chapter
-      @uri = Addressable::URI.escape(uri)
-      @pages = []
+    end
+
+    def pages
+      @pages ||= chapter.pages.map { |page| Mangdown.page(page) }
+    end
+
+    def manga
+      @manga ||= Mangdown.manga(chapter.manga)
     end
 
     def each(&block)
-      @pages.each(&block)
-    end
-
-    def to_chapter
-      self
+      pages.each(&block)
     end
 
     def path
@@ -31,7 +36,7 @@ module Mangdown
     alias to_path path
 
     def setup_path(dir = nil)
-      dir ||= File.join(DOWNLOAD_DIR, manga)
+      dir ||= manga.path
       path = File.join(dir, name)
       path = Tools.valid_path_name(path)
       @path = Tools.relative_or_absolute_path(path)
@@ -42,7 +47,6 @@ module Mangdown
     end
 
     def download_to(dir = nil, opts = { force_download: false })
-      pages = map(&:to_page)
       failed = []
       succeeded = []
       skipped = []
@@ -53,10 +57,13 @@ module Mangdown
         setup_download_dir!(dir)
       end
 
-      Tools.hydra_streaming(pages, adapter.hydra_opts) do |stage, page, data = nil|
+      Tools.hydra_streaming(
+        pages,
+        chapter.hydra_opts
+      ) do |stage, page, data = nil|
         case stage
         when :failed
-          failed << page
+          failed << [page, data]
         when :succeeded
           succeeded << page
         when :before
@@ -73,51 +80,11 @@ module Mangdown
       { failed: failed, succeeded: succeeded, skipped: skipped }
     end
 
-    def load_pages
-      return @pages if @pages.any?
-
-      fetch_each_page { |page| @pages << page }
-      @pages.sort_by!(&:name)
-    end
-
     private
 
     def setup_download_dir!(dir)
       setup_path(dir)
       FileUtils.mkdir_p(to_path) unless Dir.exist?(to_path)
-    end
-
-    def fetch_each_page
-      pages = build_page_hashes
-      page_data = Hash.new { |h, k| h[k] = +'' }
-      Tools.hydra_streaming(pages, adapter.hydra_opts) do |status, page, data = nil|
-        case status
-        when :before
-          true
-        when :body
-          page_data[page] << data
-        when :complete
-          page = get_page(page.uri, Nokogiri::HTML(page_data[page]))
-          yield(page)
-        end
-      end
-    end
-
-    def build_page_hashes
-      adapter.page_list.map do |page|
-        page[:chapter] = name
-        page[:manga] = manga
-        MDHash.new(page)
-      end
-    end
-
-    def get_page(uri, doc)
-      adapter = Mangdown.adapter!(uri, nil, doc)
-      page = adapter.page
-      page[:chapter] = name
-      page[:manga] = manga
-
-      MDHash.new(page)
     end
   end
 end

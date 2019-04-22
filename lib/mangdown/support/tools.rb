@@ -56,7 +56,7 @@ module Mangdown
           request = typhoeus(obj.uri)
           request.on_headers do |response|
             status = response.success? ? :succeeded : :failed
-            yield(status, obj)
+            yield(status, obj, response)
           end
           request.on_body do |chunk|
             yield(:body, obj, chunk)

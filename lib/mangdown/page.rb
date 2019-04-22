@@ -3,21 +3,23 @@
 module Mangdown
   # Mangdown page
   class Page
+    extend Forwardable
+
     include Equality
     include Logging
 
-    attr_reader :uri, :name, :manga, :chapter
+    attr_reader :page
 
-    def initialize(uri, name, manga, chapter)
-      @name = Tools.valid_path_name(name)
-      @chapter = chapter
-      @manga = manga
-      @uri = Addressable::URI.escape(uri)
+    def_delegators :page, :url, :name
+
+    alias uri url
+
+    def initialize(page)
+      @page = page
     end
 
-    # explicit conversion to page
-    def to_page
-      self
+    def chapter
+      @chapter ||= Mangdown.chapter(page.chapter)
     end
 
     def path
@@ -29,7 +31,7 @@ module Mangdown
     # without file extension if file is not found. File extensions
     # are appended only after the file has been downloaded.
     def setup_path(dir = nil)
-      dir ||= File.join(manga, chapter)
+      dir ||= chapter.path
       dir = Tools.valid_path_name(dir)
       file = Dir.entries(dir).find { |f| f[name] } if Dir.exist?(dir)
       path = File.join(dir, file || name)

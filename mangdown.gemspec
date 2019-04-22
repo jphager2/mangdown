@@ -22,7 +22,10 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'mimemagic'
   s.add_runtime_dependency 'nokogiri', '~> 1.8'
   s.add_runtime_dependency 'rubyzip',      '~> 1.1'
-  s.add_runtime_dependency 'typhoeus',     '~> 0.7'
+  s.add_runtime_dependency 'scrapework'
+  s.add_runtime_dependency 'sequel'
+  s.add_runtime_dependency 'sqlite3'
+  s.add_runtime_dependency 'typhoeus',     '~> 1.3'
 
   s.add_development_dependency 'minitest', '~> 5.0'
   s.add_development_dependency 'rake'
