@@ -11,7 +11,8 @@ module Mangdown
 
     # return a list of hash with :uri and :name of mangas found in list
     def find(search)
-      Mangdown::DB::Manga.where('name ILIKE ?', "%#{search}%").map do |manga|
+      filter = Sequel.lit('LOWER(name) LIKE ?', "%#{search.downcase}%")
+      Mangdown::DB::Manga.where(filter).map do |manga|
         Mangdown.manga(manga.url)
       end
     end
@@ -27,9 +28,9 @@ module Mangdown
     def index_manga
       count_before = Mangdown::DB::Manga.count
 
-      Mangdown.adapters.each do |_name, adapters|
+      Mangdown.adapters.each do |name, adapters|
         adapters.manga_list.each do |manga|
-          Mangdown::DB::Manga.find_or_create(
+          manga = Mangdown::DB::Manga.find_or_create(
             adapter: name,
             url: manga.url,
             name: manga.name
