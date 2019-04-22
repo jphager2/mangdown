@@ -26,6 +26,14 @@ module Mangdown
       Manga.load(url)
     end
 
+    def chapter(url)
+      Chapter.load(url)
+    end
+
+    def page(url)
+      Page.load(url)
+    end
+
     # A manga list web page
     class MangaList < Scrapework::Object
       has_many :manga, class: 'Mangdown::MangaBat::Manga'
@@ -94,22 +102,24 @@ module Mangdown
       has_many :pages, class: 'Mangdown::MangaBat::Page'
 
       map :name do |html|
-        html.css('h1.entity-title').text.strip
+        html.at_css('h1.entity-title').text.strip
       end
 
       map :manga do |html|
-        manga = html.css('.breadcrumbs_doc p span:nth-child(3) a').first
+        manga = html.at_css('.breadcrumbs_doc p span:nth-child(3) a')
+
         { url: manga['href'], name: manga.text.strip }
       end
 
       map :pages do |html|
         html.css('.vung_doc img').map.with_index do |page, i|
+          i += 1
           url = page['src']
           padded_number = i.to_s.rjust(3, '0')
           padded_chapter = number.to_s.rjust(3, '0')
           name = "#{manga.name} #{padded_chapter}-#{padded_number}"
 
-          { url: url, name: name, number: i + 1 }
+          { url: url, name: name, number: i }
         end
       end
 

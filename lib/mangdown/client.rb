@@ -28,7 +28,7 @@ module Mangdown
       count_before = Mangdown::DB::Manga.count
 
       Mangdown.adapters.each do |_name, adapters|
-        adapters.manga_list.to_enum.lazy.first(300).each do |manga|
+        adapters.manga_list.each do |manga|
           Mangdown::DB::Manga.find_or_create(
             adapter: name,
             url: manga.url,

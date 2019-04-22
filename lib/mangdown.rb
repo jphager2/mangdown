@@ -19,7 +19,7 @@ require_relative 'mangdown/manga'
 
 require_relative 'mangdown/adapter/no_adapter_error'
 require_relative 'mangdown/adapter/not_implemented_error'
-# require_relative 'mangdown/adapter/mangareader'
+require_relative 'mangdown/adapter/mangareader'
 require_relative 'mangdown/adapter/manga_bat'
 
 # Find, download and package manga from the web
@@ -94,6 +94,6 @@ module Mangdown
   end
   private_class_method :debug_error
 
-  # register_adapter :mangareader, Mangdown::Mangareader.new
+  register_adapter :mangareader, Mangdown::Mangareader.new
   register_adapter :manga_bat, Mangdown::MangaBat.new
 end
