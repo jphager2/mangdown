@@ -33,8 +33,9 @@ module Mangdown
     def setup_path(dir = nil)
       dir ||= chapter.path
       dir = Tools.valid_path_name(dir)
+      name = self.name.tr('/', '')
       file = Dir.entries(dir).find { |f| f[name] } if Dir.exist?(dir)
-      path = File.join(dir, file || name)
+      path = Tools.file_join(dir, file || name)
       @path = Tools.relative_or_absolute_path(path)
     end
 

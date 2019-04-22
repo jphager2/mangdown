@@ -31,6 +31,12 @@ module Mangdown
         Pathname.new(Dir.pwd).join(*sub_paths)
       end
 
+      def file_join(safe_path, *unsafe_parts)
+        now_safe_parts = unsafe_parts.map { |part| part.tr('/', '') }
+
+        File.join(safe_path, *now_safe_parts)
+      end
+
       def valid_path_name(name)
         name.to_s.sub(/(\d+)(\.\w+)*\Z/) do
           digits, ext = Regexp.last_match[1..2]

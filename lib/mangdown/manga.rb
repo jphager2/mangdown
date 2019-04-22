@@ -70,7 +70,7 @@ module Mangdown
 
     def setup_path(dir = nil)
       dir ||= DOWNLOAD_DIR
-      path = File.join(dir, name)
+      path = Tools.file_join(dir, name)
       @path = Tools.relative_or_absolute_path(path)
     end
 

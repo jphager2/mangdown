@@ -107,7 +107,15 @@ module Mangdown
       end
 
       def pages
-        page_views.map(&:page)
+        return @pages if defined?(@pages)
+
+        threads = []
+        page_views.each do |page_view|
+          threads << Thread.new(page_view, &:page)
+        end
+        threads.each(&:join)
+
+        @pages = page_views.map(&:page)
       end
     end
 
@@ -118,6 +126,8 @@ module Mangdown
 
       belongs_to :chapter, class: 'Mangdown::Mangareader::Chapter'
       has_one :page, class: 'Mangdown::Mangareader::Page'
+
+      alias uri url
 
       map :chapter do |html|
         name = html.at_css('.mangainfo h1').text.strip

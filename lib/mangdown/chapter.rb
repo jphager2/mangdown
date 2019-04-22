@@ -37,7 +37,7 @@ module Mangdown
 
     def setup_path(dir = nil)
       dir ||= manga.path
-      path = File.join(dir, name)
+      path = Tools.file_join(dir, name)
       path = Tools.valid_path_name(path)
       @path = Tools.relative_or_absolute_path(path)
     end
