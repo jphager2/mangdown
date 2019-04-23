@@ -63,7 +63,7 @@ GEM
     ruby-progressbar (1.10.0)
     rubyzip (1.2.2)
     safe_yaml (1.0.4)
-    scrapework (0.1.1)
+    scrapework (0.1.2)
       active_attr
       activesupport
       nokogiri
