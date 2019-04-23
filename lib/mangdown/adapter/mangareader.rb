@@ -78,7 +78,12 @@ module Mangdown
       has_many :page_views, class: 'Mangdown::Mangareader::PageView'
 
       map :name do |html|
-        html.at_css('#mangainfo h1').text.strip
+        name = html.at_css('#mangainfo h1').text.strip
+        name.sub(/(\d+)$/) { Regexp.last_match[1].rjust(5, '0') }
+      end
+
+      map :number do |html|
+        _mapped_name.slice(/(\d+)$/, 1)
       end
 
       map :manga do |html|
@@ -95,7 +100,7 @@ module Mangdown
           i += 1
           uri = "#{ROOT}#{op['value']}"
           padded_number = i.to_s.rjust(3, '0')
-          padded_chapter = number.to_s.rjust(3, '0')
+          padded_chapter = number.to_s.rjust(5, '0')
           name = "#{manga.name} #{padded_chapter}-#{padded_number}"
 
           { url: uri, name: name, number: i }

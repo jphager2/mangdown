@@ -7,12 +7,17 @@ require_relative 'db'
 module Mangdown
   # Simple client for Mangdown
   module Client
+    class <<self
+      include Logging
+    end
+
     module_function
 
     # return a list of hash with :uri and :name of mangas found in list
     def find(search)
       filter = Sequel.lit('LOWER(name) LIKE ?', "%#{search.downcase}%")
-      Mangdown::DB::Manga.where(filter).map do |manga|
+      order = Sequel[:name]
+      Mangdown::DB::Manga.where(filter).order(order).map do |manga|
         Mangdown.manga(manga.url)
       end
     end
@@ -41,7 +46,7 @@ module Mangdown
 
       count_after = Mangdown::DB::Manga.count
 
-      puts "#{count_after} manga, #{count_after - count_before} new"
+      logger.info("#{count_after} manga, #{count_after - count_before} new")
     end
     # rubocop:enable Metrics/MethodLength
   end

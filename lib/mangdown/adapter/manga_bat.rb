@@ -89,7 +89,7 @@ module Mangdown
       map :chapters do |html|
         html.css('.chapter-list .row a').reverse.map.with_index do |chapter, i|
           i += 1
-          padded_number = i.to_s.rjust(3, '0')
+          padded_number = i.to_s.rjust(5, '0')
           chapter_name = "#{name} #{padded_number}"
 
           { url: chapter['href'], name: chapter_name, number: i }
@@ -106,7 +106,12 @@ module Mangdown
       has_many :pages, class: 'Mangdown::MangaBat::Page'
 
       map :name do |html|
-        html.at_css('h1.entity-title').text.strip
+        name = html.at_css('h1.entry-title').text.strip
+        name.sub(/Chapter (\d+)/) { Regexp.last_match[1].rjust(5, '0') }
+      end
+
+      map :number do
+        _mapped_name.slice(/Chapter (\d+)/, 1)
       end
 
       map :manga do |html|
@@ -120,7 +125,7 @@ module Mangdown
           i += 1
           url = page['src']
           padded_number = i.to_s.rjust(3, '0')
-          padded_chapter = number.to_s.rjust(3, '0')
+          padded_chapter = number.to_s.rjust(5, '0')
           name = "#{manga.name} #{padded_chapter}-#{padded_number}"
 
           { url: url, name: name, number: i }
