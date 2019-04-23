@@ -39,7 +39,7 @@ module Mangdown
       @path = Tools.relative_or_absolute_path(path)
     end
 
-    # downloads to specified directory
+    # rubocop:disable Metrics/MethodLength
     def download_to(dir = Dir.pwd, opts = { force_download: false })
       delete_files!(dir) if opts[:force_download]
 
@@ -59,6 +59,7 @@ module Mangdown
         backtrace: error.backtrace
       }.to_s)
     end
+    # rubocop:enable Metrics/MethodLength
 
     def append_file_data(_dir, data)
       File.open(to_path, 'ab') { |file| file.write(data) }

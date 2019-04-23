@@ -41,6 +41,10 @@ module Mangdown
       CBZ.one(dir)
     end
 
+    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/PerceivedComplexity
     def download_to(dir = nil, opts = { force_download: false })
       failed = []
       succeeded = []
@@ -74,6 +78,10 @@ module Mangdown
 
       { failed: failed, succeeded: succeeded, skipped: skipped }
     end
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/PerceivedComplexity
 
     private
 

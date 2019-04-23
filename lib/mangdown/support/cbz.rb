@@ -29,10 +29,9 @@ module Mangdown
 
         ::Zip::File.open(zip_filename, ::Zip::File::CREATE) do |zip|
           file_matcher = File.join(dir, '**', '**')
-          dir << '/'
 
           Dir.glob(file_matcher).each do |file|
-            filename = file.sub(dir, '')
+            filename = file.sub("#{dir}/", '')
             zip.add(filename, file)
           end
         end

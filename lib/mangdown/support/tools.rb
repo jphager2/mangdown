@@ -9,6 +9,14 @@ module Mangdown
   # Common helpers
   module Tools
     class << self
+      # rubocop:disable Metrics/LineLength
+      TYPHOEUS_OPTIONS = {
+        headers: {
+          'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
+        }
+      }.freeze
+      # rubocop:enable Metrics/LineLength
+
       def get_doc(uri)
         data = get(uri)
         @doc = Nokogiri::HTML(data)
@@ -53,6 +61,7 @@ module Mangdown
         mime_to_extension(mime)
       end
 
+      # rubocop:disable Metrics/MethodLength
       def hydra_streaming(objects, hydra_opts = {})
         hydra = Typhoeus::Hydra.new(hydra_opts)
 
@@ -78,17 +87,10 @@ module Mangdown
         hydra.run
         requests
       end
+      # rubocop:enable Metrics/MethodLength
 
       def typhoeus(uri)
-        Typhoeus::Request.new(uri, typhoeus_options)
-      end
-
-      def typhoeus_options
-        {
-          headers: {
-            'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
-          }
-        }
+        Typhoeus::Request.new(uri, TYPHOEUS_OPTIONS)
       end
 
       private

@@ -56,13 +56,10 @@ module Mangdown
     end
   end
 
-  def self.with_adapter(uri_or_instance, instance_constructor)
-    instance = uri_or_instance
-
-    if uri_or_instance.is_a?(String)
-      uri = uri_or_instance
-      adapter = adapter(uri)
-      instance = adapter.public_send(instance_constructor, uri)
+  def self.with_adapter(instance, instance_constructor)
+    if instance.is_a?(String)
+      adapter = adapter(instance)
+      instance = adapter.public_send(instance_constructor, instance)
     end
     yield(instance)
   rescue Adapter::NoAdapterError

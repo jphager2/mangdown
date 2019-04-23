@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Naming/MemoizedInstanceVariableName
 class TestAdapter
   def for?(_url)
     true
@@ -61,3 +62,4 @@ class TestAdapter
     attr_accessor :name
   end
 end
+# rubocop:enable Naming/MemoizedInstanceVariableName

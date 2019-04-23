@@ -44,6 +44,8 @@ module Mangdown
       assert_equal Dir.pwd + '/relative/path/from/here', relative_path.to_s
     end
 
+    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
     def test_valid_path_name
       assert_equal 'Name 00001.ext', Tools.valid_path_name('Name 001.ext')
       assert_equal 'Name 00001', Tools.valid_path_name('Name 001')
@@ -59,6 +61,8 @@ module Mangdown
         '/path/to/Name 00001', Tools.valid_path_name('/path/to/Name 001')
       )
     end
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
 
     def test_file_type
       image_dir = Pathname.new(
@@ -70,8 +74,11 @@ module Mangdown
       assert_equal 'gif', Tools.image_extension(image_dir.join('naruto.gif'))
     end
 
+    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/CyclomaticComplexity
     def test_hydra_streaming
-      objects = 3.times.map do |i|
+      objects = Array.new(3) do |i|
         url = "http://www.anything-#{i}.com/"
         stub_request(:get, url).to_return(
           body: "<html><body>Body-#{i}</body>"
@@ -93,6 +100,7 @@ module Mangdown
           return true unless objects.index(object) == 1
         when :succeeded
           # Do nothing
+          nil
         when :failed
           fails << object
         when :complete
@@ -107,5 +115,8 @@ module Mangdown
       refute_includes complete, objects.delete(1)
       assert_equal objects, complete
     end
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/CyclomaticComplexity
   end
 end

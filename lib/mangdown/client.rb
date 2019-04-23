@@ -24,6 +24,7 @@ module Mangdown
       raise Mangdown::Error, "Failed to package #{dir}: #{error.message}"
     end
 
+    # rubocop:disable Metrics/MethodLength
     # load manga into sqlite db
     def index_manga
       count_before = Mangdown::DB::Manga.count
@@ -42,5 +43,6 @@ module Mangdown
 
       puts "#{count_after} manga, #{count_after - count_before} new"
     end
+    # rubocop:enable Metrics/MethodLength
   end
 end

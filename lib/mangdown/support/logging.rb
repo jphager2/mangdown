@@ -2,6 +2,7 @@
 
 require 'logger'
 
+# Find, download and package manga from the web
 module Mangdown
   # Configure and access the Mangdown logger
   module Logging

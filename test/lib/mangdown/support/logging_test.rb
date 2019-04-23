@@ -32,6 +32,7 @@ module Mangdown
       Mangdown.configure_logger(file: STDOUT)
     end
 
+    # rubocop:disable Metrics/AbcSize
     def test_logger
       @instance.log('hello world', :debug)
       @instance.log('hello world', :fatal)
@@ -41,6 +42,7 @@ module Mangdown
       assert_equal 1, @io.string.scan(/FATAL/).length
       assert_equal 2, @io.string.scan(/hello world/).length
     end
+    # rubocop:enable Metrics/AbcSize
 
     def test_configure_logger
       assert_equal @io, @instance.device

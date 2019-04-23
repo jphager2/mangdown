@@ -32,6 +32,8 @@ module Mangdown
       download_to(nil, *args)
     end
 
+    # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
     def download_to(dir, start = 0, stop = -1, opts = { force_download: false })
       start, stop = validate_indeces!(start, stop)
       setup_download_dir!(dir)
@@ -61,6 +63,8 @@ module Mangdown
 
       { failed: failed, succeeded: succeeded, skipped: skipped }
     end
+    # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
 
     def path
       @path ||= setup_path
