@@ -1,44 +1,55 @@
 require 'test_helper'
 
 class MangdownTest < Minitest::Test
-
-  def doc
-    Nokogiri::HTML("<html></html>")
+  def setup
+    register_test_adapter
   end
 
   def test_register_adapter
     adapters_before = Mangdown.adapters.length
 
-    bogus = Class.new(Mangdown::Adapter::Base)
+    bogus = Object.new
 
     Mangdown.register_adapter(:bogus_adapter, bogus)
 
-    assert Mangdown.adapters.length == adapters_before + 1
-
+    assert_equal adapters_before + 1, Mangdown.adapters.length
+  ensure
     Mangdown.adapters.delete(:bogus_adapter)
   end
 
-  def test_adapter
-    assert_equal TestAdapter, Mangdown.adapter(:test)
-    assert_equal TestAdapter, Mangdown.adapter(:test)
+  def test_manga_with_url
+    Mangdown.manga('uri')
+
+    assert_equal 1, test_adapter.manga_called
   end
 
-  def test_adapter!
-    assert_instance_of Mangdown::Adapter::Proxy, Mangdown.adapter!("test")
+  def test_chapter_with_url
+    Mangdown.chapter('uri')
 
-    assert_instance_of TestAdapter, Mangdown.adapter!("test").adapter
-    assert_instance_of TestAdapter, Mangdown.adapter!(nil, "test").adapter
-    assert_instance_of TestAdapter, Mangdown.adapter!(
-      "test", nil, doc, "test"
-    ).adapter
+    assert_equal 1, test_adapter.chapter_called
+  end
 
-    adapters = Mangdown.adapters.dup
-    Mangdown.adapters.clear
+  def test_page_with_url
+    Mangdown.page('uri')
 
-    assert_raises(Mangdown::Adapter::NoAdapterError) { 
-      Mangdown.adapter!(nil) 
-    }
+    assert_equal 1, test_adapter.page_called
+  end
 
-    Mangdown.adapters.merge!(adapters)
+  def test_manga_with_instance
+    Mangdown.manga(TestAdapter::Manga.new)
+
+    assert_nil test_adapter.manga_called
+  end
+
+  def test_chapter_with_instance
+    Mangdown.chapter(TestAdapter::Chapter.new)
+
+    assert_nil test_adapter.chapter_called
+  end
+
+  def test_page_with_instance
+    Mangdown.page(TestAdapter::Page.new)
+
+    assert_nil test_adapter.page_called
   end
 end

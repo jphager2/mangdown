@@ -6,7 +6,6 @@ module Mangdown
     extend Forwardable
 
     include Equality
-    include Enumerable
     include Logging
 
     attr_accessor :manga

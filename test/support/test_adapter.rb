@@ -1,105 +1,61 @@
-class TestAdapter < Mangdown::Adapter::Base
-
-  site :test
-
-  def self.for?(url_or_site)
+class TestAdapter
+  def for?(url)
     true
   end
 
-  # Overwrite if you want to check the uri if it belongs to a manga list
-  def is_manga_list?(uri = @uri)
-    true
-  end
-
-  # Must return true/false if uri represents a manga for adapter
-  def is_manga?(uri = @uri)
-    true
-  end
-
-  # Must return true/false if uri represents a chapter for adapter
-  def is_chapter?(uri = @uri)
-    true
-  end
-
-  # Must return true/false if uri represents a page for adapter
-  def is_page?(uri = @uri)
-    true
-  end
-
-  # Return Array of Hash with keys: :uri, :name, :site
   def manga_list
-    [ 
-      { uri: "http://www.manga.com/naruto", name: "Naruto", site: site },
-      { uri: "http://www.manga.com/bleach", name: "Bleach", site: site },
-      { uri: "http://www.manga.com/one-piece", name: "One Piece", site: site }
-    ]
+    MangaList.new
   end
 
-  # Return Hash with keys: :uri, :name, :site
-  def manga
-    { uri: "http://www.manga.com/naruto", name: "Naruto", site: site }
-  end
+  def manga(url)
+    @manga_called ||= 0
+    @manga_called += 1
 
-  # Return Array of Hash with keys: :uri, :name, :site
-  def chapter_list
-    [ 
-      { uri: "http://www.manga.com/naruto/1", name: "Naruto", site: site },
-      { uri: "http://www.manga.com/naruto/2", name: "Naruto", site: site },
-      { uri: "http://www.manga.com/naruto/3", name: "Naruto", site: site },
-      { uri: "http://www.manga.com/naruto/4", name: "Naruto", site: site },
-      { uri: "http://www.manga.com/naruto/5", name: "Naruto", site: site }
-    ]
+    @manga_stub ||= Manga.load(url)
   end
+  attr_reader :manga_called, :manga_stub
 
-  # Return Hash with keys: :uri, :name, :chapter, :manga, :site
-  def chapter
-    { uri: "http://www.manga.com/naruto/2",
-      name: "Naruto - Chapter 2",
-      chapter: 2,
-      manga: "Naruto",
-      site: site
-    }
+  def chapter(url)
+    @chapter_called ||= 0
+    @chapter_called += 1
+
+    @chapter_stub ||= Chapter.load(url)
   end
+  attr_reader :chapter_called, :chapter_stub
 
-  # Return Array of Hash with keys: :uri, :name, :site
-  def page_list
-    [ 
-      {
-        uri: "http://www.manga.com/naruto/2/page/1",
-        name: "Naruto - Chapter 2 - page 1",
-        site: site
-      },
-      {
-        uri: "http://www.manga.com/naruto/2/page/2",
-        name: "Naruto - Chapter 2 - page 2",
-        site: site
-      },
-      {
-        uri: "http://www.manga.com/naruto/2/page/3",
-        name: "Naruto - Chapter 2 - page 3",
-        site: site
-      },
-      {
-        uri: "http://www.manga.com/naruto/2/page/4",
-        name: "Naruto - Chapter 2 - page 4",
-        site: site
-      },
-      {
-        uri: "http://www.manga.com/naruto/2/page/5",
-        name: "Naruto - Chapter 2 - page 5",
-        site: site
-      }
-    ]
+  def page(url)
+    @page_called ||= 0
+    @page_called += 1
+
+    @page_stub ||= Page.load(url)
   end
+  attr_reader :page_called, :page_stub
 
-  # Return Hash with keys: :uri, :name, :site
-  def page
-    path = File.expand_path("../fixtures/images/naruto.jpg", __FILE__)
-    { uri: path, name: "Naruto - Chapter 2 - page 2", site: site }
+  class Manga < Scrapework::Object
+    attr_accessor :name
+
+    def chapters
+      @chapters_called ||= 0
+      @chapters_called += 1
+
+      @chapters_stub ||= []
+    end
+    attr_reader :chapters_called, :chapters_stub
   end
+  class Chapter < Scrapework::Object
+    attr_accessor :name
+    attr_accessor :manga
+    attr_accessor :number
 
-  def doc
-    @doc
+    def pages
+      @pages_called ||= 0
+      @pages_called += 1
+
+      @pages_stub ||= []
+    end
+    attr_reader :pages_called, :pages_stub
+  end
+  class Page < Scrapework::Object
+    attr_accessor :name
   end
 end
-

@@ -6,11 +6,10 @@ module Mangdown
     extend Forwardable
 
     include Equality
-    include Enumerable
 
     attr_reader :chapter
 
-    def_delegators :chapter, :url, :name
+    def_delegators :chapter, :url, :name, :number
 
     alias uri url
 
@@ -24,10 +23,6 @@ module Mangdown
 
     def manga
       @manga ||= Mangdown.manga(chapter.manga)
-    end
-
-    def each(&block)
-      pages.each(&block)
     end
 
     def path
