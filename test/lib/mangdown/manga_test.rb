@@ -8,6 +8,7 @@ module Mangdown
     attr_reader :adapter, :manga
 
     def setup
+      register_test_adapter
       @adapter = TestAdapter::Manga.new(url: 'uri', name: 'name')
       @manga = Manga.new(adapter)
     end

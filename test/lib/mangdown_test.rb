@@ -38,19 +38,19 @@ class MangdownTest < Minitest::Test
   end
 
   def test_manga_with_instance
-    Mangdown.manga(TestAdapter::Manga.new)
+    Mangdown.manga(TestAdapter::Manga.new(url: 'url'))
 
     assert_nil test_adapter.manga_called
   end
 
   def test_chapter_with_instance
-    Mangdown.chapter(TestAdapter::Chapter.new)
+    Mangdown.chapter(TestAdapter::Chapter.new(url: 'url'))
 
     assert_nil test_adapter.chapter_called
   end
 
   def test_page_with_instance
-    Mangdown.page(TestAdapter::Page.new)
+    Mangdown.page(TestAdapter::Page.new(url: 'url'))
 
     assert_nil test_adapter.page_called
   end

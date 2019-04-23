@@ -56,6 +56,8 @@ module Mangdown
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def self.with_adapter(instance, instance_constructor)
     if instance.is_a?(String)
       adapter = adapter(instance)
@@ -69,10 +71,12 @@ module Mangdown
   rescue Adapter::NoAdapterError
     raise
   rescue StandardError => error
-    logger.error(debug_error(error, adapter, uri))
+    logger.error(debug_error(error, adapter, instance))
     raise Mangdown::Error, "Adapter failed: #{error.message}"
   end
   private_class_method :with_adapter
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   def self.adapter(uri)
     adapter = adapters.values.find { |a| a.for?(uri) }
@@ -83,11 +87,11 @@ module Mangdown
   end
   private_class_method :adapter
 
-  def self.debug_error(error, adapter, uri)
+  def self.debug_error(error, adapter, instance)
     {
       msg: 'Adapter method failed',
       adapter: adapter.class,
-      uri: uri,
+      instance: instance,
       error: error,
       error_msg: error.message,
       backtrace: error.backtrace

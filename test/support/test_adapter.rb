@@ -35,7 +35,7 @@ class TestAdapter
   attr_reader :page_called, :page_stub
 
   class Manga < Scrapework::Object
-    attr_accessor :name
+    attribute :name
 
     def chapters
       @chapters_called ||= 0
@@ -44,11 +44,18 @@ class TestAdapter
       @chapters_stub ||= []
     end
     attr_reader :chapters_called, :chapters_stub
+
+    map(:name) {}
+
+    def html
+      ''
+    end
   end
   class Chapter < Scrapework::Object
-    attr_accessor :name
+    attribute :name
+    attribute :number
+
     attr_accessor :manga
-    attr_accessor :number
 
     def pages
       @pages_called ||= 0
@@ -57,9 +64,22 @@ class TestAdapter
       @pages_stub ||= []
     end
     attr_reader :pages_called, :pages_stub
+
+    map(:name) {}
+    map(:number) {}
+
+    def html
+      ''
+    end
   end
   class Page < Scrapework::Object
-    attr_accessor :name
+    attribute :name
+
+    map(:name) {}
+
+    def html
+      ''
+    end
   end
 end
 # rubocop:enable Naming/MemoizedInstanceVariableName

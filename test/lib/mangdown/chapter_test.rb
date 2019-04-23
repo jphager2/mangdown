@@ -7,6 +7,7 @@ module Mangdown
   class ChapterTest < Minitest::Test
     attr_reader :adapter, :chapter
     def setup
+      register_test_adapter
       @adapter = TestAdapter::Chapter.new(url: 'uri', name: 'name', number: 1)
       @adapter.manga = TestAdapter::Manga.new(url: 'url', name: 'manga')
       @chapter = Chapter.new(adapter)
@@ -28,6 +29,7 @@ module Mangdown
     end
 
     def test_to_path
+      assert_equal(chapter.manga.name, 'manga')
       assert_equal(
         "#{Mangdown::DOWNLOAD_DIR}/manga/name", chapter.to_path.to_s
       )
