@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'stringio'
 require 'test_helper'
 
@@ -41,4 +43,3 @@ module Mangdown
     end
   end
 end
-

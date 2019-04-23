@@ -7,9 +7,7 @@ require 'mangdown'
 
 require_relative 'support/test_adapter'
 
-def test_adapter
-  @test_adapter
-end
+attr_reader :test_adapter
 
 def register_test_adapter
   @test_adapter = TestAdapter.new
@@ -20,8 +18,8 @@ end
 def with_stubbed_cbz
   Mangdown::CBZ.class_eval do
     class << self
-      alias old_all all
-      alias old_one one
+      alias_method :old_all, :all
+      alias_method :old_one, :one
 
       def all(path)
         ['cbz_called', path]
@@ -36,8 +34,8 @@ def with_stubbed_cbz
 ensure
   Mangdown::CBZ.class_eval do
     class << self
-      alias all old_all
-      alias one old_one
+      alias_method :all, :old_all
+      alias_method :one, :old_one
     end
   end
 end

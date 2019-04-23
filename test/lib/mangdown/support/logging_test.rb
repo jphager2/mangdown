@@ -1,10 +1,11 @@
+# frozen_string_literal: true
+
 require 'stringio'
 require 'test_helper'
 
 module Mangdown
   class LoggingTest < Minitest::Test
-
-    class LoggingEnabled 
+    class LoggingEnabled
       include Logging
 
       def log(message, level)

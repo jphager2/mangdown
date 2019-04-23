@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class TestAdapter
-  def for?(url)
+  def for?(_url)
     true
   end
 

@@ -40,7 +40,7 @@ module Mangdown
     end
 
     # downloads to specified directory
-    def download_to(dir = Dir.pwd, force_download: false)
+    def download_to(dir = Dir.pwd, opts = { force_download: false })
       delete_files!(dir) if opts[:force_download]
 
       return if file_exist?(dir)

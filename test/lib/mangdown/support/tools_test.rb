@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_helper'
 require 'webmock/minitest'
 
@@ -25,15 +27,15 @@ module Mangdown
       url_with_path = 'http://www.anything.com/path/to/something'
       url_with_slash = 'http://www.anything.com/'
       url = 'http://www.anything.com'
-      
+
       assert_equal url, Tools.get_root(url)
       assert_equal url, Tools.get_root(url_with_slash)
       assert_equal url, Tools.get_root(url_with_path)
     end
 
     def test_relative_or_absolute_path
-      absolute = %w(/root to this path)
-      relative = %w(relative path from here)
+      absolute = %w[/root to this path]
+      relative = %w[relative path from here]
 
       absolute_path = Tools.relative_or_absolute_path(*absolute)
       relative_path = Tools.relative_or_absolute_path(*relative)
@@ -84,8 +86,8 @@ module Mangdown
       bodies = []
       fails = []
       complete = []
-      
-      Tools.hydra_streaming(objects) do |status, object, data=nil|
+
+      Tools.hydra_streaming(objects) do |status, object, data = nil|
         case status
         when :before
           return true unless objects.index(object) == 1
