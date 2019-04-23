@@ -3,21 +3,23 @@
 module Mangdown
   # Mangdown page
   class Page
+    extend Forwardable
+
     include Equality
     include Logging
 
-    attr_reader :uri, :name, :manga, :chapter
+    attr_reader :page
 
-    def initialize(uri, name, manga, chapter)
-      @name = Tools.valid_path_name(name)
-      @chapter = chapter
-      @manga = manga
-      @uri = Addressable::URI.escape(uri)
+    def_delegators :page, :url, :name
+
+    alias uri url
+
+    def initialize(page)
+      @page = page
     end
 
-    # explicit conversion to page
-    def to_page
-      self
+    def chapter
+      @chapter ||= Mangdown.chapter(page.chapter)
     end
 
     def path
@@ -29,15 +31,16 @@ module Mangdown
     # without file extension if file is not found. File extensions
     # are appended only after the file has been downloaded.
     def setup_path(dir = nil)
-      dir ||= File.join(manga, chapter)
+      dir ||= chapter.path
       dir = Tools.valid_path_name(dir)
+      name = self.name.tr('/', '')
       file = Dir.entries(dir).find { |f| f[name] } if Dir.exist?(dir)
-      path = File.join(dir, file || name)
+      path = Tools.file_join(dir, file || name)
       @path = Tools.relative_or_absolute_path(path)
     end
 
-    # downloads to specified directory
-    def download_to(dir = Dir.pwd, force_download: false)
+    # rubocop:disable Metrics/MethodLength
+    def download_to(dir = Dir.pwd, opts = { force_download: false })
       delete_files!(dir) if opts[:force_download]
 
       return if file_exist?(dir)
@@ -56,6 +59,7 @@ module Mangdown
         backtrace: error.backtrace
       }.to_s)
     end
+    # rubocop:enable Metrics/MethodLength
 
     def append_file_data(_dir, data)
       File.open(to_path, 'ab') { |file| file.write(data) }

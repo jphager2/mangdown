@@ -9,6 +9,14 @@ module Mangdown
   # Common helpers
   module Tools
     class << self
+      # rubocop:disable Metrics/LineLength
+      TYPHOEUS_OPTIONS = {
+        headers: {
+          'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
+        }
+      }.freeze
+      # rubocop:enable Metrics/LineLength
+
       def get_doc(uri)
         data = get(uri)
         @doc = Nokogiri::HTML(data)
@@ -31,6 +39,12 @@ module Mangdown
         Pathname.new(Dir.pwd).join(*sub_paths)
       end
 
+      def file_join(safe_path, *unsafe_parts)
+        now_safe_parts = unsafe_parts.map { |part| part.tr('/', '') }
+
+        File.join(safe_path, *now_safe_parts)
+      end
+
       def valid_path_name(name)
         name.to_s.sub(/(\d+)(\.\w+)*\Z/) do
           digits, ext = Regexp.last_match[1..2]
@@ -47,6 +61,7 @@ module Mangdown
         mime_to_extension(mime)
       end
 
+      # rubocop:disable Metrics/MethodLength
       def hydra_streaming(objects, hydra_opts = {})
         hydra = Typhoeus::Hydra.new(hydra_opts)
 
@@ -56,7 +71,7 @@ module Mangdown
           request = typhoeus(obj.uri)
           request.on_headers do |response|
             status = response.success? ? :succeeded : :failed
-            yield(status, obj)
+            yield(status, obj, response)
           end
           request.on_body do |chunk|
             yield(:body, obj, chunk)
@@ -72,17 +87,10 @@ module Mangdown
         hydra.run
         requests
       end
+      # rubocop:enable Metrics/MethodLength
 
       def typhoeus(uri)
-        Typhoeus::Request.new(uri, typhoeus_options)
-      end
-
-      def typhoeus_options
-        {
-          headers: {
-            'User-Agent' => 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.62 Safari/537.36'
-          }
-        }
+        Typhoeus::Request.new(uri, TYPHOEUS_OPTIONS)
       end
 
       private

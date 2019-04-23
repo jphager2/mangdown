@@ -1,134 +1,157 @@
 # frozen_string_literal: true
 
-require 'cgi'
+require 'scrapework'
 
 module Mangdown
-  # Mangdown adapter for mangareader
-  class Mangareader < Adapter::Base
-    site :mangareader
+  # Adapter for mangareader
+  class Mangareader
+    ROOT = 'https://www.mangareader.net'
 
-    attr_reader :root
-
-    def initialize(uri, doc, name)
-      super
-
-      @root = 'https://www.mangareader.net'
+    def for?(uri)
+      URI.parse(uri).host&.end_with?('mangareader.net')
+    rescue URI::Error
+      false
     end
 
-    def is_manga_list?(uri = @uri)
-      uri == "#{root}/alphabetical"
-    end
-
-    def is_manga?(uri = @uri)
-      uri.slice(%r{#{root}(/\d+)?(/[^/]+)(\.html)?}i) == uri
-    end
-
-    def is_chapter?(uri = @uri)
-      uri.slice(%r{#{root}(/[^/]+){1,2}/(\d+|chapter-\d+\.html)}i) == uri
-    end
-
-    def is_page?(uri = @uri)
-      uri.slice(/.+\.(png|jpg|jpeg)$/i) == uri
-    end
-
-    # Only valid mangas should be returned (using is_manga?(uri))
     def manga_list
-      doc.css('ul.series_alpha li a').map do |a|
-        uri = "#{root}#{a[:href]}"
-        manga = { uri: uri, name: a.text.strip.tr('/', ''), site: site }
-
-        manga if is_manga?(uri)
-      end.compact
+      MangaList.load('https://www.mangareader.net/alphabetical')
     end
 
-    def manga
-      { uri: uri, name: manga_name, site: site }
+    def manga(url)
+      Manga.load(url)
     end
 
-    # Only valid chapters should be returned (using is_chapter?(uri))
-    def chapter_list
-      doc.css('div#chapterlist td a').map do |a|
-        uri = root + a[:href].sub(root, '')
-        chapter = { uri: uri, name: a.text.strip.tr('/', ''), site: site }
-
-        chapter if is_chapter?(uri)
-      end.compact
+    def chapter(url)
+      Chapter.load(url)
     end
 
-    def chapter
-      { uri: uri,
-        manga: manga_name,
-        name: chapter_name,
-        chapter: chapter_number,
-        site: site }
+    def page(url)
+      Page.load(url)
     end
 
-    def page_list
-      last_page = doc.css('select')[1].css('option').length
-      (1..last_page).map do |page|
-        slug = manga_name.tr(' ', '-').gsub(%r{[:,!'&/]}, '')
-        uri = "#{root}/#{slug}/#{chapter_number}/#{page}"
-        uri = Addressable::URI.escape(uri).downcase
-        { uri: uri, name: page, site: site }
+    # A mangareader manga list
+    class MangaList < Scrapework::Object
+      has_many :manga, class: 'Mangdown::Mangareader::Manga'
+
+      map :manga do |html|
+        html.css('ul.series_alpha li a').map do |a|
+          uri = "#{ROOT}#{a[:href]}"
+
+          { url: uri, name: a.text.strip }
+        end
+      end
+
+      def each(&block)
+        manga.each(&block)
+      end
+
+      def to_enum
+        manga.to_enum
       end
     end
 
-    def page
-      page_image = doc.css('img')[0]
-      uri = page_image[:src]
-      name = page_image[:alt].sub(/([^\d]*)(\d+)(\.\w+)?$/) do
-        Regexp.last_match[1].to_s + Regexp.last_match[2].to_s.rjust(3, '0')
+    # A mangareader manga
+    class Manga < Scrapework::Object
+      attribute :name
+
+      has_many :chapters, class: 'Mangdown::Mangareader::Chapter'
+
+      map :name do |html|
+        html.at_css('h2.aname').text.strip
       end
 
-      { uri: uri, name: name.to_s.tr('/', ''), site: site }
+      map :chapters do |html|
+        html.css('div#chapterlist td a').map.with_index do |a, i|
+          uri = ROOT + a[:href]
+
+          { url: uri, name: a.text.strip, number: i + 1 }
+        end
+      end
     end
 
-    private
+    # A mangareader chapter
+    class Chapter < Scrapework::Object
+      attribute :name
+      attribute :number, type: Integer
 
-    def manga_name
-      if is_manga?
-        name = doc.css('h2.aname').text
-      elsif is_chapter?
-        name = chapter_manga_name
+      belongs_to :manga, class: 'Mangdown::Mangareader::Manga'
+      has_many :page_views, class: 'Mangdown::Mangareader::PageView'
+
+      map :name do |html|
+        html.at_css('#mangainfo h1').text.strip
       end
 
-      return unless name
+      map :manga do |html|
+        manga = html.at_css('#mangainfo h2.c2 a')
 
-      name = name.gsub(%r{[/]}, '')
-      CGI.unescapeHTML(name)
+        {
+          url: "#{ROOT}#{manga['href']}",
+          name: manga.text.strip.sub(/ Manga$/, '')
+        }
+      end
+
+      map :page_views do |html|
+        html.css('#selectpage select#pageMenu option').map.with_index do |op, i|
+          i += 1
+          uri = "#{ROOT}#{op['value']}"
+          padded_number = i.to_s.rjust(3, '0')
+          padded_chapter = number.to_s.rjust(3, '0')
+          name = "#{manga.name} #{padded_chapter}-#{padded_number}"
+
+          { url: uri, name: name, number: i }
+        end
+      end
+
+      def hydra_opts
+        {}
+      end
+
+      def pages
+        return @pages if defined?(@pages)
+
+        threads = []
+        page_views.each do |page_view|
+          threads << Thread.new(page_view, &:page)
+        end
+        threads.each(&:join)
+
+        @pages = page_views.map(&:page)
+      end
     end
 
-    def chapter_name
-      name = if @name
-               @name.sub(/\s(\d+)$/) { |num| ' ' + num.to_i.to_s.rjust(5, '0') }
-             else
-               doc.css('').text # Not implimented
-             end
+    # A mangareader page
+    class PageView < Scrapework::Object
+      attribute :name
+      attribute :number, type: Integer
 
-      return unless name
+      belongs_to :chapter, class: 'Mangdown::Mangareader::Chapter'
+      has_one :page, class: 'Mangdown::Mangareader::Page'
 
-      name = name.gsub(%r{[/]}, '')
-      CGI.unescapeHTML(name)
+      alias uri url
+
+      map :chapter do |html|
+        name = html.at_css('.mangainfo h1').text.strip
+        op = html.css('#selectpage select#pageMenu option').first
+
+        { url: "#{ROOT}#{op['href']}", name: name }
+      end
+
+      map :page do |html|
+        img = html.at_css('#imgholder img#img')
+
+        { url: img['src'], name: name, number: number }
+      end
     end
 
-    def chapter_manga_name
-      name = if @name
-               @name.slice(/(^.+)\s/, 1)
-             else
-               doc.css('').text # Not implimented
-             end
+    # A mangareader page
+    class Page < Scrapework::Object
+      attribute :name
+      attribute :number, type: Integer
 
-      return unless name
+      belongs_to :page_view, class: 'Mangdown::Mangareader::PageView'
 
-      name = name.gsub(%r{[/]}, '')
-      CGI.unescapeHTML(name)
-    end
-
-    def chapter_number
-      if @name
-        @name.slice(/\d+\z/).to_i
-      else
-        doc.css('').text # Not implimented
+      def chapter
+        page_view.chapter
       end
     end
   end

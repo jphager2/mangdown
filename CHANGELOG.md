@@ -1,3 +1,9 @@
+# v0.21.0
+
+  * BREAKING CHANGES
+  * Using scrapework for adapters
+  * See readme for new usage
+
 # v0.20.5
 
   * Again ...
