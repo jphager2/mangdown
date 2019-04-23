@@ -88,7 +88,11 @@ module Mangdown
 
       map :chapters do |html|
         html.css('.chapter-list .row a').reverse.map.with_index do |chapter, i|
-          { url: chapter['href'], name: chapter['title'], number: i + 1 }
+          i += 1
+          padded_number = i.to_s.rjust(3, '0')
+          chapter_name = "#{name} #{padded_number}"
+
+          { url: chapter['href'], name: chapter_name, number: i }
         end
       end
     end

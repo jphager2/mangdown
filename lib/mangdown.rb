@@ -60,6 +60,10 @@ module Mangdown
     if instance.is_a?(String)
       adapter = adapter(instance)
       instance = adapter.public_send(instance_constructor, instance)
+    else
+      adapter = adapter(instance.url)
+      klass = adapter.class.const_get(instance_constructor.to_s.capitalize)
+      instance = klass.new(instance.attributes)
     end
     yield(instance)
   rescue Adapter::NoAdapterError
