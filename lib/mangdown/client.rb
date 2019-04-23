@@ -37,7 +37,7 @@ module Mangdown
       Mangdown.adapters.each do |name, adapters|
         adapters.manga_list.each do |manga|
           Mangdown::DB::Manga.find_or_create(
-            adapter: name,
+            adapter: name.to_s,
             url: manga.url,
             name: manga.name
           )
