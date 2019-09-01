@@ -35,9 +35,7 @@ module Mangdown
     def test_all
       CBZ.all(@root_dir)
 
-      refute File.exist?(@root_dir)
-
-      new_root_dir = @temp.join('root 00001')
+      new_root_dir = @temp.join('root 1')
 
       list = Dir.new(new_root_dir).entries
       assert_includes list, 'sub_dir 00001'

@@ -8,7 +8,7 @@ module Mangdown
 
       def all(main_dir)
         main_dir = String(main_dir)
-        main_dir = validate_file_or_dir_names(main_dir)
+        main_dir = validate_file_or_dir_names(main_dir, false)
         each_dir_or_page(main_dir) { |dir| validate_file_or_dir_names(dir) }
         cbz_sub_dirs(main_dir)
       end
