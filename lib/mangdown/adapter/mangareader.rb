@@ -82,12 +82,12 @@ module Mangdown
         name.sub(/(\d+)$/) { Regexp.last_match[1].rjust(5, '0') }
       end
 
-      map :number do |html|
+      map :number do |_html|
         _mapped_name.slice(/(\d+)$/, 1)
       end
 
       map :manga do |html|
-        manga = html.at_css('#mangainfo h2.c2 a')
+        manga = html.at_css('#mangainfo h2.c4 a')
 
         {
           url: "#{ROOT}#{manga['href']}",

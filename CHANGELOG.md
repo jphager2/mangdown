@@ -1,3 +1,7 @@
+# v0.21.3
+
+  * Fix manga reader adapter for chapter manga name
+
 # v0.21.2
 
   * Do not validate name of containing directory for CBZ.all
